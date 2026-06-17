@@ -1,0 +1,8 @@
+# Minimal Gitleaks configuration. Uses default rules and allows adding allowlist entries if needed.
+
+[allowlist]
+description = "Repository allowlist"
+paths = [
+  "docs/.*",
+]
+

@@ -1,0 +1,47 @@
+diff --git a/Frontend/jS/sync-manager.js b/Frontend/jS/sync-manager.js
+--- a/Frontend/jS/sync-manager.js
++++ b/Frontend/jS/sync-manager.js
+@@
+   async syncFromServer() {
+     if (!window.apiClient) return;
+ 
+     try {
+       console.log('');
+ 
+       // Get fresh data from server
+       const [clearances, delegations, onboardings, profile] = await Promise.all([
+         window.apiClient.getMyClearances().catch(() => []),
+         window.apiClient.getMyDelegations().catch(() => []),
+         window.apiClient.getMyOnboardings().catch(() => []),
+         window.apiClient.getProfile().catch(() => null)
+       ]);
+ 
+       // Update localStorage with server data
+       localStorage.setItem('requestsClearance', JSON.stringify(clearances));
+       localStorage.setItem('requestsDelegation', JSON.stringify(delegations));
+       localStorage.setItem('requestsOnboarding', JSON.stringify(onboardings));
+       
+       if (profile) {
+         localStorage.setItem('userProfile', JSON.stringify(profile));
+       }
+ 
+       // Trigger storage events for cross-tab updates
+       window.dispatchEvent(new StorageEvent('storage', {
+         key: 'requestsClearance',
+         newValue: JSON.stringify(clearances)
+       }));
+ 
++      // Also notify for other keys and same-tab listeners
++      try {
++        window.dispatchEvent(new StorageEvent('storage', { key: 'requestsOnboarding', newValue: JSON.stringify(onboardings) }));
++        window.dispatchEvent(new StorageEvent('storage', { key: 'requestsDelegation', newValue: JSON.stringify(delegations) }));
++      } catch (_) {}
++      window.dispatchEvent(new CustomEvent('sync:updated', { detail: { key: 'requestsClearance',  list: clearances } }));
++      window.dispatchEvent(new CustomEvent('sync:updated', { detail: { key: 'requestsOnboarding', list: onboardings } }));
++      window.dispatchEvent(new CustomEvent('sync:updated', { detail: { key: 'requestsDelegation', list: delegations } }));
++
+       console.log('');
+     } catch (error) {
+       console.warn('');
+     }
+   }

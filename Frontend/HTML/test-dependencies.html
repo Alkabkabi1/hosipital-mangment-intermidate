@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>اختبار التبعيات - مستشفى الملك عبدالعزيز</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #f5f6f8;
+      margin: 0;
+      padding: 20px;
+      color: #0f172a;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    h1 {
+      color: #2B6CB0;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .test-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+    }
+    .test-section h2 {
+      margin-top: 0;
+      color: #374151;
+    }
+    .test-result {
+      padding: 8px 12px;
+      margin: 5px 0;
+      border-radius: 6px;
+      font-family: monospace;
+    }
+    .test-pass {
+      background: #dcfce7;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+    .test-fail {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    .test-warn {
+      background: #fef3c7;
+      color: #f59e0b;
+      border: 1px solid #fed7aa;
+    }
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #6b7280;
+    }
+    .buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .btn {
+      background: #2B6CB0;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 0 10px;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .btn:hover {
+      background: #255b92;
+    }
+    .btn-secondary {
+      background: #6b7280;
+    }
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 اختبار تحميل التبعيات</h1>
+    
+    <div class="loading" id="loading">
+      ⏳ جاري تحميل التبعيات...
+    </div>
+    
+    <div id="results" style="display: none;">
+      <div class="test-section">
+        <h2>🔧 الملفات الأساسية</h2>
+        <div id="core-results"></div>
+      </div>
+      
+      <div class="test-section">
+        <h2>🌐 واجهات البرمجة</h2>
+        <div id="api-results"></div>
+      </div>
+      
+      <div class="test-section">
+        <h2>🔔 الإشعارات</h2>
+        <div id="notification-results"></div>
+      </div>
+      
+      <div class="test-section">
+        <h2>🛡️ معالج الأخطاء</h2>
+        <div id="error-results"></div>
+      </div>
+      
+      <div class="test-section">
+        <h2>📊 ملخص النتائج</h2>
+        <div id="summary"></div>
+      </div>
+    </div>
+    
+    <div class="buttons">
+      <button class="btn" onclick="runTests()">🔄 إعادة الاختبار</button>
+      <button class="btn btn-secondary" onclick="testErrorHandler()">🧪 اختبار الأخطاء</button>
+      <button class="btn btn-secondary" onclick="debugDependencies()">🔍 تصحيح التبعيات</button>
+    </div>
+  </div>
+  
+  <!-- Load dependencies in correct order -->
+  <script src="../jS/dependency-guard.js"></script>
+  <script src="../jS/error-handler.js"></script>
+  <script src="../jS/notification-store.js"></script>
+  <script src="../jS/notification-utils.js"></script>
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/role-permissions.js"></script>
+  
+  <script>
+    let testResults = {
+      passed: 0,
+      failed: 0,
+      warnings: 0
+    };
+    
+    function test(name, condition, container, isWarning = false) {
+      const div = document.createElement('div');
+      div.className = 'test-result';
+      
+      if (condition) {
+        div.className += ' test-pass';
+        div.innerHTML = `✅ ${name}`;
+        testResults.passed++;
+      } else if (isWarning) {
+        div.className += ' test-warn';
+        div.innerHTML = `⚠️ ${name}`;
+        testResults.warnings++;
+      } else {
+        div.className += ' test-fail';
+        div.innerHTML = `❌ ${name}`;
+        testResults.failed++;
+      }
+      
+      container.appendChild(div);
+    }
+    
+    function runTests() {
+      // Reset results
+      testResults = { passed: 0, failed: 0, warnings: 0 };
+      
+      const coreResults = document.getElementById('core-results');
+      const apiResults = document.getElementById('api-results');
+      const notificationResults = document.getElementById('notification-results');
+      const errorResults = document.getElementById('error-results');
+      const summary = document.getElementById('summary');
+      
+      // Clear previous results
+      [coreResults, apiResults, notificationResults, errorResults, summary].forEach(el => {
+        el.innerHTML = '';
+      });
+      
+      // Test core dependencies
+      test('dependency-guard.js loaded', typeof window.waitForDependencies !== 'undefined', coreResults);
+      test('app-init.js loaded', typeof window.resolveFrontendPath !== 'undefined', coreResults);
+      test('Path resolution works', window.resolveFrontendPath && window.resolveFrontendPath('test.html') === '/Frontend/HTML/test.html', coreResults);
+      
+      // Test API dependencies
+      test('api-client.js loaded', typeof window.apiClient !== 'undefined', apiResults);
+      test('API client has baseURL', window.apiClient && window.apiClient.baseURL, apiResults);
+      test('API client has token support', window.apiClient && typeof window.apiClient.getHeaders === 'function', apiResults);
+      test('role-permissions.js loaded', typeof window.rolePermissions !== 'undefined', apiResults, false);
+      
+      // Test notification system
+      test('notification-store.js loaded', typeof window.NotificationStore !== 'undefined', notificationResults);
+      test('notification-utils.js loaded', typeof window.addNotification !== 'undefined', notificationResults);
+      test('Safe notification store works', typeof window.safeNotificationStore !== 'undefined', notificationResults);
+      test('Notification bell helper works', typeof window.updateNotificationBell !== 'undefined', notificationResults);
+      
+      // Test error handling
+      test('error-handler.js loaded', typeof window.showError !== 'undefined', errorResults);
+      test('Success handler works', typeof window.showSuccess !== 'undefined', errorResults);
+      test('API error handler works', typeof window.handleApiError !== 'undefined', errorResults);
+      test('Global error listeners active', true, errorResults, true);
+      
+      // Show summary
+      const total = testResults.passed + testResults.failed + testResults.warnings;
+      summary.innerHTML = `
+        <div class="test-result test-${testResults.failed === 0 ? 'pass' : 'fail'}">
+          📊 المجموع: ${total} اختبار | 
+          ✅ نجح: ${testResults.passed} | 
+          ❌ فشل: ${testResults.failed} | 
+          ⚠️ تحذيرات: ${testResults.warnings}
+        </div>
+      `;
+      
+      if (testResults.failed === 0) {
+        summary.innerHTML += '<div class="test-result test-pass">🎉 جميع الاختبارات الأساسية نجحت!</div>';
+      } else {
+        summary.innerHTML += '<div class="test-result test-fail">🔧 يرجى إصلاح الأخطاء المذكورة أعلاه</div>';
+      }
+    }
+    
+    // Wait for dependencies then run tests
+    setTimeout(() => {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('results').style.display = 'block';
+      
+      if (typeof window.waitForDependencies === 'function') {
+        window.waitForDependencies(() => {
+          console.log('✅ All dependencies loaded, running tests');
+          runTests();
+        }, ['resolveFrontendPath', 'NotificationStore', 'showError']);
+      } else {
+        console.warn('⚠️ waitForDependencies not available, running tests anyway');
+        runTests();
+      }
+    }, 1000);
+  </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

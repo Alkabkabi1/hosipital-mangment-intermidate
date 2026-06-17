@@ -1,0 +1,1012 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/professional-design.css">
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/svg+xml" href="/Frontend/HTML/favicon.svg">
+<title>تفاصيل طلب شهادة خبرة – أدمن</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/Frontend/CSS/workflow-styles.css">
+<style>
+:root{ --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb; --danger:#dc2626; --success:#06b6d4; --warning:#f59e0b; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+a{color:inherit;text-decoration:none}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt span{font-size:12px;color:var(--muted)}
+.container{max-width:1100px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:16px}
+.hdr{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-pend{background:#fef3c7} .b-done{background:#dcfce7} .b-rej{background:#fee2e2}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.kv div{border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.timeline{display:flex;flex-direction:column;gap:8px}
+.step{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.order{font-weight:800;text-align:center}
+.state{font-size:12px;padding:4px 10px;border-radius:999px}
+.s-wait{background:#e5e7eb} .s-now{background:#dbeafe} .s-acc{background:#dcfce7} .s-rej{background:#fee2e2}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border-color:transparent}
+.btn-danger{background:#fff;color:var(--danger);border-color:#fecaca}
+.btn-ghost{background:#fff;color:var(--text)}
+.note{font-size:12px;color:var(--muted)}
+.approver-admin{display:none;margin-top:12px;border:1px dashed var(--border);border-radius:12px;padding:12px;background:#fafafa}
+.approver-admin .row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px}
+.inp{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.iconbtn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:12px}
+
+/* Role-based access control styles */
+.dept-status.clickable{cursor:pointer;border:1px solid transparent;padding:4px 8px;border-radius:4px;transition:all 0.2s}
+.dept-status.clickable:hover{border-color:var(--primary);background-color:#f0f9ff}
+.dept-status.readonly{color:var(--muted);cursor:default}
+.dept-readonly-notice{font-size:12px;color:var(--muted);font-style:italic}
+.department-item.unauthorized{opacity:0.7}
+.department-item.unauthorized .dept-actions{opacity:0.5}
+
+/* Tab Styles */
+.tabs-container{margin-bottom:16px}
+.tabs-header{display:flex;gap:8px;border-bottom:2px solid var(--border);margin-bottom:16px}
+.tab-button{background:transparent;border:none;padding:12px 20px;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;position:relative}
+.tab-button:hover{color:var(--text);background:#f9fafb}
+.tab-button.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="/Frontend/public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>تفاصيل طلب شهادة خبرة – أدمن</span>
+      </div>
+    </div>
+    <button class="btn" id="btnBack">رجوع للوارد</button>
+    <button class="btn commissioner-back" id="btnBackToDashboard" style="display:none;background:linear-gradient(135deg,#8b5cf6,#3b82f6);color:#fff;border:none">رجوع للوحتي</button>
+  </div>
+</header>
+  
+<main class="container">
+  <!-- Basic Information Card -->
+  <div class="card">
+    <div class="hdr">
+      <h2 style="margin:0">طلب #<span id="rid">-</span></h2>
+      <span id="rstatus" class="badge b-pend">قيد الاعتماد</span>
+    </div>
+    <div class="kv">
+      <div>الموظف: <b id="rname">-</b></div>
+      <div>القسم: <b id="rdept">-</b></div>
+      <div>البريد: <b id="remail">-</b></div>
+      <div>تاريخ بداية العقد: <b id="rstartdate">-</b></div>
+      <div>تاريخ نهاية العقد: <b id="renddate">-</b></div>
+      <div>المسمى الوظيفي: <b id="rposition">-</b></div>
+      <div>نوع الخدمة: <b id="rservice">-</b></div>
+      <div>الجنسية: <b id="rnationality">-</b></div>
+      <div>سبب ترك العمل: <b id="rreason">-</b></div>
+      <div>تاريخ الإنشاء: <b id="rcreated">-</b></div>
+    </div>
+    <div style="margin-top:12px" id="rnotes-container">
+      <div style="border:1px solid var(--border);border-radius:12px;padding:10px;background:#f9fafb">
+        <strong>ملاحظات:</strong> <span id="rnotes">لا توجد ملاحظات</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comprehensive Employee Information from Form -->
+  <div class="card" id="employeeFormDataCard" style="display:none">
+    <div class="hdr">
+      <h3 style="margin:0">🧑 معلومات الموظف من النموذج</h3>
+    </div>
+    <div class="kv" id="employeeFormDataGrid">
+      <!-- Employee form data will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Document and Transaction Information -->
+  <div class="card" id="documentInfoCard" style="display:none">
+    <div class="hdr">
+      <h3 style="margin:0">📄 معلومات المستندات والمعاملات</h3>
+    </div>
+    <div class="kv" id="documentInfoGrid">
+      <!-- Document info will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Employment Details from Form -->
+  <div class="card" id="employmentDetailsCard" style="display:none">
+    <div class="hdr">
+      <h3 style="margin:0">💼 تفاصيل التوظيف من النموذج</h3>
+    </div>
+    <div class="kv" id="employmentDetailsGrid">
+      <!-- Employment details will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <!-- Department Status & Approver Chain (Tabbed) -->
+  <div class="card">
+    <div class="tabs-container">
+      <div class="tabs-header">
+        <button class="tab-button active" data-tab="departments" id="tabDepartments">
+          حالة الأقسام المطلوبة
+        </button>
+        <button class="tab-button" data-tab="approvers" id="tabApprovers">
+          سلسلة المعتمدين
+        </button>
+      </div>
+
+      <!-- Department Status Tab -->
+      <div class="tab-content active" id="tabContentDepartments">
+        <div class="hdr" style="margin-bottom:16px">
+          <h3 style="margin:0">حالة الأقسام المطلوبة</h3>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost" id="btnRefreshDepts">تحديث</button>
+          </div>
+        </div>
+        <div id="departmentStatusGrid" class="department-grid">
+          <!-- Department status items will be rendered here -->
+        </div>
+        <div class="department-summary" id="departmentSummary">
+          <!-- Summary will be rendered here -->
+        </div>
+      </div>
+
+      <!-- Approver Chain Tab -->
+      <div class="tab-content" id="tabContentApprovers">
+        <div class="hdr" style="margin-bottom:16px">
+          <h3 style="margin:0">سلسلة المعتمدين</h3>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost" id="btnToggleAdmin">إدارة السلسلة</button>
+          </div>
+        </div>
+
+        <!-- لوحة إدارة السلسلة (للأدمن) -->
+        <div class="approver-admin" id="approverAdmin">
+          <div class="row" style="margin-bottom:8px">
+            <input class="inp" id="apName" placeholder="اسم المعتمد (اختياري)">
+            <input class="inp" id="apRole" placeholder="المسمى الوظيفي (اختياري)">
+            <input class="inp" id="apEmail" placeholder="البريد الإلكتروني (اختياري)">
+            <button class="btn" id="btnAddApprover">إضافة</button>
+          </div>
+          <div class="note">العرض في القائمة يكون بالمسمّى فقط (إن وُجد). تقدر تضيف أو تحذف أي خطوة.</div>
+        </div>
+
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hdr"><h3 style="margin:0">الإجراءات</h3></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="btnApproveReq">موافقة</button>
+      <button class="btn btn-danger" id="btnRejectReq">رفض</button>
+      <button class="btn" id="printBtn">طباعة</button>
+      <button class="btn" id="exportBtn">تصدير CSV</button>
+      <button class="btn" onclick="exportExcel()">تصدير Excel</button>
+    </div>
+    <div class="note" id="actionNote">الموافقة تُقفل الحالة «مكتمل». الرفض يغيّرها إلى «مرفوض». الأزرار متاحة للحالات: قيد الاعتماد، قيد الانتظار، قيد المراجعة.</div>
+  </div>
+</main>
+
+<script>
+/* فحص الدخول */
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser) window.location.href='login.html';
+
+/* فحص ما إذا كان المستخدم مفوضاً */
+const urlParams = new URLSearchParams(window.location.search);
+const isCommissionerAccess = urlParams.get('commissioner') === 'true';
+const userEmail = authUser?.email?.toLowerCase();
+
+function checkCommissionerPermissions() {
+  if (!isCommissionerAccess) return false;
+  
+  const delegations = JSON.parse(localStorage.getItem('delegations') || '[]');
+  return delegations.some(d => {
+    return d.status === 'active' && 
+           (d.to || '').toLowerCase() === userEmail &&
+           d.active &&
+           (!d.validTo || d.validTo >= Date.now()) &&
+           (d.scopes || []).includes('approve_experience');
+  });
+}
+
+const hasCommissionerPermission = checkCommissionerPermissions();
+
+/* تكوين أدمن الأقسام (مع حماية من إعادة التعريف) */
+window.DEPARTMENT_ADMINS = window.DEPARTMENT_ADMINS || {
+  'الموارد البشرية': ['hr.admin1@example.com', 'hr.director@example.com'], // HR
+  'المالية': ['finance.admin@example.com', 'cfo@example.com'], // Financial Management
+  'تقنية المعلومات': ['it.admin@example.com', 'it.director@example.com'], // IT
+  'الإدارة': ['upper.admin@example.com', 'ceo@example.com'] // Upper Management
+};
+
+/* فحص الصلاحيات المحسن - يسمح لأدمن الأقسام بالوصول */
+function isDepartmentAdmin(userEmail) {
+  if (!userEmail) return false;
+  return Object.values(window.DEPARTMENT_ADMINS).some(emails => emails.includes(userEmail));
+}
+
+function canAccessAdminPage(user) {
+  if (!user) return false;
+  // Allow system admins
+  if (user.role === 'admin') return true;
+  // Allow department-specific admins
+  if (isDepartmentAdmin(user.email)) return true;
+  return false;
+}
+
+if(!canAccessAdminPage(authUser) && !hasCommissionerPermission) window.location.href='employee-dashboard.html';
+
+/* مفاتيح التخزين والمعرّف */
+const params = new URLSearchParams(location.search);
+const reqId = Number(params.get('id'));
+const storeKey='requestsExperience';
+
+/* أدوات تخزين */
+function loadReq(){ const list = JSON.parse(localStorage.getItem(storeKey)||'[]'); return { list, idx: list.findIndex(r=>r.id===reqId) }; }
+function saveList(list){ localStorage.setItem(storeKey, JSON.stringify(list)); }
+function fmt(ts){ return ts ? new Date(ts).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'}) : '-'; }
+
+/* فحص صلاحيات القسم */
+function canUserManageDepartment(departmentName) {
+  if (!authUser || !departmentName) return false;
+  if (authUser.role === 'admin') return true; // المدير العام مسموح دائمًا
+  const allowed = (window.DEPARTMENT_ADMINS[departmentName] || []);
+  return allowed.includes(authUser.email);
+}
+
+/* رسم الشاشة - DISABLED - Now using API-based loading from admin-direct-detail.js */
+function draw(){
+  // Old localStorage-based loading removed
+  // Now handled by admin-experience-detail.js which loads from API
+  console.log('⚠️ draw() function called but disabled - using API loading instead');
+  return;
+  
+  // OLD CODE BELOW (kept for reference but not executed due to return above)
+  const {list, idx} = loadReq(); if(idx<0){ alert('الطلب غير موجود'); location.href='admin-dashboard.html'; return; }
+  const r = list[idx];
+
+  rid.textContent = r.id;
+  rstatus.textContent = r.status;
+  rstatus.className = 'badge ' + (r.status==='مكتمل'?'b-done': r.status==='مرفوض'?'b-rej':'b-pend');
+
+  rname.textContent = r.employee?.name||'-';
+  rdept.textContent = r.employee?.dept||'-';
+  remail.textContent= r.employee?.email||'-';
+
+  rstartdate.textContent = r.details?.startDate || '-';
+  rposition.textContent = r.details?.position || '-';
+  rcontract.textContent = r.details?.contractType || '-';
+  rsalary.textContent = r.details?.salary ? `${r.details.salary} ريال` : '-';
+  rcreated.textContent= fmt(r.createdAt);
+  
+  // إظهار الملاحظات إذا كانت موجودة
+  const notesContainer = document.getElementById('rnotes-container');
+  const notesSpan = document.getElementById('rnotes');
+  if (r.details?.notes && r.details.notes.trim()) {
+    notesSpan.textContent = r.details.notes;
+    notesContainer.style.display = 'block';
+  } else {
+    notesContainer.style.display = 'none';
+  }
+
+  timeline.innerHTML='';
+  (r.approvers||[]).forEach((a,i)=>{
+    const row=document.createElement('div'); row.className='step';
+    const order=document.createElement('div'); order.className='order'; order.textContent=i+1;
+
+    const who=document.createElement('div');
+    who.innerHTML = a.role ? `<b>${a.role}</b>` : `<span class="note">—</span>`;
+
+    const right=document.createElement('div'); right.style.textAlign='left';
+    const state=document.createElement('span'); state.className='state';
+    if(a.status==='قيد الاعتماد'){ state.classList.add('s-now'); state.textContent='قيد الاعتماد'; }
+    else if(a.status==='منتظر'){ state.classList.add('s-wait'); state.textContent='منتظر'; }
+    else if(a.status==='موافق'){ state.classList.add('s-acc'); state.textContent='موافق'; }
+    else if(a.status==='مرفوض'){ state.classList.add('s-rej'); state.textContent='مرفوض'; }
+    right.appendChild(state);
+
+    const del=document.createElement('button');
+    del.className='iconbtn'; del.textContent='حذف';
+    del.addEventListener('click', ()=>{
+      if(!confirm('تأكيد حذف هذه الخطوة؟')) return;
+      update((req)=>{
+        const removedCurrent = req.approvers[i]?.status==='قيد الاعتماد';
+        req.approvers.splice(i,1);
+        if(removedCurrent && req.approvers.length){
+          const nextWaiting = req.approvers.find(a=>a.status==='منتظر');
+          if(nextWaiting) nextWaiting.status='قيد الاعتماد'; else req.approvers[0].status='قيد الاعتماد';
+        }
+        req.history = req.history||[];
+        req.history.push({at:Date.now(),by:'admin',action:'حذف معتمد',note:`خطوة ${i+1}`});
+      });
+    });
+
+    right.appendChild(document.createTextNode(' '));
+    right.appendChild(del);
+
+    row.append(order, who, right);
+    timeline.appendChild(row);
+  });
+
+  const canAct = hasCommissionerPermission || ['قيد الاعتماد', 'قيد الانتظار', 'قيد المراجعة'].includes(r.status);
+  btnApproveReq.disabled = !canAct;
+  btnRejectReq.disabled = !canAct;
+  
+  // تحديث رسالة الإجراءات لتوضيح حالة الأزرار
+  const actionNote = document.getElementById('actionNote');
+  if (actionNote) {
+    if (hasCommissionerPermission) {
+      actionNote.textContent = '🔥 أنت تعمل بصلاحية مفوض. يمكنك اعتماد أو رفض هذا الطلب مباشرة وتجاوز سلسلة الاعتماد.';
+    } else if (canAct) {
+      actionNote.textContent = `✅ الأزرار متاحة للحالة الحالية: ${r.status}`;
+    } else {
+      actionNote.textContent = `❌ الأزرار معطلة للحالة: ${r.status}. الأزرار متاحة فقط للحالات: قيد الاعتماد، قيد الانتظار، قيد المراجعة.`;
+    }
+  }
+}
+
+function update(fn){
+  const {list, idx} = loadReq(); if(idx<0) return;
+    fn(list[idx], list);
+  saveList(list);
+  // draw() removed - using API loading
+}
+
+/* تغيير الحالة الموحّد */
+function setReqStatus(status, note){
+  update((r)=>{
+    const now = Date.now();
+    r.status = status;
+    r.history = r.history || [];
+    r.history.push({ at: now, by:'admin', action: status==='مكتمل'?'اعتماد الطلب':'رفض الطلب', note: note||null });
+
+    if (status==='مكتمل' && Array.isArray(r.approvers)){
+      r.approvers.forEach(a=>{ if(a.status!=='موافق'){ a.status='موافق'; a.actedAt=now; } });
+    }
+    if (status==='مرفوض' && Array.isArray(r.approvers)){
+      const curIdx = r.approvers.findIndex(a=>a.status==='قيد الاعتماد');
+      if(curIdx>=0){ r.approvers[curIdx].status='مرفوض'; r.approvers[curIdx].actedAt=now; r.approvers[curIdx].decisionNote=note||''; }
+    }
+
+    const notis = NotificationStore.getAll();
+    notis.unshift({id:'n'+now, title: status==='مكتمل'?`تم اعتماد طلب شهادة خبرة #${r.id}`:`تم رفض طلب شهادة خبرة #${r.id}`, time:'الآن', unread:true});
+    NotificationStore.setAll(notis);
+  });
+}
+
+/* تغيير الحالة للمفوض */
+function setCommissionerStatus(status, note){
+  if (!hasCommissionerPermission) {
+    alert('ليس لديك صلاحية مفوض لهذا الإجراء');
+    return;
+  }
+  
+  update((r)=>{
+    const now = Date.now();
+    r.status = status;
+    r.history = r.history || [];
+    r.history.push({ at: now, by: userEmail + ' (مفوض)', action: status==='مكتمل'?'اعتماد بصلاحية مفوض':'رفض بصلاحية مفوض', note: note||null });
+
+    // تجاوز سلسلة الاعتماد للمفوض
+    if (status==='مكتمل' && Array.isArray(r.approvers)){
+      r.approvers.forEach(a=>{ a.status='موافق'; a.actedAt=now; });
+    }
+    if (status==='مرفوض' && Array.isArray(r.approvers)){
+      r.approvers.forEach(a=>{ 
+        if(a.status==='قيد الاعتماد') { 
+          a.status='مرفوض'; 
+          a.actedAt=now; 
+          a.decisionNote=note||''; 
+        }
+      });
+    }
+
+    const notis = NotificationStore.getAll();
+    notis.unshift({
+      id:'n'+now, 
+      title: status==='مكتمل'?`تم اعتماد طلب شهادة خبرة #${r.id} بصلاحية مفوض`:`تم رفض طلب شهادة خبرة #${r.id} بصلاحية مفوض`, 
+      time:'الآن', 
+      unread:true
+    });
+    NotificationStore.setAll(notis);
+    
+    alert(status==='مكتمل'?'تم اعتماد الطلب بصلاحية مفوض':'تم رفض الطلب بصلاحية مفوض');
+  });
+}
+
+
+
+/* Tab Switching Functionality */
+function initTabs() {
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetTab = button.getAttribute('data-tab');
+      
+      // Remove active class from all buttons and contents
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      // Add active class to clicked button and corresponding content
+      button.classList.add('active');
+      
+      // Map data-tab values to actual content IDs
+      const tabMap = {
+        'departments': 'tabContentDepartments',
+        'approvers': 'tabContentApprovers'
+      };
+      
+      const targetContentId = tabMap[targetTab];
+      if (targetContentId) {
+        const targetContent = document.getElementById(targetContentId);
+        if (targetContent) {
+          targetContent.classList.add('active');
+        }
+      }
+    });
+  });
+}
+
+// Initialize tabs when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTabs);
+} else {
+  initTabs();
+}
+
+/* إدارة السلسلة */
+const adminBox = document.getElementById('approverAdmin');
+const btnToggleAdmin = document.getElementById('btnToggleAdmin');
+if (adminBox && btnToggleAdmin) {
+  btnToggleAdmin.addEventListener('click', ()=>{
+    adminBox.style.display = (adminBox.style.display==='none' || adminBox.style.display==='') ? 'block' : 'none';
+  });
+}
+
+const btnAddApprover = document.getElementById('btnAddApprover');
+const apName = document.getElementById('apName');
+const apRole = document.getElementById('apRole');
+const apEmail = document.getElementById('apEmail');
+if (btnAddApprover && apName && apRole && apEmail) {
+  btnAddApprover.addEventListener('click', ()=>{
+    const name=(apName.value||'').trim(), role=(apRole.value||'').trim(), email=(apEmail.value||'').trim();
+    update((r)=>{
+      r.approvers = r.approvers || [];
+      const hasCurrent = r.approvers.some(a=>a.status==='قيد الاعتماد');
+      r.approvers.push({ name: name||null, role: role||null, email: email||null, status: hasCurrent?'منتظر':'قيد الاعتماد' });
+      r.history = r.history||[]; r.history.push({at:Date.now(),by:'admin',action:'إضافة معتمد',note: role||'بدون مسمى'});
+    });
+    apName.value=''; apRole.value=''; apEmail.value='';
+  });
+}
+
+/* تهيئة + رجوع + حماية */
+// draw(); // DISABLED - Now using admin-direct-detail.js API loading
+
+/* ربط الأزرار */
+if (hasCommissionerPermission) {
+  // عرض واجهة المفوض
+  document.getElementById('btnBackToDashboard').style.display = 'inline-flex';
+  document.getElementById('btnBack').style.display = 'none';
+  document.getElementById('actionNote').textContent = '🔥 أنت تعمل بصلاحية مفوض. يمكنك اعتماد أو رفض هذا الطلب مباشرة وتجاوز سلسلة الاعتماد.';
+  
+  // تغيير عنوان الصفحة للمفوض
+      document.querySelector('.brand .tt span').textContent = 'تفاصيل طلب شهادة خبرة – مفوض';
+  
+  document.getElementById('btnApproveReq').onclick = ()=>{ 
+    if(confirm('هل أنت متأكد من اعتماد هذا الطلب بصلاحية المفوض؟')) {
+      const n=prompt('ملاحظة الاعتماد (اختياري):',''); 
+      setCommissionerStatus('مكتمل', n); 
+    }
+  };
+  document.getElementById('btnRejectReq').onclick = ()=>{ 
+    if(confirm('هل أنت متأكد من رفض هذا الطلب بصلاحية المفوض؟')) {
+      const n=prompt('سبب الرفض:',''); 
+      if(n) setCommissionerStatus('مرفوض', n); 
+    }
+  };
+  
+  // زر العودة للوحة الموظف
+  document.getElementById('btnBackToDashboard').onclick = ()=>{ 
+    window.location.href='employee-dashboard.html'; 
+  };
+} else {
+  // أزرار الأدمن العادية
+  document.getElementById('btnApproveReq').onclick = ()=>{ 
+    if(confirm('هل أنت متأكد من اعتماد هذا الطلب؟')) {
+      const n=prompt('ملاحظة الاعتماد (اختياري):',''); 
+      setReqStatus('مكتمل', n); 
+    }
+  };
+  document.getElementById('btnRejectReq').onclick = ()=>{ 
+    const n=prompt('سبب الرفض:',''); 
+    if(n) setReqStatus('مرفوض', n); 
+  };
+  
+  document.getElementById('btnBack').onclick = ()=>{ 
+    window.location.href='admin-dashboard.html'; 
+  };
+}
+
+// Bridge function to sync data with external JS
+function bridgeDataToExternalJS() {
+  const {list, idx} = loadReq();
+  if (idx >= 0) {
+    const r = list[idx];
+    // Convert localStorage data to expected format for external JS
+    window.currentExperience = {
+      id: r.id,
+      reference_number: r.id,
+      position: r.details?.position || '',
+      department_name: r.employee?.dept || '',
+      contract_type: r.details?.contractType || '',
+      salary: r.details?.salary || '',
+      request_date: r.createdAt,
+      start_date: r.details?.startDate || '',
+      status: r.status,
+      requested_by_name: r.employee?.name || '',
+      employee_id: r.employee?.id || '',
+      created_at: r.createdAt,
+      updated_at: r.updatedAt || r.createdAt,
+      notes: r.details?.notes || ''
+    };
+  }
+}
+
+// Call bridge function after drawing
+bridgeDataToExternalJS();
+
+// Initialize department status dashboard
+initializeDepartmentDashboard();
+
+// Watch for API data loading and re-render departments when data becomes available
+function watchForApiData() {
+  // Check if API data is loaded every 500ms for up to 10 seconds
+  let attempts = 0;
+  const maxAttempts = 20;
+  
+  const checkInterval = setInterval(() => {
+    attempts++;
+    
+    if (window.currentExperience || attempts >= maxAttempts) {
+      clearInterval(checkInterval);
+      
+      // Re-render department status once API data is available
+      if (window.currentExperience) {
+        console.log('✅ API data loaded, re-rendering department status...');
+        setTimeout(() => {
+          renderDepartmentStatus();
+        }, 100);
+      }
+    }
+  }, 500);
+}
+
+// Start watching for API data
+watchForApiData();
+
+// Set up print/export button event listeners directly
+document.getElementById('printBtn').addEventListener('click', function() {
+  window.print();
+});
+
+document.getElementById('exportBtn').addEventListener('click', function() {
+  if (!window.currentExperience) {
+    alert('لا توجد بيانات للتصدير');
+    return;
+  }
+
+  const exportData = {
+    'رقم الطلب': window.currentExperience.id || window.currentExperience.reference_number,
+    'اسم الموظف': window.currentExperience.employee_name,
+    'المسمى الوظيفي': window.currentExperience.position,
+    'القسم': window.currentExperience.department,
+    'الجنسية': window.currentExperience.nationality,
+    'نوع الخدمة': window.currentExperience.service_type,
+    'تاريخ بداية العقد': new Date(window.currentExperience.start_date).toLocaleDateString('ar-SA'),
+    'تاريخ نهاية العقد': new Date(window.currentExperience.end_date).toLocaleDateString('ar-SA'),
+    'سبب ترك العمل': window.currentExperience.reason_for_leaving || '-',
+    'تاريخ الطلب': new Date(window.currentExperience.created_at).toLocaleDateString('ar-SA'),
+    'الحالة': window.currentExperience.status
+  };
+
+  const csvContent = Object.entries(exportData)
+    .map(([key, value]) => `"${key}","${value}"`)
+    .join('\n');
+
+  const finalContent = 'الحقل,القيمة\n' + csvContent;
+
+  const blob = new Blob([finalContent], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `experience_${window.currentExperience.id || window.currentExperience.reference_number}.csv`;
+  link.style.display = 'none';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  URL.revokeObjectURL(url);
+  
+  alert('تم تصدير بيانات طلب شهادة الخبرة بنجاح');
+});
+
+
+document.getElementById('btnBack').onclick = ()=>{ location.href='admin-dashboard.html'; };
+// Department Dashboard Functions
+function initializeDepartmentDashboard() {
+  renderDepartmentStatus();
+  
+  // Set up refresh button
+  const refreshBtn = document.getElementById('btnRefreshDepts');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', renderDepartmentStatus);
+  }
+}
+
+function renderDepartmentStatus() {
+  let request = null;
+  let departments = null;
+  
+  // Try to get data from API first (window.currentOnboarding)
+      if (window.currentExperience) {
+        request = window.currentExperience;
+    // Check if departments exist in API data
+    departments = request.departments || request.department_approvals || null;
+  }
+  
+  // Fallback to localStorage
+  if (!request || !departments) {
+    const {list, idx} = loadReq();
+    if (idx < 0) {
+      // No data found, initialize empty departments
+      departments = [
+        { id: 'hr', name: 'الموارد البشرية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+        { id: 'finance', name: 'المالية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+        { id: 'it', name: 'تقنية المعلومات', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+        { id: 'admin', name: 'الإدارة', status: 'منتظر', approver_id: null, approved_at: null, notes: null }
+      ];
+    } else {
+      request = list[idx];
+      if (!request.departments) {
+        // Initialize departments if not present
+        request.departments = [
+          { id: 'hr', name: 'الموارد البشرية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+          { id: 'finance', name: 'المالية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+          { id: 'it', name: 'تقنية المعلومات', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+          { id: 'admin', name: 'الإدارة', status: 'منتظر', approver_id: null, approved_at: null, notes: null }
+        ];
+        saveList(list);
+      }
+      departments = request.departments;
+    }
+  }
+  
+  if (!departments || departments.length === 0) {
+    // Initialize default departments
+    departments = [
+      { id: 'hr', name: 'الموارد البشرية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+      { id: 'finance', name: 'المالية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+      { id: 'it', name: 'تقنية المعلومات', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+      { id: 'admin', name: 'الإدارة', status: 'منتظر', approver_id: null, approved_at: null, notes: null }
+    ];
+  }
+  
+  const grid = document.getElementById('departmentStatusGrid');
+  const summary = document.getElementById('departmentSummary');
+  
+  if (!grid || !summary) return;
+  
+  // Render department status grid
+  grid.innerHTML = departments.map(dept => {
+    const statusClass = getStatusClass(dept.status);
+    const statusText = dept.status;
+    const approverText = dept.approver_name || 'غير محدد';
+    const dateText = dept.approved_at ? new Date(dept.approved_at).toLocaleDateString('ar-SA') : '-';
+    
+    // Check if current user can manage this department
+    const canManage = canUserManageDepartment(dept.name);
+    
+    // Render status based on user permissions
+    const statusElement = canManage 
+      ? `<span class="dept-status clickable" data-status="${dept.status}" onclick="cycleDepartmentStatus('${dept.id}')">${statusText}</span>`
+      : `<span class="dept-status readonly" data-status="${dept.status}">${statusText}</span>`;
+    
+    // Render action button only if user can manage this department
+    const actionButton = canManage 
+      ? `<button class="dept-btn cycle-btn" onclick="cycleDepartmentStatus('${dept.id}')">تغيير الحالة</button>`
+      : `<span class="dept-readonly-notice">غير مصرح</span>`;
+    
+    return `
+      <div class="department-item ${statusClass} ${canManage ? '' : 'unauthorized'}" data-dept-id="${dept.id}">
+        <div class="dept-header">
+          <h4 class="dept-name">${dept.name}</h4>
+          ${statusElement}
+        </div>
+        <div class="dept-details">
+          <div class="dept-approver">المعتمد: ${approverText}</div>
+          <div class="dept-date">التاريخ: ${dateText}</div>
+          ${dept.notes ? `<div class="dept-notes">ملاحظات: ${dept.notes}</div>` : ''}
+        </div>
+        <div class="dept-actions">
+          ${actionButton}
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Render summary
+  const approved = departments.filter(d => d.status === 'موافق').length;
+  const rejected = departments.filter(d => d.status === 'مرفوض').length;
+  const pending = departments.filter(d => d.status === 'منتظر').length;
+  const total = departments.length;
+  const completionPercentage = total > 0 ? Math.round((approved / total) * 100) : 0;
+  
+  summary.innerHTML = `
+    <div class="summary-stats">
+      <div class="stat-item approved">
+        <span class="stat-number">${approved}</span>
+        <span class="stat-label">موافق</span>
+      </div>
+      <div class="stat-item rejected">
+        <span class="stat-number">${rejected}</span>
+        <span class="stat-label">مرفوض</span>
+      </div>
+      <div class="stat-item pending">
+        <span class="stat-number">${pending}</span>
+        <span class="stat-label">منتظر</span>
+      </div>
+      <div class="stat-item total">
+        <span class="stat-number">${completionPercentage}%</span>
+        <span class="stat-label">مكتمل</span>
+      </div>
+    </div>
+    ${completionPercentage === 100 ? '<div class="completion-notice">✅ جميع الأقسام اعتمدت الطلب</div>' : ''}
+  `;
+}
+
+function cycleDepartmentStatus(departmentId) {
+  const {list, idx} = loadReq();
+  if (idx < 0) return;
+  
+  const request = list[idx];
+  const department = request.departments?.find(d => d.id === departmentId);
+  if (!department) return;
+  
+  // Check if current user has permission to manage this department
+  if (!canUserManageDepartment(department.name)) {
+    alert('ليس لديك صلاحية لتعديل حالة هذا القسم');
+    return;
+  }
+  
+  // Cycle through: منتظر → موافق → مرفوض → منتظر
+  const statusCycle = ['منتظر', 'موافق', 'مرفوض'];
+  const currentIndex = statusCycle.indexOf(department.status);
+  const nextStatus = statusCycle[(currentIndex + 1) % statusCycle.length];
+  
+  // Update department status
+  department.status = nextStatus;
+  department.approved_at = nextStatus === 'موافق' ? Date.now() : null;
+  department.approver_name = nextStatus !== 'منتظر' ? 'مدير النظام' : null;
+  
+  // Add to history
+  if (!request.history) request.history = [];
+  request.history.push({
+    at: Date.now(),
+    by: 'admin',
+    action: 'تحديث حالة القسم',
+    note: `${department.name}: ${nextStatus}`
+  });
+  
+  // Check for auto-completion
+  const allApproved = request.departments.every(d => d.status === 'موافق');
+  const hasRejected = request.departments.some(d => d.status === 'مرفوض');
+  
+  if (allApproved && request.status !== 'مكتمل') {
+    request.status = 'مكتمل';
+    request.history.push({
+      at: Date.now(),
+      by: 'system',
+      action: 'إكمال تلقائي',
+      note: 'تم اعتماد جميع الأقسام'
+    });
+    
+    // Add notification
+    NotificationStore.add({
+      id: 'n' + Date.now(),
+      title: `تم إكمال طلب شهادة خبرة #${request.id} تلقائياً`,
+      time: 'الآن',
+      unread: true
+    });
+    
+    alert('تم إكمال الطلب تلقائياً - جميع الأقسام اعتمدت الطلب');
+  } else if (hasRejected && request.status !== 'مرفوض') {
+    request.status = 'مرفوض';
+    request.history.push({
+      at: Date.now(),
+      by: 'system',
+      action: 'رفض تلقائي',
+      note: 'رفض أحد الأقسام'
+    });
+    alert('تم رفض الطلب تلقائياً - رفض أحد الأقسام');
+  }
+  
+  // Save and refresh
+  saveList(list);
+  // draw(); // DISABLED - using API loading
+  renderDepartmentStatus();
+}
+
+// Make renderDepartmentStatus globally accessible for external JS files
+window.renderDepartmentStatus = renderDepartmentStatus;
+
+function getStatusClass(status) {
+  switch (status) {
+    case 'موافق': return 'status-approved';
+    case 'مرفوض': return 'status-rejected';
+    case 'منتظر': return 'status-pending';
+    default: return 'status-pending';
+  }
+}
+
+// Utility functions (from inbox pattern)
+function downloadFile(content, filename, contentType) {
+  const blob = new Blob([content], { type: contentType });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.style.display = 'none';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  URL.revokeObjectURL(url);
+}
+
+function showSuccess(message) {
+  // Simple alert for now - can be enhanced with better UI
+  alert(message);
+}
+
+function showError(message) {
+  alert('خطأ: ' + message);
+}
+
+function showInfo(message) {
+  alert(message);
+}
+
+// Enhanced export functions (from inbox pattern)
+function exportExcel() {
+  // For now, export as CSV (Excel functionality can be added later)
+  if (!window.currentExperience) {
+    showError('لا توجد بيانات للتصدير');
+    return;
+  }
+  
+  const exportData = {
+    'رقم الطلب': window.currentExperience.id || window.currentExperience.reference_number,
+    'اسم الموظف': window.currentExperience.employee_name,
+    'المسمى الوظيفي': window.currentExperience.position,
+    'القسم': window.currentExperience.department,
+    'الجنسية': window.currentExperience.nationality,
+    'نوع الخدمة': window.currentExperience.service_type,
+    'تاريخ بداية العقد': new Date(window.currentExperience.start_date).toLocaleDateString('ar-SA'),
+    'تاريخ نهاية العقد': new Date(window.currentExperience.end_date).toLocaleDateString('ar-SA'),
+    'سبب ترك العمل': window.currentExperience.reason_for_leaving || '-',
+    'تاريخ الطلب': new Date(window.currentExperience.created_at).toLocaleDateString('ar-SA'),
+    'الحالة': window.currentExperience.status
+  };
+
+  const csvContent = Object.entries(exportData)
+    .map(([key, value]) => `"${key}","${value}"`)
+    .join('\n');
+
+  const finalContent = 'الحقل,القيمة\n' + csvContent;
+  downloadFile(finalContent, `experience_${window.currentExperience.id || window.currentExperience.reference_number}.csv`, 'text/csv');
+  showSuccess('تم تصدير البيانات بنجاح');
+}
+
+function exportPDF() {
+  // Simple PDF alternative - open print dialog
+  if (confirm('هل تريد طباعة الصفحة كـ PDF؟ (استخدم خيار "حفظ كـ PDF" في نافذة الطباعة)')) {
+    window.print();
+  }
+}
+
+// Debug function to test role-based access control
+function testRoleBasedAccess() {
+  console.log('=== Testing Role-Based Access Control ===');
+  console.log('Current user:', authUser);
+  console.log('Current user email:', authUser?.email);
+  console.log('User role:', authUser?.role);
+  console.log('Can access admin page:', canAccessAdminPage(authUser));
+  console.log('Is department admin:', isDepartmentAdmin(authUser?.email));
+  console.log('Department permissions:');
+  
+  Object.keys(window.DEPARTMENT_ADMINS).forEach(dept => {
+    const canManage = canUserManageDepartment(dept);
+    console.log(`- ${dept}: ${canManage ? '✅ Authorized' : '❌ Not authorized'}`);
+  });
+  
+  console.log('Department configuration:', window.DEPARTMENT_ADMINS);
+  console.log('========================================');
+}
+
+// Debug function to test department name matching
+function debugDepartmentNames() {
+  const {list, idx} = loadReq();
+  if (idx >= 0) {
+    const request = list[idx];
+    console.log('=== Department Names Debug ===');
+    console.log('Request departments:', request.departments);
+    if (request.departments) {
+      request.departments.forEach(dept => {
+        console.log(`Department ID: ${dept.id}, Name: "${dept.name}", Can manage: ${canUserManageDepartment(dept.name)}`);
+      });
+    }
+    console.log('==============================');
+  }
+}
+
+// Run tests on page load (can be removed in production)
+testRoleBasedAccess();
+setTimeout(debugDepartmentNames, 1000); // Run after departments are initialized
+
+// Commissioner detection - moved to external file in future
+</script>
+
+  <!-- JavaScript Files with proper loading order -->
+  <!-- Phase 1: Foundation scripts -->
+  <script src="/Frontend/jS/dependency-guard.js"></script>
+  <script src="/Frontend/jS/error-handler.js"></script>
+  <script src="/Frontend/jS/notification-store.js"></script>
+  <script src="/Frontend/jS/notification-utils.js"></script>
+
+  <!-- Phase 2: Core application scripts -->
+  <script src="/Frontend/jS/app-init.js"></script>
+  <script src="/Frontend/jS/api-client.js?v=10"></script>
+  <script src="/Frontend/jS/role-permissions.js"></script>
+  <script src="/Frontend/jS/form-validation-utils.js"></script>
+
+  <!-- Phase 3: Page-specific scripts -->
+  <script src="/Frontend/jS/workflow-manager.js"></script>
+  <!-- <script src="/Frontend/jS/pdf-generator.js"></script> --> <!-- Disabled due to CSP -->
+  <!-- Detail View Utilities - MUST be loaded first -->
+  <script src="/Frontend/jS/detail-view-utils.js?v=5"></script>
+  <script src="/Frontend/jS/admin-detail-comprehensive.js?v=5"></script>
+  <script src="/Frontend/jS/admin-experience-detail.js?v=5"></script>
+
+  <script>
+  // Wait for dependencies before initializing
+  window.waitForDependencies(() => {
+    console.log('✅ Admin experience detail: All dependencies loaded');
+  }, ['apiClient', 'NotificationStore', 'resolveFrontendPath']);
+  </script>
+<script src="/Frontend/jS/signature.js"></script>
+</body>
+</html>

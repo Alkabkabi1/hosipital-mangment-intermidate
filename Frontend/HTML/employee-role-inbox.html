@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وارد الأدوار - نظام إدارة المستشفى</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/styles.css">
+    <style>
+        :root {
+            --primary: #2B6CB0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f5f6f8;
+            --surface: #fff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e5e7eb;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Tajawal', system-ui, Arial, sans-serif;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .header-title h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .role-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .role-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .kpis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .kpi-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .kpi-label {
+            font-size: 0.875rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+        }
+        
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #f8f9fa;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background: #1e40af;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+        
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-approved {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--muted);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>👔 وارد الأدوار</h1>
+                <div class="role-badges" id="myRoleBadges"></div>
+            </div>
+            <div>
+                <button class="btn" onclick="location.href='employee-dashboard.html'">رجوع للوحة التحكم</button>
+                <button class="btn btn-primary" onclick="refreshData()">تحديث</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- KPIs -->
+        <div class="kpis">
+            <div class="kpi-card">
+                <div class="kpi-value" id="totalPending">0</div>
+                <div class="kpi-label">إجمالي قيد الانتظار</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="clearancePending">0</div>
+                <div class="kpi-label">إخلاء طرف</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="onboardingPending">0</div>
+                <div class="kpi-label">مباشرة عمل</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="delegationPending">0</div>
+                <div class="kpi-label">تفويض</div>
+            </div>
+        </div>
+
+        <!-- Pending Approvals Table -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">الطلبات قيد الانتظار</h2>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>النوع</th>
+                        <th>مقدم الطلب</th>
+                        <th>التاريخ</th>
+                        <th>التقدم</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="approvalsTable">
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <div>جاري تحميل الطلبات...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Approval Modal -->
+    <div id="approvalModal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalTitle">اعتماد الطلب</h3>
+            
+            <div class="form-group">
+                <label class="form-label">ملاحظة (اختياري)</label>
+                <textarea id="approvalNote" class="form-textarea" placeholder="أدخل أي ملاحظات..."></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn" onclick="closeModal()">إلغاء</button>
+                <button class="btn btn-success" onclick="confirmApproval()">✓ اعتماد</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rejection Modal -->
+    <div id="rejectionModal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">رفض الطلب</h3>
+            
+            <div class="form-group">
+                <label class="form-label">سبب الرفض (مطلوب)</label>
+                <textarea id="rejectionNote" class="form-textarea" placeholder="يجب إدخال سبب الرفض..." required></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn" onclick="closeModal()">إلغاء</button>
+                <button class="btn btn-danger" onclick="confirmRejection()">✗ رفض</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../jS/api-client.js"></script>
+    <script src="../jS/app-init.js"></script>
+    <script src="../jS/role-inbox.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

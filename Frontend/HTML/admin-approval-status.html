@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="../CSS/design-system.css">
+  <link rel="stylesheet" href="../CSS/base-updated.css">
+  <link rel="stylesheet" href="../CSS/components.css">
+  <link rel="stylesheet" href="../CSS/modern-enhancements.css">
+  <link rel="stylesheet" href="../CSS/visual-enhancements.css">
+  
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>حالة الموافقات - لوحة الإدارة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #2B6CB0;
+      --success: #059669;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+    }
+    
+    body {
+      margin: 0;
+      background: var(--bg);
+      font-family: 'Tajawal', sans-serif;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+    
+    .page-header {
+      background: linear-gradient(135deg, var(--primary), #3b82f6);
+      color: white;
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .page-header h1 {
+      margin: 0 0 8px 0;
+      font-size: 32px;
+      font-weight: 800;
+    }
+    
+    .page-header .subtitle {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    
+    .filters {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    
+    .filters select, .filters input {
+      padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    
+    .request-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: all 0.3s ease;
+    }
+    
+    .request-card:hover {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      transform: translateY(-2px);
+    }
+    
+    .request-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+    }
+    
+    .request-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    
+    .request-type {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    
+    .approval-progress {
+      margin: 20px 0;
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .progress-text {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), #10b981);
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(5, 150, 105, 0.4);
+    }
+    
+    .approvers-list {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    
+    .approver-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 2px solid;
+      transition: all 0.2s ease;
+    }
+    
+    .approver-badge:hover {
+      transform: scale(1.05);
+    }
+    
+    .approver-pending {
+      background: #fef3c7;
+      border-color: #fbbf24;
+      color: #92400e;
+    }
+    
+    .approver-approved {
+      background: #d1fae5;
+      border-color: #10b981;
+      color: #065f46;
+    }
+    
+    .approver-rejected {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #991b1b;
+    }
+    
+    .approver-you {
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      border-color: var(--primary);
+      color: #1e40af;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(43, 108, 176, 0.2);
+    }
+    
+    .approver-icon {
+      font-size: 16px;
+    }
+    
+    .request-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .info-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .info-value {
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 600;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #1e40af);
+      color: white;
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), #10b981);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+    
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 4px solid var(--primary);
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+      .approvers-list {
+        flex-direction: column;
+      }
+      
+      .request-info {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-header">
+      <h1>📊 حالة الموافقات</h1>
+      <div class="subtitle">لوحة عرض سير الموافقات لجميع الطلبات (للقراءة فقط)</div>
+      <div style="font-size: 13px; margin-top: 12px; opacity: 0.85; line-height: 1.6;">
+        🔒 <strong>صفحة محمية</strong> - متاحة فقط للمدراء (ADMIN/MANAGER) والمفوضين النشطين<br>
+        ⚠️ <strong>ملاحظة هامة</strong>: أدوار HR, FINANCE, IT هي أدوار قسم فقط - للوصول يجب إضافة دور ADMIN أو MANAGER<br>
+        🔧 <strong>إدارة الأدوار</strong>: استخدم صفحة إدارة الصلاحيات لإضافة/إزالة أدوار الموافقة<br>
+        ♻️ <strong>تنظيف تلقائي</strong>: إذا أزلت دور ADMIN/MANAGER من مستخدم، قم بتشغيل CLEANUP_INVALID_APPROVERS.sql<br>
+        📝 <strong>للموافقة</strong>: انتقل إلى صفحة تفاصيل الطلب
+      </div>
+      <div style="margin-top: 20px;">
+        <button class="btn btn-secondary" onclick="history.back()">← رجوع إلى لوحة التحكم</button>
+      </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="totalRequests">0</div>
+        <div class="stat-label">إجمالي الطلبات</div>
+      </div>
+      <div class="stat-card" style="border-left-color: var(--warning);">
+        <div class="stat-value" style="color: var(--warning);" id="pendingApprovals">0</div>
+        <div class="stat-label">قيد الموافقة</div>
+      </div>
+      <div class="stat-card" style="border-left-color: var(--success);">
+        <div class="stat-value" style="color: var(--success);" id="fullyApproved">0</div>
+        <div class="stat-label">تمت الموافقة الكاملة</div>
+      </div>
+      <div class="stat-card" style="border-left-color: #6366f1;">
+        <div class="stat-value" style="color: #6366f1;" id="yourPending">0</div>
+        <div class="stat-label">قيد انتظار موافقتك</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <select id="typeFilter" onchange="applyFilters()">
+        <option value="">جميع الأنواع</option>
+        <option value="clearance">إخلاء طرف</option>
+        <option value="onboarding">مباشرة عمل</option>
+        <option value="delegation">تفويض</option>
+        <option value="certificate">شهادة تعريف</option>
+        <option value="experience">شهادة خبرة</option>
+        <option value="leave">إجازة</option>
+        <option value="exit">إنهاء عمل</option>
+        <option value="assignment">قرار تكليف</option>
+        <option value="assignment_termination">إنهاء تكليف</option>
+        <option value="internal_transfer">نقل داخلي</option>
+        <option value="maternity_leave">إجازة أمومة</option>
+        <option value="housing_allowance">🏠 بدل سكن أطباء سعوديين</option>
+        <option value="travel_order">أمر سفر</option>
+        <option value="reward_refund">مكافأة نهاية الخدمة</option>
+        <option value="airlines_ticket">تذكرة طيران</option>
+      </select>
+      
+      <select id="statusFilter" onchange="applyFilters()">
+        <option value="">جميع الحالات</option>
+        <option value="yours">قيد انتظار موافقتك</option>
+        <option value="pending">لديه موافقات معلقة</option>
+        <option value="complete">اكتملت جميع الموافقات</option>
+      </select>
+      
+      <input type="search" id="searchInput" placeholder="بحث..." oninput="applyFilters()" style="flex: 1; min-width: 200px;">
+      
+      <button class="btn btn-primary" onclick="loadApprovalStatus()">🔄 تحديث</button>
+    </div>
+
+    <!-- Pending Requests Section -->
+    <div style="margin-bottom: 32px;">
+      <h2 style="font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+        ⏳ طلبات قيد الموافقة
+        <span id="pendingCount" style="font-size: 16px; color: var(--muted); font-weight: 600;"></span>
+      </h2>
+      <div id="pendingRequestsContainer">
+        <div class="empty-state">
+          <div class="empty-icon">⏳</div>
+          <p>جاري تحميل البيانات...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Requests Section -->
+    <div>
+      <h2 style="font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+        ✅ طلبات مكتملة (موافق عليها أو مرفوضة)
+        <span id="completedCount" style="font-size: 16px; color: var(--muted); font-weight: 600;"></span>
+      </h2>
+      <div id="completedRequestsContainer">
+        <div class="empty-state" style="padding: 40px 20px;">
+          <div class="empty-icon" style="font-size: 48px;">📋</div>
+          <p>لا توجد طلبات مكتملة</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 1: Core dependencies -->
+  <script src="../jS/dependency-guard.js"></script>
+  <script src="../jS/error-handler.js"></script>
+  <script src="../jS/notification-utils.js"></script>
+  
+  <!-- Phase 2: Core application scripts -->
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/role-permissions.js"></script>
+  <script src="../jS/detail-view-utils.js?v=5"></script>
+  <script src="../jS/request-status-checker.js"></script>
+  
+  <!-- Page-specific script -->
+  <script src="../jS/admin-approval-status.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مستشفى الملك عبدالعزيز – إنشاء حساب جديد</title>
+
+  <!-- خط Tajawal -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/base.css">
+
+  <style>
+    /* =================== متغيّرات ألوان وهوية =================== */
+    :root{
+      --primary:#2B6CB0;
+      --bg:#f5f6f8;
+      --surface:#ffffff;
+      --text:#0f172a;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+
+      /* ✅ حقول فاتحة + حدود سوداء */
+      --field-bg:#ffffff;      /* خلفية الحقل */
+      --field-text:#0f172a;    /* لون النص داخل الحقل */
+      --field-border:#000000;  /* حدود سوداء */
+      --field-placeholder:#6b7280;
+      --field-focus: rgba(0,0,0,.15); /* هالة خفيفة عند التركيز */
+
+      /* مربعات الأسئلة */
+      --qbox-radius:16px;
+      --qbox-border:#d1d5db;
+      --qbox-shadow:0 6px 18px rgba(0,0,0,.06);
+    }
+
+    /* أساسيات عامة */
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font-family:'Tajawal',system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+    }
+    a{color:inherit;text-decoration:underline}
+
+    /* تغليف وتوسيط البطاقة */
+    .wrapper{
+      min-height:100vh;display:flex;align-items:flex-start;justify-content:center;
+      padding:28px 16px;
+    }
+    .card{
+      width:100%;max-width:980px;background:var(--surface);
+      border:1px solid var(--border);border-radius:16px;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);
+      padding:20px 22px;
+    }
+
+    /* ترويسة المستشفى */
+    .brand{ text-align:center;margin-bottom:14px; }
+    .brand img{
+      width:72px;height:72px;object-fit:contain;
+      background:#f3f4f6;border-radius:12px;padding:10px;
+      box-shadow:0 4px 18px rgba(0,0,0,.06);
+    }
+    .brand h1{margin:10px 0 2px 0;font-size:26px;font-weight:800}
+    .brand .en{color:var(--muted);font-size:14px}
+    .hr{height:1px;background:#eef2f7;margin:16px 0}
+
+    /* عنوان النموذج */
+    .page-title{margin:10px 0 14px 0;font-size:20px;font-weight:800;color:var(--primary);text-align:center}
+
+    /* ========= مربعات الأقسام الكبيرة ========= */
+    .section-card{
+      background:#fff;border:1px solid var(--border);border-radius:16px;
+      padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:18px;
+    }
+    .section-header{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-bottom:1px solid #eef2f7;padding-bottom:10px;margin-bottom:12px;
+    }
+    .section-title{margin:0;font-weight:800;font-size:18px;color:var(--primary)}
+    .section-dot{width:10px;height:10px;background:var(--primary);border-radius:999px}
+
+    /* شبكة الحقول داخل القسم */
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;text-align:right}
+    .form-grid .full-row{grid-column:1 / -1}
+
+    /* ========= مربّع كبير لكل سؤال ========= */
+    .form-grid.boxed{gap:18px}
+    .form-grid.boxed .form-group{
+      border:2px solid var(--qbox-border);border-radius:var(--qbox-radius);
+      background:#fff;padding:14px 16px;box-shadow:var(--qbox-shadow);
+    }
+    .form-grid.boxed .form-group label{
+      display:block;font-weight:700;font-size:15px;margin-bottom:8px;color:#0f172a;
+    }
+
+    /* ========= ✅ الحقول: أبيض + حدود سوداء ========= */
+    .form-grid.boxed .input,
+    .form-grid.boxed .select,
+    .form-grid.boxed .textarea{
+      width:100%;
+      background:var(--field-bg);     /* أبيض */
+      color:var(--field-text);
+      border:1px solid var(--field-border); /* أسود */
+      border-radius:10px;
+      height:56px;padding:12px 14px;font-size:16px;outline:none;
+      transition:border-color .2s, box-shadow .2s;
+    }
+    .form-grid.boxed .textarea{height:auto;min-height:140px}
+    .form-grid.boxed .input::placeholder,
+    .form-grid.boxed .textarea::placeholder{color:var(--field-placeholder)}
+    .form-grid.boxed .input:focus,
+    .form-grid.boxed .select:focus,
+    .form-grid.boxed .textarea:focus{
+      border-color:#000;box-shadow:0 0 0 3px var(--field-focus);
+    }
+
+    /* صف راديو داخل صندوق */
+    .radio-row{display:flex;align-items:center;gap:16px}
+    .form-grid.boxed .radio-row{border:0;padding:0;height:auto}
+
+    /* أزرار أسفل الصفحة */
+    .actions{display:flex;gap:12px;justify-content:center;margin-top:10px}
+    .btn{
+      border:0;border-radius:10px;padding:12px 14px;font-weight:800;cursor:pointer;
+    }
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
+
+    /* تحسين اتجاه لبعض الحقول */
+    input[type="email"]{direction:ltr;text-align:left}
+    input[type="tel"], input[data-ltr]{direction:ltr;text-align:left}
+
+    /* كان مفعّل سابقًا لأجل الخلفية الداكنة؛ نلغيه الآن */
+    input[type="date"]::-webkit-calendar-picker-indicator{filter:none}
+
+    /* أوتوفيل كروم على الخلفية الفاتحة */
+    input:-webkit-autofill{
+      -webkit-text-fill-color:var(--field-text);
+      -webkit-box-shadow:0 0 0 1000px var(--field-bg) inset;
+      transition:background-color 9999s ease-in-out 0s;
+    }
+
+    /* موبايل */
+    @media (max-width:640px){
+      .form-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <!-- شعار + اسم المستشفى -->
+      <div class="brand">
+        <img src="public/image.png" alt="شعار مستشفى الملك عبدالعزيز">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <div class="en">King Abdulaziz Hospital</div>
+        <div class="en" style="font-size:13px;margin-top:2px;color:#94a3b8">تجمع مكة المكرمة الصحي</div>
+      </div>
+      <div class="hr"></div>
+
+      <div class="page-title">نموذج إصدار اسم مستخدم (ميديكا كلاود كير MEDICA CLOUDCARE)</div>
+
+      <!-- ============ القسم: نوع الطلب ============ -->
+      <section class="section-card">
+        <div class="section-header">
+          <h3 class="section-title">نوع الطلب</h3>
+          <span class="section-dot"></span>
+        </div>
+
+        <div class="form-grid boxed">
+          <div class="form-group full-row">
+            <label>اختر نوع الطلب</label>
+            <div class="radio-row">
+              <label><input type="radio" name="reqType" value="new" checked> جديد</label>
+              <label><input type="radio" name="reqType" value="replace"> بدل فاقد</label>
+              <label><input type="radio" name="reqType" value="update"> تحديث بيانات</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ القسم: المعلومات الشخصية ============ -->
+      <section class="section-card">
+        <div class="section-header">
+          <h3 class="section-title">المعلومات الشخصية</h3>
+          <span class="section-dot"></span>
+        </div>
+
+        <form id="signupForm">
+          <div class="form-grid boxed">
+            <div class="form-group">
+              <label>الاسم الأول *</label>
+              <input class="input" name="firstName" placeholder="الاسم الأول" required>
+            </div>
+            <div class="form-group">
+              <label>الاسم الثاني *</label>
+              <input class="input" name="secondName" placeholder="الاسم الثاني" required>
+            </div>
+            <div class="form-group">
+              <label>الاسم الثالث *</label>
+              <input class="input" name="thirdName" placeholder="الاسم الثالث" required>
+            </div>
+            <div class="form-group">
+              <label>نوع الهوية *</label>
+              <select class="select" name="identityType" required>
+                <option value="">اختر نوع الهوية</option>
+                <option value="saudi">سعودي</option>
+                <option value="resident">مقيم</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label id="idLabel">رقم الهوية *</label>
+              <input class="input" name="idNo" type="tel" inputmode="numeric" maxlength="10" placeholder="10 أرقام" required>
+            </div>
+
+            <div class="form-group">
+              <label>الجنسية *</label>
+              <input class="input" name="nationality" placeholder="مثال: سعودي" required>
+            </div>
+            <div class="form-group">
+              <label>الجنس *</label>
+              <div class="radio-row">
+                <label><input type="radio" name="gender" value="ذكر" checked> ذكر</label>
+                <label><input type="radio" name="gender" value="أنثى"> أنثى</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>مكان الميلاد *</label>
+              <select class="select" name="birthPlace" required>
+                <option value="">اختر مكان الميلاد</option>
+                <optgroup label="داخل المملكة العربية السعودية">
+                  <option value="الرياض">الرياض</option>
+                  <option value="مكة المكرمة">مكة المكرمة</option>
+                  <option value="المدينة المنورة">المدينة المنورة</option>
+                  <option value="الدمام">الدمام</option>
+                  <option value="الخبر">الخبر</option>
+                  <option value="الظهران">الظهران</option>
+                  <option value="القطيف">القطيف</option>
+                  <option value="الأحساء">الأحساء</option>
+                  <option value="بريدة">بريدة</option>
+                  <option value="عنيزة">عنيزة</option>
+                  <option value="الرس">الرس</option>
+                  <option value="تبوك">تبوك</option>
+                  <option value="حائل">حائل</option>
+                  <option value="الباحة">الباحة</option>
+                  <option value="أبها">أبها</option>
+                  <option value="خميس مشيط">خميس مشيط</option>
+                  <option value="نجران">نجران</option>
+                  <option value="جازان">جازان</option>
+                  <option value="الطائف">الطائف</option>
+                  <option value="جدة">جدة</option>
+                  <option value="ينبع">ينبع</option>
+                  <option value="أخرى داخل السعودية">أخرى داخل السعودية</option>
+                </optgroup>
+                <optgroup label="خارج المملكة العربية السعودية">
+                  <option value="مصر">مصر</option>
+                  <option value="الأردن">الأردن</option>
+                  <option value="سوريا">سوريا</option>
+                  <option value="لبنان">لبنان</option>
+                  <option value="فلسطين">فلسطين</option>
+                  <option value="العراق">العراق</option>
+                  <option value="الكويت">الكويت</option>
+                  <option value="قطر">قطر</option>
+                  <option value="البحرين">البحرين</option>
+                  <option value="الإمارات">الإمارات</option>
+                  <option value="عمان">عمان</option>
+                  <option value="اليمن">اليمن</option>
+                  <option value="السودان">السودان</option>
+                  <option value="المغرب">المغرب</option>
+                  <option value="تونس">تونس</option>
+                  <option value="الجزائر">الجزائر</option>
+                  <option value="ليبيا">ليبيا</option>
+                  <option value="باكستان">باكستان</option>
+                  <option value="الهند">الهند</option>
+                  <option value="بنغلاديش">بنغلاديش</option>
+                  <option value="الفلبين">الفلبين</option>
+                  <option value="إندونيسيا">إندونيسيا</option>
+                  <option value="تركيا">تركيا</option>
+                  <option value="إيران">إيران</option>
+                  <option value="أفغانستان">أفغانستان</option>
+                  <option value="أخرى خارج السعودية">أخرى خارج السعودية</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>تاريخ الميلاد *</label>
+              <input class="input" name="birthDate" type="date" required>
+            </div>
+          </div>
+
+          <!-- ============ القسم: بيانات التواصل ============ -->
+          <div class="section-card" style="margin-top:18px">
+            <div class="section-header">
+              <h3 class="section-title">بيانات التواصل</h3>
+              <span class="section-dot"></span>
+            </div>
+
+            <div class="form-grid boxed">
+              <div class="form-group">
+                <label>رقم الجوال *</label>
+                <input class="input" name="mobile" type="tel" inputmode="tel" placeholder="05xxxxxxxx" required>
+              </div>
+              <div class="form-group">
+                <label>البريد الإلكتروني الخاص *</label>
+                <input class="input" name="privateMail" type="email" placeholder="name@example.com" required>
+              </div>
+              <div class="form-group">
+                <label>بريد وزارة الصحة (MOH) *</label>
+                <input class="input" name="mohMail" type="email" placeholder="name@moh.gov.sa" required>
+              </div>
+              <div class="form-group">
+                <label>الرقم الوظيفي *</label>
+                <input class="input" name="jobNo" data-ltr placeholder="123456" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ القسم: الوظيفة والقسم ============ -->
+          <div class="section-card">
+            <div class="section-header">
+              <h3 class="section-title">الوظيفة والقسم</h3>
+              <span class="section-dot"></span>
+            </div>
+
+            <div class="form-grid boxed">
+              <div class="form-group">
+                <label>المسمى الوظيفي *</label>
+                <select class="select" name="jobTitle" required>
+                  <option value="">اختر المسمى الوظيفي</option>
+                  <optgroup label="الأطباء">
+                    <option value="طبيب استشاري">طبيب استشاري</option>
+                    <option value="طبيب أخصائي">طبيب أخصائي</option>
+                    <option value="طبيب مقيم">طبيب مقيم</option>
+                    <option value="طبيب عام">طبيب عام</option>
+                    <option value="طبيب متدرب">طبيب متدرب</option>
+                  </optgroup>
+                  <optgroup label="التمريض">
+                    <option value="ممرض أول">ممرض أول</option>
+                    <option value="ممرض أخصائي">ممرض أخصائي</option>
+                    <option value="ممرض عام">ممرض عام</option>
+                    <option value="ممرض متدرب">ممرض متدرب</option>
+                    <option value="ممرض مساعد">ممرض مساعد</option>
+                  </optgroup>
+                  <optgroup label="الفنيين">
+                    <option value="فني أشعة">فني أشعة</option>
+                    <option value="فني مختبر">فني مختبر</option>
+                    <option value="فني صيدلة">فني صيدلة</option>
+                    <option value="فني طوارئ">فني طوارئ</option>
+                    <option value="فني غسيل كلوي">فني غسيل كلوي</option>
+                    <option value="فني تخدير">فني تخدير</option>
+                    <option value="فني علاج طبيعي">فني علاج طبيعي</option>
+                    <option value="فني أسنان">فني أسنان</option>
+                  </optgroup>
+                  <optgroup label="الإدارة والخدمات">
+                    <option value="مدير إداري">مدير إداري</option>
+                    <option value="مدير مالي">مدير مالي</option>
+                    <option value="مدير موارد بشرية">مدير موارد بشرية</option>
+                    <option value="مدير تقنية معلومات">مدير تقنية معلومات</option>
+                    <option value="سكرتير طبي">سكرتير طبي</option>
+                    <option value="موظف استقبال">موظف استقبال</option>
+                    <option value="موظف محاسبة">موظف محاسبة</option>
+                    <option value="موظف موارد بشرية">موظف موارد بشرية</option>
+                    <option value="موظف تقنية معلومات">موظف تقنية معلومات</option>
+                  </optgroup>
+                  <optgroup label="التخصصات الطبية">
+                    <option value="أخصائي تغذية">أخصائي تغذية</option>
+                    <option value="أخصائي اجتماعي">أخصائي اجتماعي</option>
+                    <option value="أخصائي نفسي">أخصائي نفسي</option>
+                    <option value="أخصائي علاج طبيعي">أخصائي علاج طبيعي</option>
+                    <option value="أخصائي تخاطب">أخصائي تخاطب</option>
+                    <option value="أخصائي بصريات">أخصائي بصريات</option>
+                    <option value="أخصائي سمعيات">أخصائي سمعيات</option>
+                  </optgroup>
+                  <optgroup label="أخرى">
+                    <option value="باحث">باحث</option>
+                    <option value="مدرس">مدرس</option>
+                    <option value="مستشار">مستشار</option>
+                    <option value="أخرى">أخرى</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>القسم *</label>
+                <select class="select" name="department" required>
+                  <option value="">اختر القسم</option>
+                  <optgroup label="الأقسام الطبية">
+                    <option value="قسم الباطنة">قسم الباطنة</option>
+                    <option value="قسم الجراحة العامة">قسم الجراحة العامة</option>
+                    <option value="قسم القلب">قسم القلب</option>
+                    <option value="قسم الأعصاب">قسم الأعصاب</option>
+                    <option value="قسم العظام">قسم العظام</option>
+                    <option value="قسم النساء والولادة">قسم النساء والولادة</option>
+                    <option value="قسم الأطفال">قسم الأطفال</option>
+                    <option value="قسم العيون">قسم العيون</option>
+                    <option value="قسم الأنف والأذن والحنجرة">قسم الأنف والأذن والحنجرة</option>
+                    <option value="قسم الجلدية">قسم الجلدية</option>
+                    <option value="قسم المسالك البولية">قسم المسالك البولية</option>
+                    <option value="قسم الصدر">قسم الصدر</option>
+                    <option value="قسم الجهاز الهضمي">قسم الجهاز الهضمي</option>
+                    <option value="قسم الغدد الصماء">قسم الغدد الصماء</option>
+                    <option value="قسم الأورام">قسم الأورام</option>
+                    <option value="قسم الطب النفسي">قسم الطب النفسي</option>
+                  </optgroup>
+                  <optgroup label="أقسام الطوارئ والعناية">
+                    <option value="قسم الطوارئ">قسم الطوارئ</option>
+                    <option value="قسم العناية المركزة">قسم العناية المركزة</option>
+                    <option value="قسم العناية القلبية">قسم العناية القلبية</option>
+                    <option value="قسم العناية بالولادة">قسم العناية بالولادة</option>
+                    <option value="قسم العناية بالأطفال">قسم العناية بالأطفال</option>
+                  </optgroup>
+                  <optgroup label="أقسام التشخيص والعلاج">
+                    <option value="قسم الأشعة">قسم الأشعة</option>
+                    <option value="قسم المختبر">قسم المختبر</option>
+                    <option value="قسم الصيدلة">قسم الصيدلة</option>
+                    <option value="قسم العلاج الطبيعي">قسم العلاج الطبيعي</option>
+                    <option value="قسم التخدير">قسم التخدير</option>
+                    <option value="قسم التغذية">قسم التغذية</option>
+                    <option value="قسم العلاج الوظيفي">قسم العلاج الوظيفي</option>
+                    <option value="قسم العلاج النفسي">قسم العلاج النفسي</option>
+                  </optgroup>
+                  <optgroup label="أقسام التمريض">
+                    <option value="قسم التمريض العام">قسم التمريض العام</option>
+                    <option value="قسم تمريض الطوارئ">قسم تمريض الطوارئ</option>
+                    <option value="قسم تمريض العناية المركزة">قسم تمريض العناية المركزة</option>
+                    <option value="قسم تمريض العمليات">قسم تمريض العمليات</option>
+                    <option value="قسم تمريض الأطفال">قسم تمريض الأطفال</option>
+                    <option value="قسم تمريض النساء">قسم تمريض النساء</option>
+                  </optgroup>
+                  <optgroup label="الأقسام الإدارية">
+                    <option value="قسم الموارد البشرية">قسم الموارد البشرية</option>
+                    <option value="قسم المحاسبة">قسم المحاسبة</option>
+                    <option value="قسم تقنية المعلومات">قسم تقنية المعلومات</option>
+                    <option value="قسم المشتريات">قسم المشتريات</option>
+                    <option value="قسم المالية">قسم المالية</option>
+                    <option value="قسم الجودة">قسم الجودة</option>
+                    <option value="قسم التدريب">قسم التدريب</option>
+                    <option value="قسم العلاقات العامة">قسم العلاقات العامة</option>
+                    <option value="قسم الأمن والسلامة">قسم الأمن والسلامة</option>
+                    <option value="قسم الصيانة">قسم الصيانة</option>
+                  </optgroup>
+                  <optgroup label="أقسام أخرى">
+                    <option value="قسم البحث العلمي">قسم البحث العلمي</option>
+                    <option value="قسم التعليم الطبي">قسم التعليم الطبي</option>
+                    <option value="قسم إدارة المخاطر">قسم إدارة المخاطر</option>
+                    <option value="قسم إدارة الجودة">قسم إدارة الجودة</option>
+                    <option value="أخرى">أخرى</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>نوع الوظيفة *</label>
+                <select class="select" name="workType" required>
+                  <option value="">اختر نوع الوظيفة</option>
+                  <option value="PERMANENT">دائم (Permanent)</option>
+                  <option value="TEMP">مؤقت (Temp)</option>
+                  <option value="PART_TIME">جزئي (Part Time)</option>
+                  <option value="TRAINEE">متدرب (Trainee)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>جهة التوظيف *</label>
+                <select class="select" name="employer" required>
+                  <option value="">اختر جهة التوظيف</option>
+                  <option value="CIVIL_SERVICE">خدمة مدنية</option>
+                  <option value="TRAINING_COMPANY">شركة تدريب</option>
+                  <option value="SELF_EMPLOYMENT">تشغيل ذاتي</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ القسم: بيانات الهيئة الصحية ============ -->
+          <div class="section-card">
+            <div class="section-header">
+              <h3 class="section-title">بيانات الهيئة الصحية</h3>
+              <span class="section-dot"></span>
+            </div>
+
+            <div class="form-grid boxed">
+              <div class="form-group">
+                <label>رقم الهيئة السعودية (SCHS NO) *</label>
+                <input class="input" name="schsNo" data-ltr required>
+              </div>
+              <div class="form-group">
+                <label>تاريخ انتهاء التسجيل *</label>
+                <input class="input" name="schsEndDate" type="date" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ القسم: مهمة العمل ============ -->
+          <div class="section-card">
+            <div class="section-header">
+              <h3 class="section-title">مهمة العمل</h3>
+              <span class="section-dot"></span>
+            </div>
+
+            <div class="form-grid boxed">
+              <div class="form-group full-row">
+                <label>وصف المهام *</label>
+                <textarea class="textarea" name="taskWork" placeholder="اكتب وصفًا موجزًا لمهام عملك" required></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ القسم: التعهّد ============ -->
+          <div class="section-card">
+            <div class="section-header">
+              <h3 class="section-title">التعهّد</h3>
+              <span class="section-dot"></span>
+            </div>
+
+            <div class="form-grid boxed">
+              <!-- ✅ عدّلت مربّع النص ليكون أبيض وحدوده سوداء -->
+              <div class="form-group full-row">
+                <label>النص</label>
+                <div class="textarea" style="background:#ffffff;color:#0f172a;border:1px solid #000;min-height:110px">
+                  <small>
+                    أتعهد أن جميع البيانات الموضحة أعلاه صحيحة، وأتعهد بالمحافظة على سرية المعلومات
+                    وحسن استخدام أجهزة الحاسب. لإدارة المستشفى الحق في اتخاذ ما تراه مناسبًا حسب
+                    الأنظمة والتعليمات في حال المخالفة. كما أتعهد بإبلاغ إدارة تقنية المعلومات لإيقاف
+                    الصلاحية عند عدم الحاجة لها أو عند النقل لجهة عمل أخرى.
+                  </small>
+                </div>
+                <label style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+                  <input type="checkbox" id="agree" required>
+                  <span>أوافق على التعهد المذكور</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- أزرار الإجراء -->
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='login.html'">رجوع لتسجيل الدخول</button>
+            <button type="submit" class="btn btn-primary">إرسال الطلب</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // تحديث placeholder ولابل رقم الهوية حسب نوع الهوية المختار
+    document.addEventListener('DOMContentLoaded', function() {
+      const identityTypeSelect = document.querySelector('select[name="identityType"]');
+      const idNoInput = document.querySelector('input[name="idNo"]');
+      const idLabel = document.getElementById('idLabel');
+      
+      identityTypeSelect.addEventListener('change', function() {
+        if (this.value === 'saudi') {
+          idLabel.textContent = 'رقم الهوية الوطنية *';
+          idNoInput.placeholder = '10 أرقام (هوية وطنية)';
+          idNoInput.maxLength = 10;
+        } else if (this.value === 'resident') {
+          idLabel.textContent = 'رقم الإقامة *';
+          idNoInput.placeholder = '10 أرقام (إقامة)';
+          idNoInput.maxLength = 10;
+        } else {
+          idLabel.textContent = 'رقم الهوية *';
+          idNoInput.placeholder = '10 أرقام';
+          idNoInput.maxLength = 10;
+        }
+      });
+
+      // التحقق من صحة رقم الهوية (10 أرقام فقط)
+      idNoInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '').substring(0, 10);
+      });
+    });
+
+    // تجميع البيانات وحفظها مؤقتًا؛ لاحقًا تربط بالباك-إند/الداتابيس
+    document.getElementById('signupForm').addEventListener('submit', function(e){
+      e.preventDefault();
+
+      const agree = document.getElementById('agree');
+      if(!agree.checked){
+        alert('يجب الموافقة على التعهد قبل الإرسال.');
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(this).entries());
+      
+      // التحقق من نوع الهوية ورقم الهوية
+      if (!data.identityType) {
+        alert('يجب اختيار نوع الهوية.');
+        return;
+      }
+      
+      if (!data.idNo || data.idNo.length !== 10) {
+        alert('رقم الهوية يجب أن يكون 10 أرقام.');
+        return;
+      }
+
+      // التحقق من أن رقم الهوية يحتوي على أرقام فقط
+      if (!/^\d{10}$/.test(data.idNo)) {
+        alert('رقم الهوية يجب أن يحتوي على 10 أرقام فقط.');
+        return;
+      }
+      
+      // دمج الأسماء الثلاثة في اسم كامل
+      const fullName = `${data.firstName} ${data.secondName} ${data.thirdName}`.trim();
+      data.fullName = fullName;
+      
+      const requests = JSON.parse(localStorage.getItem('signupRequests') || '[]');
+      requests.push({ ...data, submittedAt: new Date().toISOString() });
+      localStorage.setItem('signupRequests', JSON.stringify(requests));
+
+      alert('تم إرسال طلب إنشاء الحساب بنجاح. سيتم مراجعته من قبل تقنية المعلومات.');
+      window.location.href = 'login.html';
+    });
+  </script>
+  <!-- JavaScript Files -->
+  <script src="../jS/form-validation-utils.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/signup.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

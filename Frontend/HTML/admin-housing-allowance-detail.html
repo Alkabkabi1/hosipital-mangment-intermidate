@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>تفاصيل طلب بدل السكن – أدمن</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/workflow-styles.css">
+  <link rel="stylesheet" href="../CSS/professional-design.css">
+<style>
+:root{ --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb; --danger:#dc2626; --success:#16a34a; --warning:#f59e0b; }
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+a{color:inherit;text-decoration:none}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt span{font-size:12px;color:var(--muted)}
+.container{max-width:1100px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:16px}
+.hdr{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-pend{background:#fef3c7} .b-done{background:#dcfce7} .b-rej{background:#fee2e2}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.kv div{border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.timeline{display:flex;flex-direction:column;gap:8px}
+.step{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.order{font-weight:800;text-align:center}
+.state{font-size:12px;padding:4px 10px;border-radius:999px}
+.s-wait{background:#e5e7eb} .s-now{background:#dbeafe} .s-acc{background:#dcfce7} .s-rej{background:#fee2e2}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border-color:transparent}
+.btn-danger{background:#fff;color:var(--danger);border-color:#fecaca}
+.btn-ghost{background:#fff;color:var(--text)}
+.note{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>تفاصيل طلب بدل السكن – أدمن</span>
+      </div>
+    </div>
+    <button class="btn" id="btnBack">🏠 رجوع للوحة التحكم</button>
+  </div>
+</header>
+
+<main class="container">
+  <!-- Basic Information Card -->
+  <div class="card">
+    <div class="hdr">
+      <h2 style="margin:0">طلب #<span id="rid">-</span></h2>
+      <span id="rstatus" class="badge b-pend">قيد الاعتماد</span>
+    </div>
+    <div class="kv">
+      <div>الموظف: <b id="rname">-</b></div>
+      <div>القسم: <b id="rdept">-</b></div>
+      <div>الوظيفة: <b id="rjob">-</b></div>
+      <div>رقم الموظف: <b id="rempnum">-</b></div>
+      <div>الجنسية: <b id="rnationality">-</b></div>
+      <div>تاريخ الطلب: <b id="rletterdate">-</b></div>
+      <div>من تاريخ: <b id="rperiodstart">-</b></div>
+      <div>إلى تاريخ: <b id="rperiodend">-</b></div>
+    </div>
+    <div style="margin-top:12px" id="rnotes-container">
+      <div style="border:1px solid var(--border);border-radius:12px;padding:10px;background:#f9fafb">
+        <strong>ملاحظات الموظف:</strong> <span id="rempnotes">لا توجد ملاحظات</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Additional Housing Details -->
+  <div class="card">
+    <div class="hdr">
+      <h3 style="margin:0">🏠 تفاصيل بدل السكن</h3>
+    </div>
+    <div class="kv">
+      <div>الحالة الاجتماعية: <b id="rsocialstatus">-</b></div>
+      <div>سبب الصرف: <b id="rallowancereason">-</b></div>
+      <div>مدير الإسكان: <b id="rhousingdir">-</b></div>
+      <div>محاسب اللجنة: <b id="rfinancename">-</b></div>
+      <div>مدير الموارد البشرية: <b id="rhrdir">-</b></div>
+      <div>التاريخ الهجري: <b id="rhijridate">-</b></div>
+    </div>
+    <div style="margin-top:12px;display:grid;gap:10px">
+      <div style="border:1px solid var(--border);border-radius:12px;padding:10px;background:#f9fafb">
+        <strong>ملاحظة إدارة الإسكان:</strong> <span id="rhousingmanagernote">لا توجد ملاحظات</span>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:12px;padding:10px;background:#f9fafb">
+        <strong>ملاحظة المحاسب:</strong> <span id="rfinancenote">لا توجد ملاحظات</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approval Chain -->
+  <div class="card">
+    <div class="hdr">
+      <h3 style="margin:0">⏱️ سلسلة المعتمدين</h3>
+      <button class="btn btn-ghost" id="btnRefreshApprovals">🔄 تحديث</button>
+    </div>
+    <div class="timeline" id="timeline">
+      <div style="text-align:center;color:var(--muted);padding:20px">جاري تحميل سلسلة الموافقات...</div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="card">
+    <div class="hdr"><h3 style="margin:0">🎯 الإجراءات</h3></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="btnApproveReq">✅ موافقة</button>
+      <button class="btn btn-danger" id="btnRejectReq">❌ رفض</button>
+      <button class="btn" id="printBtn">🖨️ طباعة</button>
+      <button class="btn" id="exportBtn">📥 تصدير CSV</button>
+    </div>
+    <div class="note" id="actionNote">
+      يمكن الموافقة على الطلب أو رفضه من خلال الأزرار أعلاه.
+    </div>
+  </div>
+</main>
+
+<!-- Load shared libraries first -->
+<script src="../jS/form-validation-utils.js"></script>
+<script src="../jS/api-client.js"></script>
+<script src="../jS/role-permissions.js"></script>
+<script src="../jS/app-init.js"></script>
+<script src="../jS/enhanced-error-handler.js"></script>
+
+<!-- Page-specific script -->
+<script src="admin-housing-allowance-detail.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

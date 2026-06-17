@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>🏥</text></svg>">
+    <title>طلب شهادة خبرة – مستشفى الملك عبدالعزيز</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/base.css">
+    <link rel="stylesheet" href="../CSS/styles.css"/>
+
+    <style>
+        :root{
+            --primary:#2B6CB0; --primary-600:#255b92;
+            --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b;
+            --border:#e5e7eb; --ok:#16a34a; --danger:#dc2626; --chip:#eef2ff;
+            --warn:#f59e0b; --good:#16a34a; --bad:#ef4444;
+            --shadow:0 8px 24px rgba(2,6,23,.06), 0 1px 1px rgba(2,6,23,.04);
+            --radius:18px;
+        }
+        *{box-sizing:border-box}
+        body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,Segoe UI,Arial}
+        a{color:inherit;text-decoration:none}
+
+        /* هيدر */
+        .header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+        .header .in{max-width:1200px;margin:auto;display:flex;align-items:center;gap:16px;padding:10px 16px}
+        .brand{display:flex;align-items:center;gap:10px}
+        .brand img{width:44px;height:44px;object-fit:contain}
+        .brand .title{font-weight:800;line-height:1}
+        .brand small{color:var(--muted);display:block;margin-top:2px}
+        .nav-quick{margin-right:auto;display:flex;gap:8px}
+        .quick{padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:#fff}
+        .bell{position:relative;padding:8px;border:1px solid var(--border);border-radius:12px;background:#fff}
+        .badge{position:absolute;top:-6px;left:-6px;background:#ef4444;color:#fff;border-radius:999px;padding:2px 6px;font-size:11px}
+        .avatar{width:38px;height:38px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:800}
+
+        /* الحاوية */
+        .container{max-width:1200px;margin:18px auto;padding:0 16px}
+
+        /* النموذج */
+        .form-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .col-6 {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-600);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div>
+        <div class="title">مستشفى الملك عبدالعزيز</div>
+        <small>طلب شهادة خبرة</small>
+      </div>
+    </div>
+    <div class="nav-quick">
+      <a class="quick" href="employee-dashboard.html">🏠 الرئيسية</a>
+    </div>
+    <div class="bell" title="التنبيهات">🔔</div>
+    <div class="avatar" title="الملف الشخصي">S</div>
+  </div>
+</header>
+
+<main class="container">
+    <div class="form-container">
+        <h2>طلب شهادة خبرة</h2>
+        <p>املأ البيانات التالية لتقديم طلب شهادة خبرة</p>
+        
+        <form id="certificateForm">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="employeeName">اسم الموظف *</label>
+                        <input type="text" class="form-control" id="employeeName" required>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="employeeId">رقم الموظف *</label>
+                        <input type="text" class="form-control" id="employeeId" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="employeePosition">الوظيفة *</label>
+                        <input type="text" class="form-control" id="employeePosition" required>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="employeeDepartment">القسم *</label>
+                        <select class="form-control" id="employeeDepartment" required>
+                            <option value="">اختر القسم</option>
+                            <option value="التمريض">التمريض</option>
+                            <option value="الطب">الطب</option>
+                            <option value="الصيدلة">الصيدلة</option>
+                            <option value="المختبرات">المختبرات</option>
+                            <option value="الأشعة">الأشعة</option>
+                            <option value="الطوارئ">الطوارئ</option>
+                            <option value="العناية المركزة">العناية المركزة</option>
+                            <option value="الجراحة">الجراحة</option>
+                            <option value="النساء والولادة">النساء والولادة</option>
+                            <option value="الأطفال">الأطفال</option>
+                            <option value="الطب النفسي">الطب النفسي</option>
+                            <option value="العلاج الطبيعي">العلاج الطبيعي</option>
+                            <option value="التغذية">التغذية</option>
+                            <option value="الإدارة">الإدارة</option>
+                            <option value="المالية">المالية</option>
+                            <option value="الموارد البشرية">الموارد البشرية</option>
+                            <option value="تقنية المعلومات">تقنية المعلومات</option>
+                            <option value="الأمن والسلامة">الأمن والسلامة</option>
+                            <option value="الصيانة">الصيانة</option>
+                            <option value="النظافة">النظافة</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="employeeNationality">الجنسية *</label>
+                        <select class="form-control" id="employeeNationality" required>
+                            <option value="">اختر الجنسية</option>
+                            <option value="سعودي">سعودي</option>
+                            <option value="مصري">مصري</option>
+                            <option value="سوري">سوري</option>
+                            <option value="لبناني">لبناني</option>
+                            <option value="أردني">أردني</option>
+                            <option value="فلسطيني">فلسطيني</option>
+                            <option value="يمني">يمني</option>
+                            <option value="سوداني">سوداني</option>
+                            <option value="باكستاني">باكستاني</option>
+                            <option value="هندي">هندي</option>
+                            <option value="فلبيني">فلبيني</option>
+                            <option value="أخرى">أخرى</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="serviceType">نوع الخدمة *</label>
+                        <select class="form-control" id="serviceType" required>
+                            <option value="">اختر نوع الخدمة</option>
+                            <option value="خدمة مدنية">خدمة مدنية</option>
+                            <option value="تشغيل ذاتي">تشغيل ذاتي</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="startDate">تاريخ بداية العقد *</label>
+                        <input type="date" class="form-control" id="startDate" required>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="endDate">تاريخ نهاية العقد *</label>
+                        <input type="date" class="form-control" id="endDate" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="reasonForLeaving">سبب ترك العمل</label>
+                <input type="text" class="form-control" id="reasonForLeaving">
+            </div>
+
+            <div class="form-group" style="text-align: center; margin-top: 30px;">
+                <button type="submit" class="btn btn-primary">تقديم الطلب</button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">مسح البيانات</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script src="../jS/api-client.js"></script>
+<script>
+// Check authentication
+const authUser = JSON.parse(localStorage.getItem('authUser') || 'null');
+if (!authUser) {
+    location.href = 'login.html';
+}
+
+// Form Pictures handler
+document.getElementById('certificateForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+
+    try {
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'جاري الإرسال... ⏳';
+
+        // Get form data
+        const formData = {
+            employeeName: document.getElementById('employeeName').value.trim(),
+            employeeNumber: document.getElementById('employeeId').value.trim() || null,
+            position: document.getElementById('employeePosition').value.trim(),
+            department: document.getElementById('employeeDepartment').value.trim(),
+            nationality: document.getElementById('employeeNationality').value.trim(),
+            serviceType: document.getElementById('serviceType').value.trim(),
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value,
+            reasonForLeaving: document.getElementById('reasonForLeaving').value.trim() || null,
+        };
+
+        // Validate required fields
+        if (!formData.employeeName || !formData.position || !formData.department || 
+            !formData.nationality || !formData.serviceType || !formData.startDate || !formData.endDate) {
+            throw new Error('يرجى ملء جميع الحقول المطلوبة');
+        }
+
+        console.log('Submitting experience certificate request:', formData);
+
+        // Submit to API
+        const response = await window.apiClient.makeRequest('/experience-certificate', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+        });
+
+        console.log('Experience certificate response:', response);
+
+        if (response && response.success !== false) {
+            showAlert('success', response.message || 'تم إرسال طلب شهادة الخبرة بنجاح! ✅');
+            
+            // Reset form
+            document.getElementById('certificateForm').reset();
+
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'employee-dashboard.html';
+            }, 2000);
+        } else {
+            throw new Error(response.error || response.message || 'فشل إرسال الطلب');
+        }
+
+    } catch (error) {
+        console.error('Error submitting experience certificate request:', error);
+        showAlert('error', error.message || 'حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
+    } finally {
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+});
+
+// Show alert message
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        z-index: 1000;
+        max-width: 400px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    alertDiv.style.background = type === 'success' ? '#16a34a' : '#dc2626';
+    alertDiv.textContent = message;
+    
+    // Add animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(alertDiv);
+
+    setTimeout(() => {
+        alertDiv.remove();
+    }, type === 'success' ? 5000 : 10000);
+}
+
+// Clear form function
+function clearForm() {
+    document.getElementById('certificateForm').reset();
+}
+</script>
+</body>
+</html>
+
+

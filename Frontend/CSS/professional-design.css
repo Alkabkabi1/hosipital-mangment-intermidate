@@ -1,0 +1,808 @@
+/**
+ * Professional Design System
+ * Corporate, sharp, professional look
+ * Less rounded, more angular design
+ */
+
+/* ==========================================
+   PROFESSIONAL COLOR PALETTE
+   ========================================== */
+
+:root {
+  /* Professional Blues */
+  --prof-primary: #2B6CB0;
+  --prof-primary-dark: #1e3a8a;
+  --prof-secondary: #475569;
+  --prof-accent: #0891b2;
+  
+  /* Professional Grays */
+  --prof-gray-50: #f8fafc;
+  --prof-gray-100: #f1f5f9;
+  --prof-gray-200: #e2e8f0;
+  --prof-gray-300: #cbd5e1;
+  --prof-gray-700: #334155;
+  --prof-gray-900: #0f172a;
+  
+  /* Status Colors (Professional) */
+  --prof-success: #047857;
+  --prof-warning: #d97706;
+  --prof-danger: #b91c1c;
+  --prof-info: #0369a1;
+  
+  /* Professional Shadows (Subtle) */
+  --prof-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --prof-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  --prof-shadow-md: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  --prof-shadow-lg: 0 8px 16px 0 rgba(0, 0, 0, 0.12);
+  
+  /* Border Radius (Less Rounded) */
+  --prof-radius-sm: 4px;
+  --prof-radius: 8px;
+  --prof-radius-md: 10px;
+  --prof-radius-lg: 12px;
+}
+
+/* ==========================================
+   PROFESSIONAL CARDS (Less Rounded)
+   ========================================== */
+
+.card-professional {
+  background: white;
+  border-radius: var(--prof-radius-lg);
+  padding: 24px;
+  box-shadow: var(--prof-shadow);
+  border: 1px solid var(--prof-gray-200);
+  transition: all 0.2s ease;
+}
+
+.card-professional:hover {
+  box-shadow: var(--prof-shadow-md);
+  border-color: var(--prof-primary);
+  transform: translateY(-2px);
+}
+
+/* Professional header with left accent */
+.card-professional-header {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--prof-gray-900);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  padding-left: 16px;
+  border-left: 4px solid var(--prof-primary);
+  background: linear-gradient(90deg, rgba(43, 108, 176, 0.05), transparent);
+}
+
+/* ==========================================
+   SHARP BUTTONS (Angular, Professional)
+   ========================================== */
+
+.btn-professional {
+  padding: 12px 24px;
+  border-radius: var(--prof-radius);
+  font-weight: 600;
+  font-size: 14px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.btn-professional-primary {
+  background: var(--prof-primary);
+  color: white;
+  border-color: var(--prof-primary);
+}
+
+.btn-professional-primary:hover {
+  background: var(--prof-primary-dark);
+  border-color: var(--prof-primary-dark);
+  box-shadow: 0 2px 8px rgba(43, 108, 176, 0.3);
+}
+
+.btn-professional-secondary {
+  background: white;
+  color: var(--prof-gray-700);
+  border-color: var(--prof-gray-300);
+}
+
+.btn-professional-secondary:hover {
+  background: var(--prof-gray-50);
+  border-color: var(--prof-gray-400);
+}
+
+.btn-professional-success {
+  background: var(--prof-success);
+  color: white;
+  border-color: var(--prof-success);
+}
+
+.btn-professional-danger {
+  background: var(--prof-danger);
+  color: white;
+  border-color: var(--prof-danger);
+}
+
+/* ==========================================
+   KPI CARDS (Professional, Rectangular)
+   ========================================== */
+
+.kpi-professional {
+  background: white;
+  border-radius: var(--prof-radius-lg);
+  padding: 20px;
+  box-shadow: var(--prof-shadow);
+  border-left: 4px solid var(--prof-primary);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.kpi-professional:hover {
+  box-shadow: var(--prof-shadow-md);
+  transform: translateX(4px);
+}
+
+.kpi-professional-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--prof-radius);
+  background: rgba(43, 108, 176, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--prof-primary);
+  flex-shrink: 0;
+}
+
+.kpi-professional-content {
+  flex: 1;
+}
+
+.kpi-professional-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--prof-primary);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.kpi-professional-label {
+  font-size: 13px;
+  color: var(--prof-gray-700);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================
+   STATUS BADGES (Rectangular with Icons)
+   ========================================== */
+
+.badge-professional {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--prof-radius-sm);
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid;
+}
+
+.badge-professional-pending {
+  background: #fffbeb;
+  color: var(--prof-warning);
+  border-color: #fcd34d;
+}
+
+.badge-professional-approved {
+  background: #ecfdf5;
+  color: var(--prof-success);
+  border-color: #34d399;
+}
+
+.badge-professional-rejected {
+  background: #fef2f2;
+  color: var(--prof-danger);
+  border-color: #f87171;
+}
+
+/* ==========================================
+   PROFESSIONAL TABLE
+   ========================================== */
+
+.table-professional {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border: 1px solid var(--prof-gray-200);
+  border-radius: var(--prof-radius-lg);
+  overflow: hidden;
+}
+
+.table-professional thead {
+  background: var(--prof-gray-50);
+  border-bottom: 2px solid var(--prof-gray-300);
+}
+
+.table-professional th {
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--prof-gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: right;
+}
+
+.table-professional td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--prof-gray-100);
+  color: var(--prof-gray-900);
+  font-size: 14px;
+}
+
+.table-professional tbody tr {
+  transition: background 0.15s ease;
+}
+
+.table-professional tbody tr:hover {
+  background: var(--prof-gray-50);
+}
+
+.table-professional tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================
+   PAGE HEADER (Professional, Clean)
+   ========================================== */
+
+.header-professional {
+  background: linear-gradient(to bottom, var(--prof-primary), var(--prof-primary-dark));
+  color: white;
+  border-radius: var(--prof-radius-lg);
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: var(--prof-shadow-lg);
+  border-bottom: 4px solid var(--prof-accent);
+}
+
+.header-professional h1 {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header-professional .subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* ==========================================
+   INFO ITEMS (Box Style)
+   ========================================== */
+
+.info-box-professional {
+  background: var(--prof-gray-50);
+  border: 1px solid var(--prof-gray-200);
+  border-radius: var(--prof-radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.info-box-professional:hover {
+  background: white;
+  border-color: var(--prof-primary);
+  box-shadow: var(--prof-shadow-sm);
+}
+
+.info-box-professional-label {
+  font-size: 11px;
+  color: var(--prof-gray-700);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-box-professional-value {
+  font-size: 15px;
+  color: var(--prof-gray-900);
+  font-weight: 600;
+}
+
+/* ==========================================
+   TIMELINE (Clean, Professional)
+   ========================================== */
+
+.timeline-professional {
+  position: relative;
+  padding-right: 40px;
+}
+
+.timeline-professional::before {
+  content: '';
+  position: absolute;
+  right: 16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--prof-gray-300);
+}
+
+.timeline-item-professional {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: white;
+  border: 1px solid var(--prof-gray-200);
+  border-radius: var(--prof-radius);
+  border-right: 3px solid var(--prof-primary);
+}
+
+.timeline-item-professional::before {
+  content: '';
+  position: absolute;
+  right: -32px;
+  top: 24px;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--prof-primary);
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px var(--prof-gray-300);
+}
+
+.timeline-item-professional:hover {
+  border-right-width: 4px;
+  box-shadow: var(--prof-shadow-sm);
+}
+
+/* ==========================================
+   NAVIGATION BAR (Clean, Horizontal)
+   ========================================== */
+
+.nav-professional {
+  background: white;
+  border: 1px solid var(--prof-gray-200);
+  border-radius: var(--prof-radius-lg);
+  padding: 8px;
+  display: flex;
+  gap: 4px;
+  box-shadow: var(--prof-shadow-sm);
+}
+
+.nav-item-professional {
+  padding: 10px 20px;
+  border-radius: var(--prof-radius);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--prof-gray-700);
+}
+
+.nav-item-professional:hover {
+  background: var(--prof-gray-100);
+  color: var(--prof-primary);
+}
+
+.nav-item-professional-active {
+  background: var(--prof-primary);
+  color: white;
+  border-color: var(--prof-primary);
+}
+
+/* ==========================================
+   REQUEST CARDS (Box Style, Less Rounded)
+   ========================================== */
+
+.request-card-box {
+  background: white;
+  border: 2px solid var(--prof-gray-200);
+  border-radius: var(--prof-radius-lg);
+  padding: 20px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.request-card-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--prof-primary);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.request-card-box:hover {
+  border-color: var(--prof-primary);
+  box-shadow: var(--prof-shadow-md);
+  transform: translateY(-2px);
+}
+
+.request-card-box:hover::before {
+  opacity: 1;
+}
+
+/* Request type badge (rectangular) */
+.request-type-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(43, 108, 176, 0.1);
+  border: 1px solid rgba(43, 108, 176, 0.2);
+  border-radius: var(--prof-radius-sm);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--prof-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================
+   DASHBOARD LAYOUT (Professional Grid)
+   ========================================== */
+
+.dashboard-layout-professional {
+  display: grid;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .dashboard-layout-professional {
+    grid-template-columns: 300px 1fr;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard-layout-professional {
+    grid-template-columns: 320px 1fr 280px;
+  }
+}
+
+.dashboard-sidebar-professional {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-main-professional {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ==========================================
+   SECTION HEADERS (Clean, Professional)
+   ========================================== */
+
+.section-header-professional {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--prof-gray-200);
+}
+
+.section-title-professional {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--prof-gray-900);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title-professional::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: var(--prof-primary);
+  border-radius: 2px;
+}
+
+/* ==========================================
+   FORMS (Professional, Clean)
+   ========================================== */
+
+.form-field-professional {
+  margin-bottom: 20px;
+}
+
+.form-label-professional {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--prof-gray-900);
+  margin-bottom: 8px;
+}
+
+.form-input-professional {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--prof-gray-300);
+  border-radius: var(--prof-radius);
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--prof-gray-900);
+  transition: all 0.15s ease;
+  background: white;
+}
+
+.form-input-professional:focus {
+  outline: none;
+  border-color: var(--prof-primary);
+  box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1);
+  background: white;
+}
+
+.form-input-professional::placeholder {
+  color: var(--prof-gray-400);
+}
+
+/* ==========================================
+   PROGRESS BARS (Clean, Linear)
+   ========================================== */
+
+.progress-professional {
+  width: 100%;
+  height: 8px;
+  background: var(--prof-gray-200);
+  border-radius: var(--prof-radius-sm);
+  overflow: hidden;
+}
+
+.progress-fill-professional {
+  height: 100%;
+  background: var(--prof-primary);
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.progress-fill-professional::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: progressSlide 1.5s infinite;
+}
+
+@keyframes progressSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ==========================================
+   DATA GRID (Clean Layout)
+   ========================================== */
+
+.data-grid-professional {
+  display: grid;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .data-grid-professional {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .data-grid-professional {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ==========================================
+   ALERT BOXES (Professional)
+   ========================================== */
+
+.alert-professional {
+  padding: 16px 20px;
+  border-radius: var(--prof-radius);
+  border-left: 4px solid;
+  background: white;
+  box-shadow: var(--prof-shadow-sm);
+  display: flex;
+  align-items: start;
+  gap: 12px;
+}
+
+.alert-professional-info {
+  border-left-color: var(--prof-info);
+  background: rgba(3, 105, 161, 0.05);
+}
+
+.alert-professional-success {
+  border-left-color: var(--prof-success);
+  background: rgba(4, 120, 87, 0.05);
+}
+
+.alert-professional-warning {
+  border-left-color: var(--prof-warning);
+  background: rgba(217, 119, 6, 0.05);
+}
+
+.alert-professional-danger {
+  border-left-color: var(--prof-danger);
+  background: rgba(185, 28, 28, 0.05);
+}
+
+/* ==========================================
+   TABS (Professional, Angular)
+   ========================================== */
+
+.tabs-professional {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--prof-gray-200);
+  margin-bottom: 24px;
+}
+
+.tab-professional {
+  padding: 14px 24px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--prof-gray-700);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.15s ease;
+  position: relative;
+  top: 2px;
+}
+
+.tab-professional:hover {
+  color: var(--prof-primary);
+  background: rgba(43, 108, 176, 0.05);
+}
+
+.tab-professional-active {
+  color: var(--prof-primary);
+  border-bottom-color: var(--prof-primary);
+  background: rgba(43, 108, 176, 0.05);
+}
+
+/* ==========================================
+   CONTAINER (Professional Width)
+   ========================================== */
+
+.container-professional {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media (min-width: 1536px) {
+  .container-professional {
+    max-width: 1400px;
+  }
+}
+
+/* ==========================================
+   UTILITY CLASSES (Professional)
+   ========================================== */
+
+.border-professional {
+  border: 1px solid var(--prof-gray-200);
+}
+
+.border-left-accent {
+  border-left: 4px solid var(--prof-primary);
+}
+
+.border-top-accent {
+  border-top: 4px solid var(--prof-primary);
+}
+
+.shadow-professional {
+  box-shadow: var(--prof-shadow);
+}
+
+.shadow-professional-md {
+  box-shadow: var(--prof-shadow-md);
+}
+
+.rounded-professional {
+  border-radius: var(--prof-radius);
+}
+
+.rounded-professional-lg {
+  border-radius: var(--prof-radius-lg);
+}
+
+/* ==========================================
+   GRID SYSTEM (Professional)
+   ========================================== */
+
+.grid-professional {
+  display: grid;
+  gap: 20px;
+}
+
+.grid-professional-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-professional-3 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-professional-4 {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* ==========================================
+   RESPONSIVE BEHAVIOR
+   ========================================== */
+
+@media (max-width: 768px) {
+  .kpi-professional {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .kpi-professional-icon {
+    margin: 0 auto;
+  }
+  
+  .nav-professional {
+    flex-direction: column;
+  }
+  
+  .btn-professional {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ==========================================
+   PRINT STYLES
+   ========================================== */
+
+@media print {
+  .card-professional,
+  .kpi-professional,
+  .request-card-box {
+    box-shadow: none;
+    border: 1px solid var(--prof-gray-300);
+  }
+  
+  .header-professional {
+    background: var(--prof-gray-100) !important;
+    color: var(--prof-gray-900) !important;
+    border-bottom: 4px solid var(--prof-primary);
+  }
+  
+  .btn-professional,
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ==========================================
+   END OF PROFESSIONAL DESIGN
+   ========================================== */
+

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>مستشفى الملك عبدالعزيز – وارد التفويضات (أدمن)</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{ --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+a{text-decoration:none;color:inherit}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt span{font-size:12px;color:var(--muted)}
+.container{max-width:1200px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.select,.input{height:44px;border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border-color:transparent}
+.table{width:100%;border-collapse:separate;border-spacing:0}
+th,td{padding:12px;border-bottom:1px solid var(--border);text-align:right}
+th{font-size:13px;color:var(--muted)}
+.row:hover td{background:#fafbfc}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>وارد التفويضات – أدمن</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="window.location.href='admin-dashboard.html'">لوحة الأدمن</button>
+      <button class="btn" onclick="window.location.href='employee-dashboard.html'">لوحة الموظف</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="card">
+    <div class="filters">
+      <select id="fStatus" class="select">
+        <option value="">كل الحالات</option>
+        <option value="active">فعّال</option>
+        <option value="expired">منتهي</option>
+        <option value="stopped">موقّف</option>
+      </select>
+      <input id="fSearch" class="input" placeholder="بحث بالاسم/البريد">
+      <button class="btn" onclick="apply()">تطبيق</button>
+      <button class="btn" onclick="resetF()">مسح</button>
+      <button class="btn-primary" onclick="exportCSV()">تصدير CSV</button>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>رقم</th>
+          <th>المفوِّض</th>
+          <th>المفوَّض له</th>
+          <th>الصلاحيات</th>
+          <th>المدة</th>
+          <th>الحالة</th>
+          <th>إنشاء</th>
+          <th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser) window.location.href='login.html';
+if(authUser && authUser.role!=='admin') window.location.href='employee-dashboard.html';
+
+let list = JSON.parse(localStorage.getItem('delegations')||'[]').sort((a,b)=>b.createdAt-a.createdAt);
+
+function state(d){
+  const now=Date.now();
+  if(!d.active) return 'موقّف';
+  if(d.validTo && d.validTo < now) return 'منتهي';
+  return 'فعّال';
+}
+function draw(){
+  const st=fStatus.value;
+  const txt=(fSearch.value||'').trim().toLowerCase();
+
+  const filtered = list.filter(d=>{
+    if(st){
+      const s=state(d);
+      if(st==='active' && s!=='فعّال') return false;
+      if(st==='expired' && s!=='منتهي') return false;
+      if(st==='stopped' && s!=='موقّف') return false;
+    }
+    if(txt){
+      const hay=`${d.toName||''} ${d.to||''} ${d.fromName||''}`.toLowerCase();
+      if(!hay.includes(txt)) return false;
+    }
+    return true;
+  });
+
+  rows.innerHTML='';
+  filtered.forEach(d=>{
+    const from = d.validFrom? new Date(d.validFrom).toLocaleDateString('ar-SA') : '—';
+    const to   = d.validTo?   new Date(d.validTo).toLocaleDateString('ar-SA')   : '—';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${d.id||''}</td>
+      <td>${d.fromName||d.from||''}</td>
+      <td>${d.toName||d.to||''}</td>
+      <td>${(d.permissions||[]).join(' • ')}</td>
+      <td>${from} → ${to}</td>
+      <td>${state(d)}</td>
+      <td>${d.createdAt?new Date(d.createdAt).toLocaleDateString('ar-SA'):'—'}</td>
+      <td>
+        <a class="btn" href="admin-delegation-detail.html?id=${d.id}">فتح</a>
+        <button class="btn" data-toggle="${d.id}">${d.active?'إيقاف':'تفعيل'}</button>
+        <button class="btn" data-extend="${d.id}">تمديد 30 يوم</button>
+      </td>
+    `;
+    rows.appendChild(tr);
+  });
+
+  // تفعيل/إيقاف
+  rows.querySelectorAll('button[data-toggle]').forEach(b=>{
+    b.onclick=()=>{
+      const id=b.getAttribute('data-toggle');
+      const idx=list.findIndex(x=>String(x.id)===String(id));
+      if(idx>-1){
+        list[idx].active=!list[idx].active;
+        localStorage.setItem('delegations', JSON.stringify(list));
+        draw();
+      }
+    };
+  });
+  // تمديد 30 يوم
+  rows.querySelectorAll('button[data-extend]').forEach(b=>{
+    b.onclick=()=>{
+      const id=b.getAttribute('data-extend');
+      const idx=list.findIndex(x=>String(x.id)===String(id));
+      if(idx>-1){
+        const base = list[idx].validTo && list[idx].validTo>Date.now()? list[idx].validTo : Date.now();
+        list[idx].validTo = base + 30*24*3600*1000;
+        localStorage.setItem('delegations', JSON.stringify(list));
+        draw();
+      }
+    };
+  });
+}
+
+function apply(){ draw(); }
+function resetF(){ fStatus.value=''; fSearch.value=''; draw(); }
+
+function exportCSV(){
+  const heads=['ID','From','To','Permissions','ValidFrom','ValidTo','State','CreatedAt'];
+  const rowsCSV=[heads.join(',')];
+  list.forEach(d=>{
+    const s=state(d);
+    rowsCSV.push([
+      d.id||'',
+      `"${d.fromName||d.from||''}"`,
+      `"${d.toName||d.to||''}"`,
+      `"${(d.permissions||[]).join(' | ')}"`,
+      d.validFrom?new Date(d.validFrom).toISOString():'',
+      d.validTo?new Date(d.validTo).toISOString():'',
+      s,
+      d.createdAt?new Date(d.createdAt).toISOString():''
+    ].join(','));
+  });
+  const blob=new Blob([rowsCSV.join('\n')],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='delegations_inbox.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+draw();
+</script>
+  <!-- JavaScript Files -->
+  <script src="../jS/form-validation-utils.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/admin-delegations-inbox.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+diff --git a/Frontend/jS/sync-manager.js b/Frontend/jS/sync-manager.js
+--- a/Frontend/jS/sync-manager.js
++++ b/Frontend/jS/sync-manager.js
+@@
+   constructor() {
+     this.isOnline = navigator.onLine;
+     this.syncQueue = [];
+     this.lastSyncTime = null;
+     this.syncInProgress = false;
+     this.maxRetries = 3;
+     this.retryDelay = 5000; // 5 seconds
++    this.channel = null; // BroadcastChannel (optional)
+     this.init();
+   }
+@@
+   init() {
+     this.setupNetworkMonitoring();
+     this.loadSyncQueue();
+     this.startPeriodicSync();
++    try {
++      if (typeof BroadcastChannel !== 'undefined') {
++        this.channel = new BroadcastChannel('sync-events');
++        this.channel.onmessage = (ev) => {
++          const data = ev && ev.data ? ev.data : {};
++          if (data && data.key && data.list) {
++            try {
++              window.dispatchEvent(new CustomEvent('sync:updated', { detail: { key: data.key, list: data.list } }));
++            } catch (_) {}
++          }
++        };
++      }
++    } catch (_) {}
+@@
+       // Trigger storage events for cross-tab updates
+       window.dispatchEvent(new StorageEvent('storage', {
+         key: 'requestsClearance',
+         newValue: JSON.stringify(clearances)
+       }));
++      if (this.channel) {
++        try {
++          this.channel.postMessage({ key: 'requestsClearance', list: clearances });
++          this.channel.postMessage({ key: 'requestsOnboarding', list: onboardings });
++          this.channel.postMessage({ key: 'requestsDelegation', list: delegations });
++        } catch (_) {}
++      }

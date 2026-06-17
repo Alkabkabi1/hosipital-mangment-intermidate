@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Dashboard Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-section { background: white; margin: 20px 0; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb; }
+        .success { border-left-color: #10b981; }
+        .error { border-left-color: #ef4444; }
+        .warning { border-left-color: #f59e0b; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        button { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #1d4ed8; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 4px; }
+        .result.success { background: #dcfce7; color: #166534; }
+        .result.error { background: #fecaca; color: #dc2626; }
+        .result.warning { background: #fef3c7; color: #d97706; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Employee Dashboard Debug Test</h1>
+    
+    <div class="test-section">
+        <h3>📊 Test 1: Basic Array Operations</h3>
+        <button onclick="testBasicArrays()">Run Test</button>
+        <div id="test1-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔧 Test 2: Undefined Handling</h3>
+        <button onclick="testUndefinedHandling()">Run Test</button>
+        <div id="test2-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>📋 Test 3: API Data Simulation</h3>
+        <button onclick="testAPIDataSimulation()">Run Test</button>
+        <div id="test3-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🎯 Test 4: updateRecentRequests Function</h3>
+        <button onclick="testUpdateFunction()">Run Test</button>
+        <div id="test4-result" class="result"></div>
+        <table id="debug-table" style="width: 100%; margin-top: 10px; border-collapse: collapse; display: none;">
+            <thead>
+                <tr style="background: #f8f9fa;">
+                    <th style="padding: 8px; border: 1px solid #ddd;">رقم</th>
+                    <th style="padding: 8px; border: 1px solid #ddd;">النوع</th>
+                    <th style="padding: 8px; border: 1px solid #ddd;">الحالة</th>
+                    <th style="padding: 8px; border: 1px solid #ddd;">التاريخ</th>
+                    <th style="padding: 8px; border: 1px solid #ddd;">تفاصيل</th>
+                </tr>
+            </thead>
+            <tbody id="debug-tbody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="test-section">
+        <h3>🌐 Test 5: Live API Test</h3>
+        <button onclick="testLiveAPI()">Run Live API Test</button>
+        <div id="test5-result" class="result"></div>
+    </div>
+
+    <script>
+        // Test 1: Basic Array Operations
+        function testBasicArrays() {
+            const result = document.getElementById('test1-result');
+            try {
+                const testUndefined = undefined;
+                const testNull = null;
+                const testArray = [1, 2, 3];
+                
+                console.log('🔍 Testing basic array operations:');
+                console.log('undefined || []:', testUndefined || []);
+                console.log('null || []:', testNull || []);
+                console.log('array || []:', testArray || []);
+                
+                const undefinedResult = (testUndefined || []).map(x => x * 2);
+                const nullResult = (testNull || []).map(x => x * 2);
+                const arrayResult = (testArray || []).map(x => x * 2);
+                
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ Basic array operations work!<br>
+                    - undefined || [] → ${JSON.stringify(undefinedResult)}<br>
+                    - null || [] → ${JSON.stringify(nullResult)}<br>
+                    - [1,2,3] || [] → ${JSON.stringify(arrayResult)}
+                `;
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Basic array test failed: ${error.message}`;
+                console.error('Basic array test error:', error);
+            }
+        }
+
+        // Test 2: Undefined Handling
+        function testUndefinedHandling() {
+            const result = document.getElementById('test2-result');
+            try {
+                // Simulate the exact scenario from the dashboard
+                const clearances = [{ id: 1, status: 'قيد الاعتماد' }, { id: 2, status: 'موافق عليه' }];
+                const onboardings = [{ id: 3, status: 'قيد المعالجة' }];
+                const delegations = undefined;
+                
+                console.log('🔍 Testing undefined handling:');
+                console.log('clearances:', clearances);
+                console.log('onboardings:', onboardings);
+                console.log('delegations:', delegations);
+                
+                const allRequests = [
+                    ...(clearances || []).map(item => ({ ...item, type: 'clearance', type_ar: 'إخلاء طرف' })),
+                    ...(onboardings || []).map(item => ({ ...item, type: 'onboarding', type_ar: 'مباشرة عمل' })),
+                    ...(delegations || []).map(item => ({ ...item, type: 'delegation', type_ar: 'تفويض' }))
+                ];
+                
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ Undefined handling works!<br>
+                    - Total requests combined: ${allRequests.length}<br>
+                    - Types: ${allRequests.map(r => r.type).join(', ')}
+                `;
+                console.log('Combined requests:', allRequests);
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Undefined handling failed: ${error.message}`;
+                console.error('Undefined handling error:', error);
+            }
+        }
+
+        // Test 3: API Data Simulation
+        function testAPIDataSimulation() {
+            const result = document.getElementById('test3-result');
+            try {
+                // Simulate exact API response from console
+                const apiData = {
+                    clearances: 2,
+                    onboardings: 6,
+                    delegations: undefined
+                };
+                
+                console.log('🔍 Testing API data simulation:');
+                console.log('API Data:', apiData);
+                
+                // Check data types
+                const clearanceType = typeof apiData.clearances;
+                const onboardingType = typeof apiData.onboardings;
+                const delegationType = typeof apiData.delegations;
+                
+                result.className = 'result warning';
+                result.innerHTML = `
+                    ⚠️ API Data Analysis:<br>
+                    - clearances: ${apiData.clearances} (${clearanceType}) - ${Array.isArray(apiData.clearances) ? 'IS ARRAY' : 'NOT ARRAY'}<br>
+                    - onboardings: ${apiData.onboardings} (${onboardingType}) - ${Array.isArray(apiData.onboardings) ? 'IS ARRAY' : 'NOT ARRAY'}<br>
+                    - delegations: ${apiData.delegations} (${delegationType}) - ${Array.isArray(apiData.delegations) ? 'IS ARRAY' : 'NOT ARRAY'}<br>
+                    <br>
+                    🚨 ISSUE FOUND: The API is returning NUMBERS, not ARRAYS!
+                `;
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ API simulation failed: ${error.message}`;
+                console.error('API simulation error:', error);
+            }
+        }
+
+        // Test 4: updateRecentRequests Function
+        function testUpdateFunction() {
+            const result = document.getElementById('test4-result');
+            const table = document.getElementById('debug-table');
+            const tbody = document.getElementById('debug-tbody');
+            
+            try {
+                // Create test data with proper arrays
+                const clearances = [
+                    { id: 1, reference_number: 'CLR001', status: 'قيد الاعتماد', created_at: '2024-01-01' },
+                    { id: 2, reference_number: 'CLR002', status: 'موافق عليه', created_at: '2024-01-02' }
+                ];
+                const onboardings = [
+                    { id: 3, reference_number: 'ONB001', status: 'قيد المعالجة', created_at: '2024-01-03' }
+                ];
+                const delegations = []; // Empty array instead of undefined
+                
+                // Test the function logic
+                const allRequests = [
+                    ...(clearances || []).map(item => ({ ...item, type: 'clearance', type_ar: 'إخلاء طرف' })),
+                    ...(onboardings || []).map(item => ({ ...item, type: 'onboarding', type_ar: 'مباشرة عمل' })),
+                    ...(delegations || []).map(item => ({ ...item, type: 'delegation', type_ar: 'تفويض' }))
+                ];
+                
+                // Generate HTML
+                const requestsHTML = allRequests.map(request => {
+                    return `
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${request.reference_number}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${request.type_ar}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${request.status}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">${request.created_at}</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">
+                                <button style="padding: 4px 8px; font-size: 12px;">عرض</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+                
+                tbody.innerHTML = requestsHTML;
+                table.style.display = 'table';
+                
+                result.className = 'result success';
+                result.innerHTML = `✅ Function test successful! Generated ${allRequests.length} table rows.`;
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Function test failed: ${error.message}`;
+                console.error('Function test error:', error);
+            }
+        }
+
+        // Test 5: Live API Test
+        async function testLiveAPI() {
+            const result = document.getElementById('test5-result');
+            result.className = 'result warning';
+            result.innerHTML = '🔄 Testing live API...';
+            
+            try {
+                // Test the actual API endpoints
+                const responses = await Promise.all([
+                    fetch('/api/employee/clearances').then(r => r.json()).catch(e => ({ error: e.message })),
+                    fetch('/api/employee/onboardings').then(r => r.json()).catch(e => ({ error: e.message })),
+                    fetch('/api/delegation/mine').then(r => r.json()).catch(e => ({ error: e.message }))
+                ]);
+                
+                const [clearances, onboardings, delegations] = responses;
+                
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ Live API Test Results:<br>
+                    - Clearances: ${clearances.error ? '❌ ' + clearances.error : '✅ ' + (Array.isArray(clearances) ? clearances.length + ' items' : 'Invalid format')}<br>
+                    - Onboardings: ${onboardings.error ? '❌ ' + onboardings.error : '✅ ' + (Array.isArray(onboardings) ? onboardings.length + ' items' : 'Invalid format')}<br>
+                    - Delegations: ${delegations.error ? '❌ ' + delegations.error : '✅ ' + (Array.isArray(delegations) ? delegations.length + ' items' : 'Invalid format')}<br>
+                    <br>
+                    <pre>${JSON.stringify({ clearances, onboardings, delegations }, null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Live API test failed: ${error.message}`;
+                console.error('Live API test error:', error);
+            }
+        }
+
+        // Auto-run basic tests on load
+        window.onload = function() {
+            console.log('🔍 Dashboard Debug Test loaded');
+            testBasicArrays();
+            setTimeout(testUndefinedHandling, 500);
+            setTimeout(testAPIDataSimulation, 1000);
+        };
+    </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

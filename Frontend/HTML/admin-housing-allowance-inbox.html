@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>مستشفى الملك عبدالعزيز – وارد طلبات بدل السكن (أدمن)</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a;
+  --muted:#64748b; --border:#e5e7eb; --danger:#dc2626; --success:#16a34a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+a{text-decoration:none;color:inherit}
+
+/* هيدر */
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt span{font-size:12px;color:var(--muted)}
+
+/* حاوية + بطاقات */
+.container{max-width:1200px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+
+/* أزرار ومدخلات */
+.select,.input{height:44px;border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border-color:transparent}
+
+/* أعلى الصفحة */
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.kpis{display:flex;gap:8px;flex-wrap:wrap}
+.kpi{border:1px solid var(--border);border-radius:12px;padding:10px 12px;background:#fff}
+.kpi b{font-size:18px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* فلاتر */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+
+/* جدول */
+.table{width:100%;border-collapse:separate;border-spacing:0}
+th,td{padding:12px;border-bottom:1px solid var(--border);text-align:right}
+th{font-size:13px;color:var(--muted)}
+.row:hover td{background:#fafbfc}
+
+/* بادجات */
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-pend{background:#fef3c7}
+.b-done{background:#dcfce7}
+.b-rej{background:#fee2e2}
+
+/* زر صغير */
+.btn-sm{display:inline-flex;align-items:center;gap:4px;border-radius:8px;padding:6px 10px;font-weight:600;font-size:12px;border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--text);text-decoration:none}
+.btn-sm:hover{background:#f8fafc;border-color:var(--primary)}
+.btn-sm:active{transform:translateY(1px)}
+
+/* مهلة */
+.badge-due{padding:4px 10px;border-radius:999px;font-size:12px;display:inline-block;white-space:nowrap}
+.badge-due.ok{background:#ecfdf5;color:#065f46}
+.badge-due.late{background:#fef2f2;color:#991b1b}
+
+@media(max-width:900px){.filters{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>وارد طلبات بدل السكن – أدمن</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="location.href='admin-dashboard.html'">🏠 الرئيسية</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="topbar">
+    <div class="kpis">
+      <div class="kpi">قيد الاعتماد: <b id="kPending">0</b></div>
+      <div class="kpi">مكتملة: <b id="kDone">0</b></div>
+      <div class="kpi">مرفوضة: <b id="kReject">0</b></div>
+      <div class="kpi">إجمالي: <b id="kAll">0</b></div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="exportCSV()">📥 تصدير CSV</button>
+      <button class="btn" onclick="exportExcel()">📊 تصدير Excel</button>
+      <button class="btn" onclick="window.print()">🖨️ طباعة</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="filters">
+      <select id="fStatus" class="select">
+        <option value="">كل الحالات</option>
+        <option>قيد الاعتماد</option>
+        <option>مكتمل</option>
+        <option>مرفوض</option>
+      </select>
+      <input id="fSearch" class="input" placeholder="بحث بالاسم/الرقم/القسم">
+      <button class="btn" onclick="apply()">تطبيق</button>
+      <button class="btn" onclick="resetF()">مسح</button>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>رقم</th>
+          <th>الموظف</th>
+          <th>القسم</th>
+          <th>الحالة</th>
+          <th>المعتمد الحالي</th>
+          <th>المهلة</th>
+          <th>إنشاء</th>
+          <th>فتح</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- سكربت خارجي -->
+<!-- Load shared libraries first -->
+<script src="../jS/form-validation-utils.js"></script>
+<script src="../jS/api-client.js"></script>
+<script src="../jS/role-permissions.js"></script>
+<script src="../jS/app-init.js"></script>
+<script src="../jS/enhanced-error-handler.js"></script>
+
+<!-- Page-specific script last -->
+<script src="admin-housing-allowance-inbox.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

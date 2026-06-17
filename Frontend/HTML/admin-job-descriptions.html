@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الأوصاف الوظيفية | نظام إدارة المستشفى</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2B6CB0;
+      --primary-dark: #1e40af;
+      --success: #059669;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --bg: #f8fafc;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --card-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    /* Header */
+    .header {
+      background: white;
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 2rem;
+      box-shadow: var(--card-shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .header-title h1 {
+      font-size: 1.75rem;
+      color: var(--primary);
+      font-weight: 800;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    /* Main Content */
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      border-left: 4px solid var(--primary);
+    }
+    
+    .stat-card.success {
+      border-left-color: var(--success);
+    }
+    
+    .stat-card.warning {
+      border-left-color: var(--warning);
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    
+    /* Card */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    
+    .card-header h2 {
+      font-size: 1.5rem;
+      color: var(--text);
+      font-weight: 700;
+    }
+    
+    /* Search and Filter */
+    .search-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Tajawal', sans-serif;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background: var(--bg);
+    }
+    
+    th {
+      padding: 1rem;
+      text-align: right;
+      font-weight: 700;
+      color: var(--text);
+      border-bottom: 2px solid var(--border);
+    }
+    
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    tbody tr:hover {
+      background: #f1f5f9;
+    }
+    
+    .employee-name {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
+    .job-description-preview {
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--muted);
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    
+    .badge-success {
+      background: #d1fae5;
+      color: var(--success);
+    }
+    
+    .badge-warning {
+      background: #fef3c7;
+      color: var(--warning);
+    }
+    
+    /* Buttons */
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Tajawal', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(43, 108, 176, 0.3);
+    }
+    
+    .btn-secondary {
+      background: var(--muted);
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #475569;
+    }
+    
+    .btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+    
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #047857;
+    }
+    
+    .btn-edit {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    .btn-edit:hover {
+      background: #2563eb;
+    }
+    
+    .btn-view {
+      background: #8b5cf6;
+      color: white;
+    }
+    
+    .btn-view:hover {
+      background: #7c3aed;
+    }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    
+    .modal-header h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: var(--muted);
+      line-height: 1;
+    }
+    
+    .modal-close:hover {
+      color: var(--danger);
+    }
+    
+    /* Form */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Tajawal', sans-serif;
+    }
+    
+    .form-textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+    }
+    
+    .spinner {
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .toast.success {
+      border-right: 4px solid var(--success);
+    }
+    
+    .toast.error {
+      border-right: 4px solid var(--danger);
+    }
+    
+    .toast.show {
+      display: flex;
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="header-title">
+        <span style="font-size: 2rem;">📋</span>
+        <div>
+          <h1>إدارة الأوصاف الوظيفية</h1>
+          <p style="font-size: 0.875rem; color: var(--muted); margin-top: 0.25rem;">
+            Job Descriptions Management
+          </p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-small" onclick="window.location.href='admin-dashboard.html'">
+          🏠 لوحة التحكم
+        </button>
+        <button class="btn btn-primary" onclick="showAddJobDescriptionModal()">
+          ➕ إضافة وصف وظيفي
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Statistics -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">إجمالي الموظفين</div>
+        <div class="stat-value" id="totalEmployees">0</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">لديهم أوصاف وظيفية</div>
+        <div class="stat-value" id="withDescriptions">0</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-label">بدون أوصاف وظيفية</div>
+        <div class="stat-value" id="withoutDescriptions">0</div>
+      </div>
+    </div>
+
+    <!-- Job Descriptions List -->
+    <div class="card">
+      <div class="card-header">
+        <h2>قائمة الأوصاف الوظيفية</h2>
+      </div>
+      
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <input 
+          type="text" 
+          class="search-input" 
+          id="searchInput" 
+          placeholder="🔍 ابحث عن موظف أو وصف وظيفي..."
+          oninput="filterTable()"
+        >
+      </div>
+      
+      <!-- Table -->
+      <div class="table-container">
+        <table id="jobDescriptionsTable">
+          <thead>
+            <tr>
+              <th>رقم الموظف</th>
+              <th>الاسم</th>
+              <th>القسم</th>
+              <th>المسمى الوظيفي</th>
+              <th>الوصف الوظيفي</th>
+              <th>الحالة</th>
+              <th>الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="7">
+                <div class="loading">
+                  <div class="spinner"></div>
+                  <p>جاري تحميل البيانات...</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../jS/api-client.js"></script>
+  <script>
+    // Initialize
+    const authUser = JSON.parse(localStorage.getItem('authUser') || 'null');
+    if (!authUser || !['admin', 'ADMIN'].includes(authUser.role?.toLowerCase())) {
+      alert('يجب أن تكون مسؤولاً للوصول إلى هذه الصفحة');
+      window.location.href = 'login.html';
+    }
+
+    let allEmployees = [];
+
+    // Load data on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadEmployees();
+    });
+
+    // Load Employees
+    async function loadEmployees() {
+      try {
+        const response = await apiClient.makeRequest('/admin/employees');
+        allEmployees = response.data || response || [];
+        
+        console.log('✅ Loaded employees:', allEmployees.length);
+        
+        updateStatistics();
+        renderTable(allEmployees);
+      } catch (error) {
+        console.error('❌ Error loading employees:', error);
+        showToast('فشل تحميل البيانات: ' + error.message, 'error');
+        showEmptyState('فشل تحميل البيانات');
+      }
+    }
+
+    // Update Statistics
+    function updateStatistics() {
+      const total = allEmployees.length;
+      const withDesc = allEmployees.filter(emp => emp.job_description && emp.job_description.trim()).length;
+      const withoutDesc = total - withDesc;
+      
+      document.getElementById('totalEmployees').textContent = total;
+      document.getElementById('withDescriptions').textContent = withDesc;
+      document.getElementById('withoutDescriptions').textContent = withoutDesc;
+    }
+
+    // Render Table
+    function renderTable(employees) {
+      const tbody = document.getElementById('tableBody');
+      
+      if (employees.length === 0) {
+        showEmptyState('لا توجد بيانات موظفين');
+        return;
+      }
+      
+      tbody.innerHTML = employees.map(emp => {
+        const hasDescription = emp.job_description && emp.job_description.trim();
+        const descriptionPreview = hasDescription 
+          ? (emp.job_description.substring(0, 50) + (emp.job_description.length > 50 ? '...' : ''))
+          : '—';
+        
+        return `
+          <tr>
+            <td>${emp.employee_number || '—'}</td>
+            <td class="employee-name">${emp.full_name_ar || emp.name || '—'}</td>
+            <td>${emp.department_name || '—'}</td>
+            <td>${emp.position || emp.job_title || '—'}</td>
+            <td class="job-description-preview" title="${emp.job_description || ''}">${descriptionPreview}</td>
+            <td>
+              ${hasDescription 
+                ? '<span class="badge badge-success">✓ يوجد</span>' 
+                : '<span class="badge badge-warning">⚠ فارغ</span>'}
+            </td>
+            <td>
+              <button class="btn btn-view btn-small" onclick="viewJobDescription(${emp.employee_id || emp.id})">
+                👁️ عرض
+              </button>
+              <button class="btn btn-edit btn-small" onclick="editJobDescription(${emp.employee_id || emp.id})">
+                ✏️ تعديل
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Show Empty State
+    function showEmptyState(message) {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <div class="empty-state-icon">📋</div>
+              <h3>${message}</h3>
+              <p>لا توجد بيانات لعرضها حالياً</p>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    // Filter Table
+    function filterTable() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      
+      const filtered = allEmployees.filter(emp => {
+        const name = (emp.full_name_ar || emp.name || '').toLowerCase();
+        const empNumber = (emp.employee_number || '').toLowerCase();
+        const department = (emp.department_name || '').toLowerCase();
+        const position = (emp.position || emp.job_title || '').toLowerCase();
+        const description = (emp.job_description || '').toLowerCase();
+        
+        return name.includes(searchTerm) || 
+               empNumber.includes(searchTerm) || 
+               department.includes(searchTerm) ||
+               position.includes(searchTerm) ||
+               description.includes(searchTerm);
+      });
+      
+      renderTable(filtered);
+    }
+
+    // View Job Description
+    function viewJobDescription(employeeId) {
+      const employee = allEmployees.find(emp => (emp.employee_id || emp.id) === employeeId);
+      if (!employee) return;
+      
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>عرض الوصف الوظيفي</h3>
+            <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>الموظف</label>
+              <div style="padding: 0.75rem; background: var(--bg); border-radius: 8px; font-weight: 600;">
+                ${employee.full_name_ar || employee.name || '—'} (${employee.employee_number || '—'})
+              </div>
+            </div>
+            <div class="form-group">
+              <label>القسم</label>
+              <div style="padding: 0.75rem; background: var(--bg); border-radius: 8px;">
+                ${employee.department_name || '—'}
+              </div>
+            </div>
+            <div class="form-group">
+              <label>المسمى الوظيفي</label>
+              <div style="padding: 0.75rem; background: var(--bg); border-radius: 8px;">
+                ${employee.position || employee.job_title || '—'}
+              </div>
+            </div>
+            <div class="form-group">
+              <label>الوصف الوظيفي</label>
+              <div style="padding: 1rem; background: var(--bg); border-radius: 8px; white-space: pre-wrap; min-height: 150px; max-height: 400px; overflow-y: auto;">
+                ${employee.job_description || 'لا يوجد وصف وظيفي'}
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">إغلاق</button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+    }
+
+    // Edit Job Description
+    function editJobDescription(employeeId) {
+      const employee = allEmployees.find(emp => (emp.employee_id || emp.id) === employeeId);
+      if (!employee) return;
+      
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>تعديل الوصف الوظيفي</h3>
+            <button class="modal-close" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+          </div>
+          <div class="modal-body">
+            <form id="editJobDescriptionForm">
+              <div class="form-group">
+                <label>الموظف</label>
+                <div style="padding: 0.75rem; background: var(--bg); border-radius: 8px; font-weight: 600;">
+                  ${employee.full_name_ar || employee.name || '—'} (${employee.employee_number || '—'})
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="jobDescription">الوصف الوظيفي *</label>
+                <textarea 
+                  id="jobDescription" 
+                  class="form-textarea" 
+                  required
+                  placeholder="أدخل الوصف الوظيفي التفصيلي للموظف..."
+                >${employee.job_description || ''}</textarea>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-success">💾 حفظ التعديلات</button>
+                <button type="button" class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">إلغاء</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      const form = modal.querySelector('#editJobDescriptionForm');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleEditJobDescription(employeeId);
+      });
+      
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+    }
+
+    // Handle Edit Job Description
+    async function handleEditJobDescription(employeeId) {
+      const jobDescription = document.getElementById('jobDescription').value.trim();
+      
+      try {
+        // Update via API (you'll need to implement the backend endpoint)
+        await apiClient.makeRequest(`/admin/employees/${employeeId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ job_description: jobDescription })
+        });
+        
+        showToast('تم تحديث الوصف الوظيفي بنجاح', 'success');
+        document.querySelector('.modal-overlay').remove();
+        loadEmployees(); // Reload data
+      } catch (error) {
+        console.error('Error updating job description:', error);
+        showToast('فشل تحديث الوصف الوظيفي: ' + error.message, 'error');
+      }
+    }
+
+    // Show Add Job Description Modal
+    function showAddJobDescriptionModal() {
+      window.location.href = 'admin-employees.html';
+    }
+
+    // Show Toast
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

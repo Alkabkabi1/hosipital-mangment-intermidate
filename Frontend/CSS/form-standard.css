@@ -1,0 +1,437 @@
+/* ==========================================
+   STANDARD FORM STYLES
+   Used by all employee request forms
+   Matches clearance-request.html design
+   ========================================== */
+
+:root {
+  --primary: #2B6CB0;
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+
+  /* Field styling - black borders like clearance form */
+  --field-bg: #ffffff;
+  --field-text: #0f172a;
+  --field-border: #000000;
+  --field-placeholder: #6b7280;
+  --field-focus: rgba(0, 0, 0, .15);
+
+  /* Section boxes */
+  --qbox-radius: 16px;
+  --qbox-border: #e5e7eb;
+  --qbox-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+
+  --danger: #dc2626;
+  --success: #16a34a;
+}
+
+* {
+  box-sizing: border-box
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none
+}
+
+/* =================== HEADER =================== */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .inner {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.brand img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.tt {
+  display: flex;
+  flex-direction: column;
+}
+
+.tt h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.tt span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.back {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.back:hover {
+  background: #f9fafb;
+}
+
+/* =================== CONTAINER =================== */
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+/* =================== FORM SECTIONS =================== */
+.form-section {
+  background: var(--surface);
+  border: 1px solid var(--qbox-border);
+  border-radius: var(--qbox-radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--qbox-shadow);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  color: var(--primary);
+}
+
+/* =================== FORM GRID =================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.form-grid.triple {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.form-grid.quad {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+/* =================== FORM FIELDS =================== */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 12px;
+  border: 2px solid var(--field-border);
+  border-radius: 8px;
+  background: var(--field-bg);
+  color: var(--field-text);
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--field-focus);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.field input[data-ltr] {
+  direction: ltr;
+  text-align: left;
+}
+
+.field small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Alternative naming for compatibility */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.form-control {
+  padding: 12px;
+  border: 2px solid var(--field-border);
+  border-radius: 8px;
+  background: var(--field-bg);
+  color: var(--field-text);
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--field-focus);
+}
+
+/* =================== BUTTONS =================== */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.btn-outline, .btn-secondary {
+  background: #fff;
+  color: var(--text);
+  border: 2px solid var(--border);
+}
+
+.btn-outline:hover, .btn-secondary:hover {
+  background: #f8fafc;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #1e40af;
+}
+
+.btn-primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* =================== HINTS & HELPERS =================== */
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.footer-actions {
+  text-align: center;
+  margin-top: 30px;
+}
+
+/* =================== RESPONSIVE =================== */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-grid.triple,
+  .form-grid.quad {
+    grid-template-columns: 1fr;
+  }
+  
+  .container {
+    max-width: 100%;
+  }
+}
+
+/* =================== RADIO & CHECKBOX GROUPS =================== */
+.radio-group,
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.radio-item,
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radio-item input[type="radio"],
+.radio-item input[type="checkbox"],
+.checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.radio-item label,
+.checkbox-item label {
+  cursor: pointer;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* =================== ALERT MESSAGES =================== */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-success {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #166534;
+}
+
+.alert-error {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.alert-info {
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1e40af;
+}
+
+/* =================== LOADING SPINNER =================== */
+.loading-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =================== CERTIFICATE PREVIEW =================== */
+.certificate-container {
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: var(--qbox-radius);
+  padding: 40px;
+  margin: 20px 0;
+  box-shadow: var(--qbox-shadow);
+  display: none;
+}
+
+.certificate-container.visible {
+  display: block;
+}
+
+/* =================== WORKFLOW CONTROLS =================== */
+.workflow-controls {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--qbox-radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--qbox-shadow);
+}
+
+.workflow-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.workflow-step {
+  padding: 10px 16px;
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #64748b;
+  min-width: 120px;
+  text-align: center;
+}
+
+.workflow-step.active {
+  background: #dbeafe;
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.workflow-step.completed {
+  background: #dcfce7;
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.workflow-arrow {
+  font-size: 20px;
+  color: #cbd5e1;
+}
+

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>توقيع المطور - معاينة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: white;
+    }
+
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      font-weight: 800;
+    }
+
+    .hero p {
+      font-size: 24px;
+      opacity: 0.9;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 30px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .feature-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .preview-section {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      margin-bottom: 60px;
+    }
+
+    .preview-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .preview-note {
+      text-align: center;
+      font-size: 18px;
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+
+    .signature-preview {
+      background: white;
+      color: #333;
+      padding: 100px 40px;
+      border-radius: 16px;
+      min-height: 400px;
+      position: relative;
+    }
+
+    .signature-preview h2 {
+      color: #2B6CB0;
+      margin-bottom: 20px;
+    }
+
+    .signature-preview p {
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .arrow-down {
+      text-align: center;
+      font-size: 48px;
+      margin: 30px 0;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-10px);
+      }
+      60% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .instructions {
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      padding: 40px;
+      border-radius: 16px;
+      margin-bottom: 100px;
+    }
+
+    .instructions h3 {
+      color: #2B6CB0;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .instructions ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .instructions li {
+      padding: 15px 0;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .instructions li:last-child {
+      border-bottom: none;
+    }
+
+    .check-icon {
+      color: #10b981;
+      font-size: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #10b981;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <div class="hero">
+      <h1>✨ توقيع المطور</h1>
+      <p>تم إضافة توقيع احترافي لجميع الصفحات</p>
+      <div class="badge">32 صفحة محدثة</div>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <div class="feature-title">تصميم عصري</div>
+        <div class="feature-desc">
+          تصميم نظيف وأنيق مع تأثيرات حركية سلسة
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-title">متجاوب</div>
+        <div class="feature-desc">
+          يعمل بشكل مثالي على جميع الأجهزة والشاشات
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">💚</div>
+        <div class="feature-title">واتساب مباشر</div>
+        <div class="feature-desc">
+          رابط واتساب يعمل بنقرة واحدة
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🖨️</div>
+        <div class="feature-title">صديق للطباعة</div>
+        <div class="feature-desc">
+          يختفي تلقائياً عند الطباعة
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🌙</div>
+        <div class="feature-title">الوضع الداكن</div>
+        <div class="feature-desc">
+          يدعم الوضع الداكن تلقائياً
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">خفيف وسريع</div>
+        <div class="feature-desc">
+          لا يؤثر على سرعة الصفحة
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-section">
+      <h2 class="preview-title">👀 معاينة مباشرة</h2>
+      <p class="preview-note">قم بالتمرير لأسفل لرؤية التوقيع في الأسفل ⬇️</p>
+      
+      <div class="signature-preview">
+        <h2>مثال على محتوى الصفحة</h2>
+        <p>هذا مثال على محتوى صفحة نظام إدارة المستشفى.</p>
+        <p>التوقيع موجود دائماً في أسفل الصفحة بغض النظر عن محتواها.</p>
+        <p>يمكنك التمرير لأسفل لرؤية التوقيع...</p>
+        <br><br>
+        <p>المميزات الرئيسية:</p>
+        <ul style="margin-right: 30px; line-height: 2;">
+          <li>✅ ثابت في الأسفل</li>
+          <li>✅ لا يعيق المحتوى</li>
+          <li>✅ تصميم احترافي</li>
+          <li>✅ رابط واتساب فعال</li>
+        </ul>
+      </div>
+
+      <div class="arrow-down">⬇️</div>
+      <p style="text-align: center; font-size: 20px; opacity: 0.9;">
+        التوقيع موجود في الأسفل!
+      </p>
+    </div>
+
+    <div class="instructions">
+      <h3>✅ تم التنفيذ بنجاح</h3>
+      <ul>
+        <li>
+          <span class="check-icon">✓</span>
+          <span>تم إضافة التوقيع لـ <strong>32 صفحة HTML</strong></span>
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          <span>الاسم: <strong>N.K</strong></span>
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          <span>رابط واتساب: <strong>wa.me/+966541539940</strong></span>
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          <span>التصميم: <strong>صغير وأنيق</strong></span>
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          <span>الموقع: <strong>أسفل كل صفحة</strong></span>
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          <span>متجاوب مع: <strong>جميع الأجهزة</strong></span>
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          <span>عند الطباعة: <strong>يختفي تلقائياً</strong></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Developer Signature - This is what appears on all pages -->
+  <script src="../jS/signature.js"></script>
+</body>
+</html>
+

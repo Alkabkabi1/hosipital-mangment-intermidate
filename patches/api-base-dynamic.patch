@@ -1,0 +1,51 @@
+diff --git a/Frontend/jS/api-client.js b/Frontend/jS/api-client.js
+--- a/Frontend/jS/api-client.js
++++ b/Frontend/jS/api-client.js
+@@
+   // Determine the correct base URL based on current environment
+   getBaseURL() {
+-    const hostname = window.location.hostname;
+-    const protocol = window.location.protocol;
+-    const port = '3037'; // Backend always runs on 3037
+-    
+-    // Use the same hostname as the frontend, but always port 3037 for API
+-    return `${protocol}//${hostname}:${port}/api`;
++    try {
++      // 1) <meta name="api-base" content="...">
++      const meta = document.querySelector('meta[name="api-base"]');
++      let base = meta && typeof meta.getAttribute === 'function' ? meta.getAttribute('content') : '';
++      base = (base || '').trim();
++
++      // 2) window.__API_BASE__
++      if (!base && typeof window !== 'undefined' && window.__API_BASE__) {
++        base = String(window.__API_BASE__ || '').trim();
++      }
++
++      // 3) body[data-api-base]
++      if (!base && document && document.body && document.body.dataset && document.body.dataset.apiBase) {
++        base = String(document.body.dataset.apiBase || '').trim();
++      }
++
++      // 4) Fallback: https+non-localhost → no port; dev → :3037
++      if (!base) {
++        const { protocol, hostname } = window.location;
++        const isHttps = protocol === 'https:';
++        const isLocal = (
++          hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' ||
++          /\.local$/i.test(hostname) || /\.dev$/i.test(hostname)
++        );
++        base = `${protocol}//${hostname}${(isHttps && !isLocal) ? '' : ':3037'}`;
++      }
++
++      // Normalize and ensure trailing /api
++      base = base.replace(/\/?$/,'');
++      if (!/\/api\/?$/i.test(base)) {
++        base = `${base}/api`;
++      }
++      return base;
++    } catch (e) {
++      const hostname = window.location.hostname;
++      const protocol = window.location.protocol;
++      return `${protocol}//${hostname}:3037/api`;
++    }
+   }

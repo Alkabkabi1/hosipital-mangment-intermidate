@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>تفاصيل قرار نقل داخلي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root{--primary:#a855f7;--bg:#f5f6f8;--surface:#fff;--text:#0f172a;--muted:#64748b;--border:#e5e7eb}
+        *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+        .header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);z-index:10}
+        .header .in{max-width:900px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+        .btn{border:1px solid var(--border);border-radius:10px;padding:8px 16px;background:#fff;font-weight:700;cursor:pointer}
+        .btn:hover{background:var(--primary);color:#fff}
+        .container{max-width:900px;margin:16px auto;padding:0 16px}
+        .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px}
+        .detail-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+        .detail-label{color:var(--muted);font-weight:600}
+        .detail-value{font-weight:600}
+        .section-title{font-size:18px;font-weight:700;margin:24px 0 16px 0}
+        .actions{display:flex;gap:12px;margin-top:24px}
+        .btn-approve{background:#10b981;color:white;border:none;padding:12px 24px;border-radius:10px;font-weight:700;cursor:pointer}
+        .btn-reject{background:#ef4444;color:white;border:none;padding:12px 24px;border-radius:10px;font-weight:700;cursor:pointer}
+    </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div><b>تفاصيل قرار نقل داخلي</b></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="window.history.back()">رجوع</button>
+      <button class="btn" onclick="window.print()">طباعة</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card" id="detailCard">
+    <p style="text-align:center;color:var(--muted)">جاري التحميل...</p>
+  </section>
+</main>
+
+<script src="../jS/dependency-guard.js"></script>
+<script src="../jS/error-handler.js"></script>
+<script src="../jS/app-init.js"></script>
+<script src="../jS/api-client.js"></script>
+
+<script>
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser){ location.href='login.html'; }
+
+const urlParams = new URLSearchParams(window.location.search);
+const requestId = urlParams.get('id');
+
+if (!requestId) {
+  alert('معرف الطلب غير موجود');
+  window.history.back();
+}
+
+async function loadRequestDetails() {
+  try {
+    const authToken = localStorage.getItem('authToken');
+    const response = await fetch(`http://localhost:3037/api/internal-transfer/${requestId}`, {
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    });
+    
+    if (!response.ok) throw new Error('Failed to load');
+    
+    const result = await response.json();
+    const req = result.data || result;
+    
+    const typeNames = { permanent: 'دائم', temporary: 'مؤقت', secondment: 'إعارة' };
+    
+    document.getElementById('detailCard').innerHTML = `
+      <h2 style="margin:0 0 20px 0">قرار نقل داخلي #${req.id}</h2>
+      
+      <div class="section-title">معلومات الموظف</div>
+      <div class="detail-row"><div class="detail-label">اسم الموظف</div><div class="detail-value">${req.employee_name}</div></div>
+      <div class="detail-row"><div class="detail-label">رقم الموظف</div><div class="detail-value">${req.employee_number || '-'}</div></div>
+      <div class="detail-row"><div class="detail-label">سنوات الخدمة</div><div class="detail-value">${req.years_of_service || '-'}</div></div>
+      
+      <div class="section-title">الوضع الحالي</div>
+      <div class="detail-row"><div class="detail-label">القسم الحالي</div><div class="detail-value">${req.current_department}</div></div>
+      <div class="detail-row"><div class="detail-label">المنصب الحالي</div><div class="detail-value">${req.current_position}</div></div>
+      <div class="detail-row"><div class="detail-label">الموقع الحالي</div><div class="detail-value">${req.current_location || '-'}</div></div>
+      
+      <div class="section-title">الوضع المستهدف</div>
+      <div class="detail-row"><div class="detail-label">القسم المستهدف</div><div class="detail-value">${req.target_department}</div></div>
+      <div class="detail-row"><div class="detail-label">المنصب المستهدف</div><div class="detail-value">${req.target_position}</div></div>
+      <div class="detail-row"><div class="detail-label">الموقع المستهدف</div><div class="detail-value">${req.target_location || '-'}</div></div>
+      
+      <div class="section-title">تفاصيل النقل</div>
+      <div class="detail-row"><div class="detail-label">نوع النقل</div><div class="detail-value">${typeNames[req.transfer_type] || req.transfer_type}</div></div>
+      <div class="detail-row"><div class="detail-label">تاريخ السريان</div><div class="detail-value">${req.effective_date ? new Date(req.effective_date).toLocaleDateString('ar-SA') : '-'}</div></div>
+      <div class="detail-row"><div class="detail-label">سبب النقل</div><div class="detail-value">${req.transfer_reason || '-'}</div></div>
+      <div class="detail-row"><div class="detail-label">يتطلب انتقال سكني</div><div class="detail-value">${req.requires_relocation ? 'نعم' : 'لا'}</div></div>
+      
+      <div class="section-title">حالة الطلب</div>
+      <div class="detail-row"><div class="detail-label">الحالة</div><div class="detail-value">${req.status}</div></div>
+      <div class="detail-row"><div class="detail-label">مرحلة الموافقة</div><div class="detail-value">${req.approval_stage}</div></div>
+      <div class="detail-row"><div class="detail-label">الموافقات</div><div class="detail-value">${req.approved_count || 0} من ${req.total_approvers || 0}</div></div>
+      
+      ${req.final_decision === 'pending' ? `
+        <div class="actions">
+          <button class="btn-approve" onclick="approveRequest()">✅ موافقة</button>
+          <button class="btn-reject" onclick="rejectRequest()">❌ رفض</button>
+        </div>
+      ` : ''}
+    `;
+    
+  } catch (error) {
+    console.error('Error:', error);
+    document.getElementById('detailCard').innerHTML = 
+      '<p style="text-align:center;color:#ef4444">حدث خطأ في التحميل</p>';
+  }
+}
+
+async function approveRequest() {
+  const note = prompt('ملاحظات الموافقة (اختياري):');
+  
+  try {
+    const authToken = localStorage.getItem('authToken');
+    await fetch(`http://localhost:3037/api/requests/internal_transfer/${requestId}/approve`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ note: note || undefined })
+    });
+    
+    alert('✅ تمت الموافقة بنجاح');
+    location.reload();
+  } catch (error) {
+    alert('حدث خطأ: ' + error.message);
+  }
+}
+
+async function rejectRequest() {
+  const note = prompt('سبب الرفض:');
+  if (!note) {
+    alert('يجب إدخال سبب الرفض');
+    return;
+  }
+  
+  try {
+    const authToken = localStorage.getItem('authToken');
+    await fetch(`http://localhost:3037/api/requests/internal_transfer/${requestId}/reject`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ note })
+    });
+    
+    alert('✅ تم الرفض');
+    location.reload();
+  } catch (error) {
+    alert('حدث خطأ: ' + error.message);
+  }
+}
+
+loadRequestDetails();
+</script>
+
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

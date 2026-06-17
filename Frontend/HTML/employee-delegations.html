@@ -1,0 +1,1791 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>مستشفى الملك عبدالعزيز – تفويضاتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb;
+  --ok:#dcfce7; --late:#fee2e2; --chip:#eef2ff; --warn:#fef3c7;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,Segoe UI,Arial,sans-serif}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:40px;height:40px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt small{color:var(--muted)}
+
+.container{max-width:1100px;margin:18px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.card h3{margin:0 0 10px 0}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.input,.select{height:44px;border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:#fff}
+.input{min-width:220px}
+.btn{border:1px solid var(--border);border-radius:10px;padding:10px 14px;background:#fff;cursor:pointer;font-weight:800}
+.btn.primary{background:var(--primary);border-color:transparent;color:#fff}
+.btn.success{background:#10b981;border-color:transparent;color:#fff}
+.btn.danger{background:#ef4444;border-color:transparent;color:#fff}
+.btn.warning{background:#f59e0b;border-color:transparent;color:#fff}
+
+.table{width:100%;border-collapse:separate;border-spacing:0}
+th,td{padding:10px;border-bottom:1px solid var(--border);text-align:right;vertical-align:top}
+th{font-size:13px;color:#64748b}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-act{background:var(--ok)} .b-exp{background:var(--late)} .b-pend{background:var(--warn)} .b-rej{background:var(--late)}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: modalSlideIn 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+/* نافذة إقرار قبول التفويض */
+.acceptance-modal {
+  max-width: 600px;
+  text-align: center;
+}
+
+.acceptance-header h3 {
+  color: #065f46;
+  font-weight: 800;
+  margin: 0;
+}
+
+.acceptance-body {
+  padding: 30px 20px;
+}
+
+.acceptance-icon {
+  margin-bottom: 20px;
+}
+
+.checkmark-icon {
+  width: 60px;
+  height: 60px;
+  background: #10b981;
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.confirmation-title {
+  color: #065f46;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.confirmation-text {
+  color: #6b7280;
+  margin: 0 0 20px 0;
+  font-size: 14px;
+}
+
+.delegation-details {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.detail-value {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.acknowledgement-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.acceptance-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #10b981;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.acceptance-label {
+  color: #065f46;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.acceptance-actions {
+  justify-content: center;
+  gap: 12px;
+}
+
+.acceptance-actions .btn.success {
+  background: #065f46;
+  border-color: #065f46;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+}
+
+.acceptance-actions .btn.success:disabled {
+  background: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Admin Delegation Management Styles */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px}
+.kpi .t{display:flex;justify-content:space-between;align-items:center}
+.kpi .chip{background:var(--chip);border-radius:999px;padding:4px 10px;font-size:12px;color:#334155}
+.kpi .n{font-size:28px;font-weight:800;margin-top:4px}
+
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+.form-grid .full{grid-column:1/-1}
+.scopes{display:flex;flex-wrap:wrap;gap:8px}
+.scope{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:6px 10px;background:#fff}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+@media(max-width:700px){ 
+  .input{min-width:0;width:100%} 
+  .modal-content {
+    margin: 10% auto;
+    width: 95%;
+  }
+  .kpis{grid-template-columns:1fr 1fr} 
+  .form-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt"><h1>مستشفى الملك عبدالعزيز</h1><small>تفويضاتي</small></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="location.href='employee-dashboard.html'">رجوع</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <!-- Commissioner Invitations Section -->
+  <section class="card" id="commissionerInvitationsSection" style="display: none;">
+    <h3>دعوات التفويض الإداري (Commissioner)</h3>
+    <p style="color: var(--muted); margin-bottom: 12px;">لديك دعوات لمنحك صلاحيات إدارية مؤقتة. يرجى مراجعتها والموافقة عليها.</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>رقم</th>
+          <th>الصلاحيات</th>
+          <th>صالح من</th>
+          <th>صالح حتى</th>
+          <th>المدة المتبقية</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="commissionerInvitationsTable"></tbody>
+    </table>
+  </section>
+
+  <!-- Active Commissioner Privileges Section -->
+  <section class="card" id="activeCommissionerSection" style="display: none;">
+    <h3>صلاحياتك الإدارية النشطة (Commissioner)</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>رقم</th>
+          <th>الصلاحيات</th>
+          <th>صالح حتى</th>
+          <th>المدة المتبقية</th>
+          <th>الحالة</th>
+        </tr>
+      </thead>
+      <tbody id="activeCommissionerTable"></tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h3>التفويضات</h3>
+    <div class="filters">
+      <select id="fWho" class="select" title="نوع العلاقة">
+        <option value="">الكل</option>
+        <option value="created">أنشأتُه</option>
+        <option value="from">أنا المُفوِّض</option>
+        <option value="to">مفوَّض لي</option>
+      </select>
+      <select id="fStatus" class="select" title="الحالة">
+        <option value="">كل الحالات</option>
+        <option value="pending">في انتظار القبول</option>
+        <option value="active">فعّالة</option>
+        <option value="expired">منتهية</option>
+        <option value="rejected">مرفوضة</option>
+      </select>
+      <input id="fSearch" class="input" placeholder="بحث: بريد / قسم / صلاحية">
+      <button class="btn" onclick="draw()">تطبيق</button>
+      <button class="btn" onclick="resetFilters()">مسح</button>
+      <button class="btn primary" onclick="exportCSV()">تصدير CSV</button>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>رقم</th>
+          <th>المفوِّض</th>
+          <th>المفوَّض له</th>
+          <th>الصلاحيات</th>
+          <th>المدة</th>
+          <th>الحالة</th>
+          <th>تاريخ الإنشاء</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+
+  <!-- Admin Delegation Management Components (appears after accepting delegation) -->
+  <div id="adminDelegationSection" style="display: none;">
+    <!-- KPIs -->
+    <section class="kpis">
+      <div class="kpi"><div class="t"><b>تفويضات فعّالة</b><span class="chip">Active</span></div><div class="n" id="kActive">0</div></div>
+      <div class="kpi"><div class="t"><b>تنتهي خلال 3 أيام</b><span class="chip">Soon</span></div><div class="n" id="kSoon">0</div></div>
+      <div class="kpi"><div class="t"><b>منتهية/موقوفة</b><span class="chip">Inactive</span></div><div class="n" id="kInactive">0</div></div>
+      <div class="kpi"><div class="t"><b>إجمالي</b><span class="chip">All</span></div><div class="n" id="kAll">0</div></div>
+    </section>
+
+    <!-- إنشاء/تعديل -->
+    <section class="card">
+      <h3 id="formTitle">إنشاء تفويض</h3>
+      <div class="form-grid">
+        <div>
+          <label>المفوِّض (From)</label>
+          <input id="fFrom" class="input" placeholder="from@kauh.sa">
+        </div>
+        <div>
+          <label>المفوَّض له (To)</label>
+          <input id="fTo" class="input" placeholder="to@kauh.sa">
+        </div>
+
+        <div class="full">
+          <label>الصلاحيات</label>
+          <div id="scopeBox" class="scopes">
+            <!-- أمثلة ثابتة -->
+            <label class="scope"><input type="checkbox" value="approve_clearance"> اعتماد إخلاء طرف</label>
+            <label class="scope"><input type="checkbox" value="approve_direct"> اعتماد مباشرة عمل</label>
+            <label class="scope"><input type="checkbox" value="manage_delegations"> إدارة التفويضات</label>
+            <label class="scope"><input type="checkbox" value="view_reports"> تقارير</label>
+            <!-- مخصّص -->
+            <span class="scope">
+              <input id="fCustomScope" class="input" placeholder="صلاحية مخصّصة" style="height:36px;width:180px">
+              <button class="btn" id="btnAddScope" type="button">+</button>
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <label>بداية الصلاحية</label>
+          <input id="fValidFrom" class="input" type="date">
+        </div>
+        <div>
+          <label>نهاية الصلاحية (اختياري)</label>
+          <input id="fValidTo" class="input" type="date">
+        </div>
+
+        <div class="full">
+          <label>ملاحظة (اختياري)</label>
+          <textarea id="fNote" class="textarea" placeholder="أدخل أي تفاصيل إضافية"></textarea>
+        </div>
+
+        <div>
+          <label>الحالة</label>
+          <select id="fActive" class="select">
+            <option value="true" selected>فعّال</option>
+            <option value="false">موقوف</option>
+          </select>
+        </div>
+
+        <div>
+          <label>يتطلب قبول الموظف</label>
+          <select id="fRequiresAcceptance" class="select">
+            <option value="true" selected>نعم</option>
+            <option value="false">لا</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnSave" class="btn primary">حفظ التفويض</button>
+        <button id="btnReset" class="btn">تفريغ النموذج</button>
+      </div>
+    </section>
+
+    <!-- فلاتر + جدول إدارة التفويضات -->
+    <section class="card">
+      <h3>إدارة التفويضات</h3>
+      <div class="filters">
+        <select id="flStatus" class="select">
+          <option value="">كل الحالات</option>
+          <option value="active">فعّالة</option>
+          <option value="soon">تنتهي ≤ 3 أيام</option>
+          <option value="expired">منتهية/موقوفة</option>
+        </select>
+        <input id="flSearch" class="input" placeholder="بحث: بريد/صلاحية/ملاحظة">
+        <button class="btn" onclick="drawManagement()">تطبيق</button>
+        <button class="btn" onclick="resetManagementFilters()">مسح</button>
+        <button class="btn primary" onclick="exportManagementCSV()">تصدير CSV</button>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th><th>المفوِّض</th><th>المفوَّض له</th><th>الصلاحيات</th><th>المدة</th><th>الحالة</th><th>حالة القبول</th><th>أُنشئ في</th><th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="managementRows"></tbody>
+      </table>
+    </section>
+  </div>
+</main>
+
+<!-- Modal: Reject Delegation -->
+<div id="rejectModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>رفض التفويض</h3>
+      <button class="modal-close" onclick="closeRejectModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>يرجى توضيح سبب رفض التفويض:</p>
+      <textarea id="rejectReason" class="textarea" placeholder="أدخل سبب الرفض هنا..." required></textarea>
+      
+
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeRejectModal()">إلغاء</button>
+      <button class="btn danger" onclick="confirmRejectDelegation()">تأكيد الرفض</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Accept Delegation Confirmation -->
+<div id="acceptModal" class="modal">
+  <div class="modal-content acceptance-modal">
+    <div class="modal-header acceptance-header">
+      <h3>إقرار الموافقة على التفويض</h3>
+    </div>
+    <div class="modal-body acceptance-body">
+      <div class="acceptance-icon">
+        <div class="checkmark-icon">✓</div>
+      </div>
+      <h4 class="confirmation-title">تأكيد الموافقة</h4>
+      <p class="confirmation-text">هل أنت متأكد من الموافقة على التفويض التالي:</p>
+      
+      <div class="delegation-details">
+        <div class="detail-row">
+          <span class="detail-label">رقم التفويض:</span>
+          <span class="detail-value" id="acceptDelegationId">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">المفوض:</span>
+          <span class="detail-value" id="acceptDelegator">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">المفوض له:</span>
+          <span class="detail-value" id="acceptDelegatee">—</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">تاريخ الإنشاء:</span>
+          <span class="detail-value" id="acceptCreatedAt">—</span>
+        </div>
+      </div>
+      
+      <div class="acknowledgement-checkbox">
+        <input type="checkbox" id="acceptanceCheckbox" class="acceptance-checkbox">
+        <label for="acceptanceCheckbox" class="acceptance-label">
+          أقر بأنني قد راجعت التفويض بالكامل وأوافق عليه
+        </label>
+      </div>
+    </div>
+    <div class="modal-actions acceptance-actions">
+      <button class="btn" onclick="closeAcceptModal()">إلغاء</button>
+      <button class="btn success" id="confirmAcceptBtn" onclick="confirmAcceptDelegation()" disabled>تأكيد الموافقة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Commissioner Acceptance Declaration (إقرار) -->
+<div id="commissionerDeclarationModal" class="modal">
+  <div class="modal-content" style="max-width: 700px;">
+    <div class="modal-header" style="background: linear-gradient(135deg, #2B6CB0 0%, #1e40af 100%); color: white; border-radius: 12px 12px 0 0;">
+      <h3 style="color: white; margin: 0;">إقرار قبول الصلاحيات الإدارية المؤقتة</h3>
+      <button class="modal-close" onclick="closeCommissionerDeclaration()" style="color: white; background: rgba(255,255,255,0.2);">&times;</button>
+    </div>
+    <div class="modal-body" style="max-height: 70vh; overflow-y: auto; padding: 24px;">
+      <!-- Commissioner Details -->
+      <div style="background: #f0f9ff; border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+        <h4 style="margin: 0 0 12px 0; color: #1e40af; font-size: 16px;">تفاصيل التفويض</h4>
+        <div style="display: grid; gap: 8px;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-weight: 600; color: #475569;">رقم التفويض:</span>
+            <span id="commDeclarationId" style="color: #0f172a;">—</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-weight: 600; color: #475569;">الصلاحيات الممنوحة:</span>
+            <span id="commDeclarationScopes" style="color: #0f172a; font-weight: 600;">—</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-weight: 600; color: #475569;">صالح من:</span>
+            <span id="commDeclarationValidFrom" style="color: #0f172a;">—</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-weight: 600; color: #475569;">صالح حتى:</span>
+            <span id="commDeclarationValidTo" style="color: #0f172a;">—</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="font-weight: 600; color: #475569;">المدة المتبقية:</span>
+            <span id="commDeclarationTimeRemaining" style="color: #059669; font-weight: 600;">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Responsibilities Section -->
+      <div style="background: #fffbeb; border-right: 4px solid #f59e0b; padding: 16px; margin-bottom: 16px; border-radius: 8px;">
+        <h4 style="margin: 0 0 12px 0; color: #92400e; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 20px;">⚠️</span>
+          المسؤوليات والالتزامات
+        </h4>
+        <ul style="margin: 0; padding-right: 20px; color: #78350f; line-height: 1.8;">
+          <li>أتحمل المسؤولية الكاملة عن جميع القرارات والإجراءات التي أتخذها باستخدام هذه الصلاحيات</li>
+          <li>ألتزم باستخدام الصلاحيات فقط في نطاق العمل الرسمي وضمن حدود الصلاحيات الممنوحة</li>
+          <li>أتعهد بالحفاظ على سرية المعلومات والبيانات التي أطلع عليها</li>
+          <li>ألتزم بإتباع جميع السياسات والإجراءات المعمول بها في المستشفى</li>
+          <li>أتعهد بعدم تفويض هذه الصلاحيات لأي شخص آخر دون تصريح رسمي</li>
+        </ul>
+      </div>
+
+      <!-- Consequences Section -->
+      <div style="background: #fef2f2; border-right: 4px solid #ef4444; padding: 16px; margin-bottom: 16px; border-radius: 8px;">
+        <h4 style="margin: 0 0 12px 0; color: #991b1b; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 20px;">⚖️</span>
+          العواقب والإجراءات القانونية
+        </h4>
+        <ul style="margin: 0; padding-right: 20px; color: #7f1d1d; line-height: 1.8;">
+          <li>أدرك أن سوء استخدام هذه الصلاحيات قد يؤدي إلى إجراءات تأديبية</li>
+          <li>أعلم أن جميع الإجراءات التي أقوم بها سيتم تسجيلها ومراقبتها في نظام التدقيق</li>
+          <li>أوافق على أن يتم سحب هذه الصلاحيات فوراً في حال إساءة استخدامها</li>
+          <li>أتحمل المسؤولية القانونية عن أي ضرر ينتج عن قراراتي الخاطئة</li>
+        </ul>
+      </div>
+
+      <!-- Terms Section -->
+      <div style="background: #f0fdf4; border-right: 4px solid #10b981; padding: 16px; margin-bottom: 20px; border-radius: 8px;">
+        <h4 style="margin: 0 0 12px 0; color: #065f46; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 20px;">📋</span>
+          الشروط والأحكام
+        </h4>
+        <ul style="margin: 0; padding-right: 20px; color: #064e3b; line-height: 1.8;">
+          <li>هذه الصلاحيات مؤقتة وتنتهي تلقائياً عند انتهاء المدة المحددة</li>
+          <li>يحق للإدارة إلغاء أو تعليق هذه الصلاحيات في أي وقت دون إشعار مسبق</li>
+          <li>يجب استخدام هذه الصلاحيات خلال ساعات العمل الرسمية فقط (ما لم يُذكر خلاف ذلك)</li>
+          <li>يتم تسجيل جميع الأنشطة في سجل التدقيق الإلكتروني الذي يمكن مراجعته في أي وقت</li>
+        </ul>
+      </div>
+
+      <!-- Acknowledgment Checkboxes -->
+      <div style="border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; background: #f9fafb;">
+        <h4 style="margin: 0 0 16px 0; color: #1e40af; text-align: center;">الإقرارات المطلوبة</h4>
+        
+        <label style="display: flex; align-items: start; gap: 12px; margin-bottom: 16px; cursor: pointer; padding: 12px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <input type="checkbox" id="commAck1" style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
+          <span style="flex: 1; font-size: 14px; line-height: 1.6;">
+            <strong>أقر بأنني</strong> قرأت وفهمت جميع المسؤوليات والالتزامات المذكورة أعلاه
+          </span>
+        </label>
+
+        <label style="display: flex; align-items: start; gap: 12px; margin-bottom: 16px; cursor: pointer; padding: 12px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <input type="checkbox" id="commAck2" style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
+          <span style="flex: 1; font-size: 14px; line-height: 1.6;">
+            <strong>أتعهد</strong> باستخدام هذه الصلاحيات بمسؤولية وحكمة وفقاً لمصلحة العمل
+          </span>
+        </label>
+
+        <label style="display: flex; align-items: start; gap: 12px; margin-bottom: 16px; cursor: pointer; padding: 12px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <input type="checkbox" id="commAck3" style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
+          <span style="flex: 1; font-size: 14px; line-height: 1.6;">
+            <strong>أدرك</strong> أن جميع قراراتي وإجراءاتي سيتم تسجيلها ومراجعتها
+          </span>
+        </label>
+
+        <label style="display: flex; align-items: start; gap: 12px; cursor: pointer; padding: 12px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <input type="checkbox" id="commAck4" style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
+          <span style="flex: 1; font-size: 14px; line-height: 1.6;">
+            <strong>أوافق</strong> على تحمل المسؤولية الكاملة عن جميع العواقب المترتبة على استخدام هذه الصلاحيات
+          </span>
+        </label>
+      </div>
+
+      <!-- Signature Section -->
+      <div style="margin-top: 20px; padding: 16px; background: #fefce8; border: 1px solid #fde047; border-radius: 8px;">
+        <p style="margin: 0 0 12px 0; font-size: 13px; color: #713f12; text-align: center;">
+          <strong>📝 ملاحظة:</strong> بالضغط على "أوافق وأقبل"، فإنك توافق على جميع ما ورد أعلاه
+        </p>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #78716c; margin-top: 12px;">
+          <span>التاريخ والوقت: <strong id="commDeclarationTimestamp">—</strong></span>
+          <span>عنوان IP سيتم تسجيله للمراجعة</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-actions" style="padding: 20px; background: #f9fafb; border-radius: 0 0 12px 12px;">
+      <button class="btn" onclick="closeCommissionerDeclaration()" style="padding: 12px 24px;">إلغاء</button>
+      <button class="btn success" id="confirmCommissionerBtn" onclick="confirmCommissionerAcceptance()" disabled style="padding: 12px 32px; font-size: 15px; font-weight: 700;">
+        ✓ أوافق وأقبل
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* حماية */
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser){ location.href='login.html'; }
+const myEmail = (authUser.email||'').toLowerCase();
+function logout(){ localStorage.removeItem('authUser'); location.href='login.html'; }
+
+/* بيانات */
+let delegsAll = JSON.parse(localStorage.getItem('delegations')||'[]'); // توقع الشكل: {id,from,to,scopes[],active,bool,validFrom,validTo,createdAt,createdBy,status,rejectedAt,rejectReason}
+const now = Date.now();
+
+/* إضافة حالة جديدة للتفويضات */
+function addDelegationStatus() {
+  delegsAll = delegsAll.map(d => ({
+    ...d,
+    status: d.status || 'pending', // pending, active, expired, rejected
+    rejectedAt: d.rejectedAt || null,
+    rejectReason: d.rejectReason || null
+  }));
+  localStorage.setItem('delegations', JSON.stringify(delegsAll));
+}
+
+/* رسم */
+function mineOnly(){
+  return delegsAll.filter(d=>{
+    const from = (d.from||'').toLowerCase();
+    const to   = (d.to||'').toLowerCase();
+    const by   = (d.createdBy||'').toLowerCase();
+    return [from,to,by].includes(myEmail);
+  });
+}
+
+function isActive(d){
+  if(d.status === 'rejected') return false;
+  if(d.active === false) return false;
+  if(d.validTo && d.validTo < now) return false;
+  return true;
+}
+
+function isPending(d) {
+  return d.status === 'pending' && (d.to||'').toLowerCase() === myEmail;
+}
+
+function fmt(ts){
+  return ts ? new Date(ts).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'}) : '—';
+}
+
+function getStatusBadge(d) {
+  if (d.status === 'rejected') return 'b-rej';
+  if (isPending(d)) return 'b-pend';
+  if (isActive(d)) return 'b-act';
+  return 'b-exp';
+}
+
+function getStatusText(d) {
+  if (d.status === 'rejected') return 'مرفوض';
+  if (isPending(d)) return 'في انتظار القبول';
+  if (isActive(d)) return 'فعّال';
+  return 'منتهي/موقوف';
+}
+
+function draw(){
+  const who = fWho.value;
+  const st  = fStatus.value;
+  const q   = (fSearch.value||'').toLowerCase().trim();
+
+  let list = mineOnly().filter(d=>{
+    if(who==='created' && (d.createdBy||'').toLowerCase()!==myEmail) return false;
+    if(who==='from'    && (d.from||'').toLowerCase()!==myEmail) return false;
+    if(who==='to'      && (d.to||'').toLowerCase()!==myEmail) return false;
+
+    if(st==='pending' && !isPending(d)) return false;
+    if(st==='active'  && !isActive(d)) return false;
+    if(st==='expired' && isActive(d)) return false;
+    if(st==='rejected' && d.status !== 'rejected') return false;
+
+    if(q){
+      const hay = `${d.id} ${d.from||''} ${d.to||''} ${(d.scopes||[]).join(' ')}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  }).sort((a,b)=> (b.createdAt||0)-(a.createdAt||0));
+
+  const tb = document.getElementById('rows'); tb.innerHTML='';
+  if(list.length===0){
+    tb.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#64748b">لا توجد تفويضات</td></tr>`;
+    return;
+  }
+  
+  list.forEach(d=>{
+    const badge = getStatusBadge(d);
+    const statusText = getStatusText(d);
+    const scopes = (d.scopes && d.scopes.length) ? d.scopes.join('، ') : '—';
+    const dur = `${fmt(d.validFrom)} — ${fmt(d.validTo)}`;
+    const isPendingForMe = isPending(d);
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${d.id||'-'}</td>
+      <td>${d.from||'-'}</td>
+      <td>${d.to||'-'}</td>
+      <td>${scopes}</td>
+      <td>${dur}</td>
+      <td><span class="badge ${badge}">${statusText}</span></td>
+      <td>${fmt(d.createdAt)}</td>
+      <td>
+        ${isPendingForMe ? `
+          <button class="btn success" onclick="acceptDelegation(${d.id})">قبول</button>
+          <button class="btn danger" onclick="showRejectModal(${d.id})">رفض</button>
+        ` : ''}
+        ${d.status === 'rejected' && d.rejectReason ? `
+          <button class="btn warning" onclick="showRejectReason(${d.id})">عرض سبب الرفض</button>
+        ` : ''}
+      </td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+/* قبول التفويض */
+function acceptDelegation(id) {
+  const d = delegsAll.find(x => x.id === id);
+  if (!d) return;
+  
+  // عرض نافذة الإقرار
+  showAcceptModal(d);
+}
+
+/* عرض مودال الرفض */
+let currentRejectId = null;
+
+function showRejectModal(id) {
+  currentRejectId = id;
+  document.getElementById('rejectModal').style.display = 'block';
+  document.getElementById('rejectReason').value = '';
+  document.getElementById('rejectReason').focus();
+}
+
+function closeRejectModal() {
+  document.getElementById('rejectModal').style.display = 'none';
+  currentRejectId = null;
+}
+
+/* عرض مودال قبول التفويض */
+let currentAcceptDelegation = null;
+
+function showAcceptModal(delegation) {
+  currentAcceptDelegation = delegation;
+  
+  // ملء تفاصيل التفويض
+  document.getElementById('acceptDelegationId').textContent = `#${delegation.id}`;
+  document.getElementById('acceptDelegator').textContent = delegation.from || '—';
+  document.getElementById('acceptDelegatee').textContent = delegation.to || '—';
+  document.getElementById('acceptCreatedAt').textContent = fmt(delegation.createdAt);
+  
+  // إعادة تعيين checkbox
+  document.getElementById('acceptanceCheckbox').checked = false;
+  document.getElementById('confirmAcceptBtn').disabled = true;
+  
+  // عرض المودال
+  document.getElementById('acceptModal').style.display = 'block';
+}
+
+function closeAcceptModal() {
+  document.getElementById('acceptModal').style.display = 'none';
+  currentAcceptDelegation = null;
+}
+
+function confirmAcceptDelegation() {
+  if (!currentAcceptDelegation) return;
+  
+  const d = currentAcceptDelegation;
+  
+  // تحديث حالة التفويض
+  d.status = 'active';
+  d.acceptedAt = now;
+  localStorage.setItem('delegations', JSON.stringify(delegsAll));
+  
+  // إرسال تنبيه للادمن المُرسل للتفويض
+  sendNotificationToAdmin(d.from, `تم قبول التفويض #${d.id} من ${d.to}`, {
+    type: 'delegation_accepted',
+    delegationId: d.id,
+    acceptedBy: d.to,
+    acceptedAt: now
+  });
+  
+  // Trigger storage event to notify other pages
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'delegations',
+    newValue: JSON.stringify(delegsAll)
+  }));
+  
+  closeAcceptModal();
+  alert('تم قبول التفويض بنجاح');
+  draw();
+}
+
+
+
+function confirmRejectDelegation() {
+  const reason = document.getElementById('rejectReason').value.trim();
+  if (!reason) {
+    alert('يرجى إدخال سبب الرفض');
+    return;
+  }
+  
+  if (!currentRejectId) return;
+  
+  const d = delegsAll.find(x => x.id === currentRejectId);
+  if (!d) return;
+  
+  // تحديث حالة التفويض
+  d.status = 'rejected';
+  d.rejectedAt = now;
+  d.rejectReason = reason;
+  localStorage.setItem('delegations', JSON.stringify(delegsAll));
+  
+  // إرسال تنبيه للادمن المُرسل للتفويض
+  const adminEmail = d.from || d.createdBy;
+  if (adminEmail) {
+    // إرسال إشعار للادمن المحدد
+    sendNotificationToAdmin(adminEmail, `تم رفض التفويض #${d.id} من ${d.to}`, {
+      type: 'delegation_rejected',
+      delegationId: d.id,
+      rejectedBy: d.to,
+      rejectedAt: now,
+      rejectReason: reason
+    });
+    
+    // إرسال إشعار عام لجميع الأدمن
+    sendNotificationToAdmin('admins', `تم رفض تفويض جديد #${d.id} من ${d.to}`, {
+      type: 'delegation_rejected',
+      delegationId: d.id,
+      rejectedBy: d.to,
+      rejectedAt: now,
+      rejectReason: reason
+    });
+    
+    console.log('تم إرسال إشعار رفض التفويض للادمن:', adminEmail);
+  } else {
+    console.error('لم يتم العثور على بريد إلكتروني للادمن في التفويض:', d);
+  }
+  
+  // Trigger storage event to notify other pages
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'delegations',
+    newValue: JSON.stringify(delegsAll)
+  }));
+  
+  closeRejectModal();
+  alert('تم رفض التفويض بنجاح');
+  draw();
+}
+
+/* عرض سبب الرفض */
+function showRejectReason(id) {
+  const d = delegsAll.find(x => x.id === id);
+  if (!d || !d.rejectReason) return;
+  
+  alert(`سبب الرفض:\n\n${d.rejectReason}\n\nتاريخ الرفض: ${fmt(d.rejectedAt)}`);
+}
+
+/* إرسال تنبيه للادمن */
+function sendNotificationToAdmin(adminEmail, title, payload = {}) {
+  try {
+    const notifications = NotificationStore.getAll();
+    
+    // إنشاء إشعار جديد
+    const newNotification = {
+      id: 'n' + Date.now() + Math.random().toString(36).substr(2, 9),
+      title: title,
+      time: new Date().toLocaleString('ar-SA'),
+      createdAt: Date.now(),
+      unread: true,
+      recipient: adminEmail.toLowerCase(),
+      type: 'delegation_rejected',
+      ...payload
+    };
+    
+    // إضافة الإشعار في بداية المصفوفة
+    notifications.unshift(newNotification);
+    
+    // حفظ الإشعارات
+    NotificationStore.setAll(notifications);
+    
+    // إرسال حدث لتحديث الصفحات الأخرى
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: NotificationStore.getStorageKey(),
+      newValue: JSON.stringify(notifications)
+    }));
+    
+    console.log('تم إرسال إشعار للادمن:', adminEmail, newNotification);
+    
+  } catch (error) {
+    console.error('خطأ في إرسال الإشعار:', error);
+  }
+}
+
+function resetFilters(){ fWho.value=''; fStatus.value=''; fSearch.value=''; draw(); }
+
+function exportCSV(){
+  const list = mineOnly();
+  const rows = [['ID','From','To','Scopes','ValidFrom','ValidTo','Status','CreatedAt','CreatedBy']];
+  list.forEach(d=>{
+    rows.push([
+      d.id||'', 
+      d.from||'', 
+      d.to||'', 
+      (d.scopes||[]).join('|'), 
+      d.validFrom||'', 
+      d.validTo||'', 
+      getStatusText(d), 
+      d.createdAt||'', 
+      d.createdBy||''
+    ]);
+  });
+  const csv = rows.map(r=>r.map(v=>String(v).includes(',')?`"${v}"`:v).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'}), url = URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='my_delegations.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+/* إغلاق المودال عند النقر خارجه */
+window.onclick = function(event) {
+  const rejectModal = document.getElementById('rejectModal');
+  const acceptModal = document.getElementById('acceptModal');
+  const commDeclarationModal = document.getElementById('commissionerDeclarationModal');
+  
+  if (event.target === rejectModal) {
+    closeRejectModal();
+  }
+  
+  if (event.target === acceptModal) {
+    closeAcceptModal();
+  }
+  
+  if (event.target === commDeclarationModal) {
+    closeCommissionerDeclaration();
+  }
+}
+
+/* معالج حدث checkbox الإقرار */
+document.addEventListener('DOMContentLoaded', function() {
+  const checkbox = document.getElementById('acceptanceCheckbox');
+  const confirmBtn = document.getElementById('confirmAcceptBtn');
+  
+  if (checkbox && confirmBtn) {
+    checkbox.addEventListener('change', function() {
+      confirmBtn.disabled = !this.checked;
+    });
+  }
+});
+
+/* مراقبة التغييرات في التفويضات */
+window.addEventListener('storage', function(e) {
+  if (e.key === 'delegations') {
+    // Refresh data when delegation changes
+    setTimeout(() => {
+      delegsAll = JSON.parse(localStorage.getItem('delegations') || '[]');
+      draw();
+    }, 100);
+  }
+});
+
+/* ===== إدارة التفويضات (تظهر بعد قبول التفويض) ===== */
+let delegsManagement = []; // نسخة منفصلة لإدارة التفويضات
+let editingId = null;
+
+/* أدوات إدارة التفويضات */
+const THREE_D = 3*24*60*60*1000;
+const todayStr = () => new Date().toISOString().slice(0,10);
+function toDateVal(ts){ if(!ts) return ''; const d=new Date(ts); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+function fromDateVal(val){ if(!val) return null; const d = new Date(val+'T00:00:00'); return d.getTime(); }
+function isActiveManagement(d){
+  if(d.active===false) return false;
+  if(d.validTo && d.validTo < Date.now()) return false;
+  if(d.validFrom && d.validFrom > Date.now()) return false;
+  return true;
+}
+function isSoonManagement(d){
+  if(!d.validTo) return false;
+  const diff = d.validTo - Date.now();
+  return diff>0 && diff <= THREE_D;
+}
+
+/* فحص ما إذا كان المستخدم لديه صلاحيات إدارة التفويضات */
+function hasManageDelegationsPermission() {
+  const activeDelegations = delegsAll.filter(d => {
+    return d.status === 'active' && 
+           (d.to||'').toLowerCase() === myEmail &&
+           isActive(d) &&
+           (d.scopes||[]).includes('manage_delegations');
+  });
+  return activeDelegations.length > 0;
+}
+
+/* إظهار/إخفاء قسم إدارة التفويضات */
+function toggleAdminDelegationSection() {
+  const adminSection = document.getElementById('adminDelegationSection');
+  if (adminSection) {
+    if (hasManageDelegationsPermission()) {
+      adminSection.style.display = 'block';
+      loadManagementDelegations();
+      kpisManagement();
+    } else {
+      adminSection.style.display = 'none';
+    }
+  }
+}
+
+/* تحميل التفويضات للإدارة */
+function loadManagementDelegations() {
+  delegsManagement = [...delegsAll]; // نسخ جميع التفويضات
+}
+
+/* KPIs للإدارة */
+function kpisManagement(){
+  const all = delegsManagement.length;
+  const act = delegsManagement.filter(isActiveManagement).length;
+  const soon= delegsManagement.filter(isSoonManagement).length;
+  const inact = all - act;
+  
+  const kActiveEl = document.getElementById('kActive');
+  const kSoonEl = document.getElementById('kSoon');
+  const kInactiveEl = document.getElementById('kInactive');
+  const kAllEl = document.getElementById('kAll');
+  
+  if (kActiveEl) kActiveEl.textContent = act;
+  if (kSoonEl) kSoonEl.textContent = soon;
+  if (kInactiveEl) kInactiveEl.textContent = inact;
+  if (kAllEl) kAllEl.textContent = all;
+}
+
+/* إعداد أحداث إدارة التفويضات */
+function setupManagementEvents() {
+  // إضافة صلاحية مخصصة
+  const btnAddScope = document.getElementById('btnAddScope');
+  if (btnAddScope) {
+    btnAddScope.onclick = ()=> {
+      const fCustomScope = document.getElementById('fCustomScope');
+      const scopeBox = document.getElementById('scopeBox');
+      const v = (fCustomScope.value||'').trim();
+      if(!v) return;
+      const tag = document.createElement('label');
+      tag.className='scope';
+      const inp = document.createElement('input');
+      inp.type='checkbox'; inp.value=v; inp.checked=true;
+      tag.appendChild(inp);
+      tag.appendChild(document.createTextNode(' '+v));
+      scopeBox.insertBefore(tag, scopeBox.lastElementChild);
+      fCustomScope.value='';
+    };
+  }
+
+  // حفظ التفويض
+  const btnSave = document.getElementById('btnSave');
+  if (btnSave) {
+    btnSave.onclick = ()=>{
+      const base = validateManagementForm(); 
+      if(!base) return;
+
+      const obj = {
+        id: editingId || Date.now(),
+        from: base.from,
+        to: base.to,
+        scopes: base.scopes,
+        note: document.getElementById('fNote').value.trim() || null,
+        active: document.getElementById('fActive').value==='true',
+        validFrom: fromDateVal(document.getElementById('fValidFrom').value) || Date.now(),
+        validTo: fromDateVal(document.getElementById('fValidTo').value),
+        createdAt: editingId ? (delegsAll.find(d=>d.id===editingId)?.createdAt || Date.now()) : Date.now(),
+        createdBy: myEmail,
+        status: document.getElementById('fRequiresAcceptance').value === 'true' ? 'pending' : 'active'
+      };
+
+      if(editingId){
+        const i = delegsAll.findIndex(d=>d.id===editingId);
+        if(i>-1) delegsAll[i]=obj;
+        localStorage.setItem('delegations', JSON.stringify(delegsAll));
+        sendNotificationToAdmin(obj.to, `تم تعديل تفويضك #${obj.id}`, {refKind:'deleg', refId:obj.id});
+        alert('تم حفظ التعديل.');
+      } else {
+        delegsAll.push(obj);
+        localStorage.setItem('delegations', JSON.stringify(delegsAll));
+        sendNotificationToAdmin(obj.to, `تم تفويضك بصلاحيات جديدة (#${obj.id})`, {refKind:'deleg', refId:obj.id});
+        sendNotificationToAdmin(obj.from, `تم تسجيل تفويضك (#${obj.id})`, {refKind:'deleg', refId:obj.id});
+        alert('تم إنشاء التفويض.');
+      }
+      
+      // Trigger storage event
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'delegations',
+        newValue: JSON.stringify(delegsAll)
+      }));
+      
+      resetManagementForm(); 
+      loadManagementDelegations();
+      kpisManagement(); 
+      drawManagement();
+    };
+  }
+
+  // إعادة تعيين النموذج
+  const btnReset = document.getElementById('btnReset');
+  if (btnReset) {
+    btnReset.onclick = resetManagementForm;
+  }
+}
+
+/* قراءة الصلاحيات المحددة */
+function readScopes(){
+  const scopeBox = document.getElementById('scopeBox');
+  if (!scopeBox) return [];
+  return Array.from(scopeBox.querySelectorAll('input[type="checkbox"]:checked')).map(i=>i.value);
+}
+
+/* تعيين الصلاحيات */
+function setScopes(values){
+  const scopeBox = document.getElementById('scopeBox');
+  if (!scopeBox) return;
+  const all = Array.from(scopeBox.querySelectorAll('input[type="checkbox"]'));
+  all.forEach(i=> i.checked = values.includes(i.value));
+}
+
+/* إعادة تعيين النموذج */
+function resetManagementForm(){
+  editingId=null;
+  const formTitle = document.getElementById('formTitle');
+  const fFrom = document.getElementById('fFrom');
+  const fTo = document.getElementById('fTo');
+  const fValidFrom = document.getElementById('fValidFrom');
+  const fValidTo = document.getElementById('fValidTo');
+  const fNote = document.getElementById('fNote');
+  const fActive = document.getElementById('fActive');
+  
+  if (formTitle) formTitle.textContent='إنشاء تفويض';
+  if (fFrom) fFrom.value = myEmail; // تعيين البريد الحالي كمفوض افتراضي
+  if (fTo) fTo.value='';
+  setScopes([]);
+  if (fValidFrom) fValidFrom.value=todayStr(); 
+  if (fValidTo) fValidTo.value='';
+  if (fNote) fNote.value='';
+  if (fActive) fActive.value='true';
+}
+
+/* التحقق من صحة النموذج */
+function validateManagementForm(){
+  const fFrom = document.getElementById('fFrom');
+  const fTo = document.getElementById('fTo');
+  const from = fFrom ? fFrom.value.trim().toLowerCase() : '';
+  const to = fTo ? fTo.value.trim().toLowerCase() : '';
+  
+  if(!from || !to){ alert('يرجى إدخال بريديْ المفوِّض والمفوَّض له.'); return null; }
+  if(from===to){ alert('لا يمكن تفويض نفس الشخص لنفسه.'); return null; }
+  const scopes = readScopes();
+  if(scopes.length===0){ alert('اختر صلاحية واحدة على الأقل.'); return null; }
+  return { from,to,scopes };
+}
+
+/* رسم جدول إدارة التفويضات */
+function drawManagement(){
+  const flStatus = document.getElementById('flStatus');
+  const flSearch = document.getElementById('flSearch');
+  const status = flStatus ? flStatus.value : '';
+  const q = flSearch ? (flSearch.value||'').toLowerCase().trim() : '';
+
+  let list = delegsManagement.filter(d=>{
+    if(status==='active'  && !isActiveManagement(d)) return false;
+    if(status==='expired' &&  isActiveManagement(d)) return false;
+    if(status==='soon'    && !isSoonManagement(d)) return false;
+    if(q){
+      const hay = `${d.id} ${d.from||''} ${d.to||''} ${(d.scopes||[]).join(' ')} ${d.note||''}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  }).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+  const tb = document.getElementById('managementRows');
+  if (!tb) return;
+  
+  tb.innerHTML='';
+  if(list.length===0){
+    tb.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#64748b">لا توجد بيانات</td></tr>`;
+    return;
+  }
+  
+  list.forEach(d=>{
+    const badge = isActiveManagement(d) ? 'b-act' : 'b-exp';
+    const soon  = isSoonManagement(d) ? `<span class="badge b-soon">قرب الانتهاء</span>` : '';
+    const scopes = (d.scopes||[]).join('، ');
+    const dur = `${fmt(d.validFrom)} — ${fmt(d.validTo)}`;
+    
+    // حالة القبول
+    let acceptanceStatus = '';
+    if (d.status === 'rejected') {
+      acceptanceStatus = '<span class="badge b-rej">مرفوض</span>';
+    } else if (d.status === 'active') {
+      acceptanceStatus = '<span class="badge b-act">مقبول</span>';
+    } else if (d.status === 'pending') {
+      acceptanceStatus = '<span class="badge b-pend">في الانتظار</span>';
+    } else {
+      acceptanceStatus = '<span class="badge">غير محدد</span>';
+    }
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${d.id}</td>
+      <td>${d.from||'-'}</td>
+      <td>${d.to||'-'}</td>
+      <td>${scopes||'—'}${d.note?'<br><small style="color:#64748b">'+d.note+'</small>':''}</td>
+      <td>${dur}</td>
+      <td><span class="badge ${badge}">${isActiveManagement(d)?'فعّال':'منتهي/موقوف'}</span> ${soon}</td>
+      <td>${acceptanceStatus}</td>
+      <td>${fmt(d.createdAt)}</td>
+      <td class="row-actions">
+        <button class="btn" onclick="editManagementRow(${d.id})">تعديل</button>
+        <button class="btn warn" onclick="extendManagementDays(${d.id},7)">تمديد 7 أيام</button>
+        <button class="btn" onclick="toggleManagementActive(${d.id})">${isActiveManagement(d)?'إيقاف':'تفعيل'}</button>
+        <button class="btn danger" onclick="removeManagementRow(${d.id})">حذف</button>
+      </td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+/* تحرير صف إدارة التفويضات */
+function editManagementRow(id){
+  const d = delegsManagement.find(x=>x.id===id); 
+  if(!d) return;
+  editingId = id;
+  
+  const formTitle = document.getElementById('formTitle');
+  const fFrom = document.getElementById('fFrom');
+  const fTo = document.getElementById('fTo');
+  const fValidFrom = document.getElementById('fValidFrom');
+  const fValidTo = document.getElementById('fValidTo');
+  const fNote = document.getElementById('fNote');
+  const fActive = document.getElementById('fActive');
+  
+  if (formTitle) formTitle.textContent = `تعديل تفويض #${id}`;
+  if (fFrom) fFrom.value=d.from; 
+  if (fTo) fTo.value=d.to;
+  setScopes(d.scopes||[]);
+  if (fValidFrom) fValidFrom.value = toDateVal(d.validFrom);
+  if (fValidTo) fValidTo.value = toDateVal(d.validTo);
+  if (fNote) fNote.value = d.note || '';
+  if (fActive) fActive.value = d.active ? 'true':'false';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* تبديل حالة التفعيل */
+function toggleManagementActive(id){
+  const d = delegsAll.find(x=>x.id===id); 
+  if(!d) return;
+  const wasActive = d.active;
+  d.active = !d.active; 
+  localStorage.setItem('delegations', JSON.stringify(delegsAll));
+  
+  loadManagementDelegations();
+  kpisManagement(); 
+  drawManagement();
+  
+  const msg = d.active ? 'تم تفعيل' : 'تم إيقاف';
+  sendNotificationToAdmin(d.to, `${msg} تفويضك #${d.id}`, {refKind:'deleg', refId:d.id});
+  
+  // Trigger storage event
+  if (wasActive !== d.active) {
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'delegations',
+      newValue: JSON.stringify(delegsAll)
+    }));
+  }
+}
+
+/* تمديد التفويض */
+function extendManagementDays(id, days=7){
+  const d = delegsAll.find(x=>x.id===id); 
+  if(!d) return;
+  const oldValidTo = d.validTo;
+  const base = d.validTo && d.validTo > Date.now() ? d.validTo : Date.now();
+  d.validTo = base + days*24*60*60*1000;
+  localStorage.setItem('delegations', JSON.stringify(delegsAll));
+  
+  loadManagementDelegations();
+  kpisManagement(); 
+  drawManagement();
+  
+  sendNotificationToAdmin(d.to, `تم تمديد تفويضك #${d.id} ${days} يوم`, {refKind:'deleg', refId:d.id});
+  
+  // Trigger storage event
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'delegations',
+    newValue: JSON.stringify(delegsAll)
+  }));
+}
+
+/* حذف التفويض */
+function removeManagementRow(id){
+  if(!confirm('حذف التفويض نهائيًا؟')) return;
+  const i = delegsAll.findIndex(x=>x.id===id); 
+  if(i<0) return;
+  const d = delegsAll[i];
+  delegsAll.splice(i,1); 
+  localStorage.setItem('delegations', JSON.stringify(delegsAll));
+  
+  loadManagementDelegations();
+  kpisManagement(); 
+  drawManagement();
+  
+  sendNotificationToAdmin(d.to, `تم حذف تفويضك #${d.id}`, {refKind:'deleg', refId:d.id});
+  
+  // Trigger storage event
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'delegations',
+    newValue: JSON.stringify(delegsAll)
+  }));
+}
+
+/* إعادة تعيين فلاتر الإدارة */
+function resetManagementFilters(){ 
+  const flStatus = document.getElementById('flStatus');
+  const flSearch = document.getElementById('flSearch');
+  if (flStatus) flStatus.value=''; 
+  if (flSearch) flSearch.value=''; 
+  drawManagement(); 
+}
+
+/* تصدير CSV للإدارة */
+function exportManagementCSV(){
+  const rows=[['ID','From','To','Scopes','Note','Active','ValidFrom','ValidTo','CreatedAt','CreatedBy']];
+  delegsManagement.forEach(d=>{
+    rows.push([d.id||'',d.from||'',d.to||'',(d.scopes||[]).join('|'),d.note||'',isActiveManagement(d),d.validFrom||'',d.validTo||'',d.createdAt||'',d.createdBy||'']);
+  });
+  const csv=rows.map(r=>r.map(v=>String(v).includes(',')?`"${v}"`:v).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}), url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='managed_delegations.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+/* تحديث قبول التفويض ليظهر قسم الإدارة */
+function confirmAcceptDelegationEnhanced() {
+  if (!currentAcceptDelegation) return;
+  
+  const d = currentAcceptDelegation;
+  
+  // تحديث حالة التفويض
+  d.status = 'active';
+  d.acceptedAt = now;
+  localStorage.setItem('delegations', JSON.stringify(delegsAll));
+  
+  // إرسال تنبيه للادمن المُرسل للتفويض
+  sendNotificationToAdmin(d.from, `تم قبول التفويض #${d.id} من ${d.to}`, {
+    type: 'delegation_accepted',
+    delegationId: d.id,
+    acceptedBy: d.to,
+    acceptedAt: now
+  });
+  
+  // Trigger storage event to notify other pages
+  window.dispatchEvent(new StorageEvent('storage', {
+    key: 'delegations',
+    newValue: JSON.stringify(delegsAll)
+  }));
+  
+  closeAcceptModal();
+  alert('تم قبول التفويض بنجاح');
+  draw();
+  
+  // إظهار قسم إدارة التفويضات إذا كان لديه صلاحية
+  toggleAdminDelegationSection();
+}
+
+/* ===== COMMISSIONER TICKETS MANAGEMENT ===== */
+let commissionerTickets = [];
+
+/* تحميل Commissioner Tickets من API */
+async function loadCommissionerTickets() {
+  try {
+    if (!window.apiClient) {
+      console.warn('API client not available');
+      return;
+    }
+
+    const response = await window.apiClient.makeRequest('/commissioner/tickets/mine');
+    
+    if (response && response.success) {
+      commissionerTickets = response.data || [];
+      console.log('✅ Loaded commissioner tickets:', commissionerTickets);
+      displayCommissionerTickets();
+    }
+  } catch (error) {
+    console.error('Failed to load commissioner tickets:', error);
+  }
+}
+
+/* عرض Commissioner Tickets */
+function displayCommissionerTickets() {
+  const now = new Date();
+  
+  // الحصول على التذاكر المقبولة والمرفوضة من localStorage
+  const acceptedTickets = JSON.parse(localStorage.getItem('acceptedCommissionerTickets') || '[]');
+  const declinedTickets = JSON.parse(localStorage.getItem('declinedCommissionerTickets') || '[]');
+  const declinedIds = declinedTickets.map(t => t.ticketId);
+  
+  // تصنيف التذاكر
+  const pendingTickets = commissionerTickets.filter(ticket => {
+    const validFrom = new Date(ticket.valid_from);
+    const validTo = new Date(ticket.valid_to);
+    const isAccepted = acceptedTickets.includes(ticket.id);
+    const isDeclined = declinedIds.includes(ticket.id);
+    return !ticket.revoked_at && now >= validFrom && now <= validTo && !isAccepted && !isDeclined;
+  });
+  
+  const activeTickets = commissionerTickets.filter(ticket => {
+    const validFrom = new Date(ticket.valid_from);
+    const validTo = new Date(ticket.valid_to);
+    const isAccepted = acceptedTickets.includes(ticket.id);
+    return !ticket.revoked_at && now >= validFrom && now <= validTo && isAccepted;
+  });
+  
+  // عرض الدعوات المعلقة
+  const invitationsSection = document.getElementById('commissionerInvitationsSection');
+  const invitationsTable = document.getElementById('commissionerInvitationsTable');
+  
+  if (pendingTickets.length > 0) {
+    invitationsSection.style.display = 'block';
+    invitationsTable.innerHTML = '';
+    
+    pendingTickets.forEach(ticket => {
+      const scopes = JSON.parse(ticket.scopes_json || '[]');
+      const scopesText = scopes.map(s => translateScope(s)).join('، ');
+      const validFrom = new Date(ticket.valid_from);
+      const validTo = new Date(ticket.valid_to);
+      const timeRemaining = getTimeRemaining(validTo);
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>#${ticket.id}</td>
+        <td>${scopesText}</td>
+        <td>${validFrom.toLocaleDateString('ar-SA')}</td>
+        <td>${validTo.toLocaleDateString('ar-SA')}</td>
+        <td>${timeRemaining}</td>
+        <td>
+          <button class="btn success" onclick="acceptCommissionerTicket(${ticket.id})">قبول</button>
+          <button class="btn danger" onclick="declineCommissionerTicket(${ticket.id})">رفض</button>
+        </td>
+      `;
+      invitationsTable.appendChild(tr);
+    });
+  } else {
+    invitationsSection.style.display = 'none';
+  }
+  
+  // عرض الصلاحيات النشطة
+  const activeSection = document.getElementById('activeCommissionerSection');
+  const activeTable = document.getElementById('activeCommissionerTable');
+  
+  if (activeTickets.length > 0) {
+    activeSection.style.display = 'block';
+    activeTable.innerHTML = '';
+    
+    activeTickets.forEach(ticket => {
+      const scopes = JSON.parse(ticket.scopes_json || '[]');
+      const scopesText = scopes.map(s => translateScope(s)).join('، ');
+      const validTo = new Date(ticket.valid_to);
+      const timeRemaining = getTimeRemaining(validTo);
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>#${ticket.id}</td>
+        <td>${scopesText}</td>
+        <td>${validTo.toLocaleDateString('ar-SA')}</td>
+        <td>${timeRemaining}</td>
+        <td><span class="badge b-act">نشط</span></td>
+      `;
+      activeTable.appendChild(tr);
+    });
+  } else {
+    activeSection.style.display = 'none';
+  }
+}
+
+/* ترجمة أسماء الصلاحيات */
+function translateScope(scope) {
+  const translations = {
+    'clearance': 'إخلاء طرف',
+    'onboarding': 'مباشرة عمل',
+    'delegation': 'تفويض',
+    'direct': 'طلبات مباشرة'
+  };
+  return translations[scope] || scope;
+}
+
+/* حساب الوقت المتبقي */
+function getTimeRemaining(endDate) {
+  const now = new Date();
+  const diff = endDate - now;
+  
+  if (diff <= 0) return 'منتهي';
+  
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  
+  if (days > 0) {
+    return `${days} يوم و ${hours} ساعة`;
+  } else {
+    return `${hours} ساعة`;
+  }
+}
+
+/* قبول Commissioner Ticket */
+let currentCommissionerTicket = null;
+
+async function acceptCommissionerTicket(ticketId) {
+  // Find the ticket
+  const ticket = commissionerTickets.find(t => t.id === ticketId);
+  if (!ticket) {
+    alert('⚠️ لم يتم العثور على التذكرة');
+    return;
+  }
+  
+  currentCommissionerTicket = ticket;
+  showCommissionerDeclaration(ticket);
+}
+
+function showCommissionerDeclaration(ticket) {
+  // Fill in ticket details
+  const scopes = JSON.parse(ticket.scopes_json || '[]');
+  const scopesText = scopes.map(s => translateScope(s)).join('، ');
+  const validFrom = new Date(ticket.valid_from);
+  const validTo = new Date(ticket.valid_to);
+  
+  document.getElementById('commDeclarationId').textContent = `#${ticket.id}`;
+  document.getElementById('commDeclarationScopes').textContent = scopesText;
+  document.getElementById('commDeclarationValidFrom').textContent = validFrom.toLocaleString('ar-SA', {
+    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+  document.getElementById('commDeclarationValidTo').textContent = validTo.toLocaleString('ar-SA', {
+    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+  document.getElementById('commDeclarationTimeRemaining').textContent = getTimeRemaining(validTo);
+  document.getElementById('commDeclarationTimestamp').textContent = new Date().toLocaleString('ar-SA', {
+    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
+  
+  // Reset checkboxes
+  document.getElementById('commAck1').checked = false;
+  document.getElementById('commAck2').checked = false;
+  document.getElementById('commAck3').checked = false;
+  document.getElementById('commAck4').checked = false;
+  document.getElementById('confirmCommissionerBtn').disabled = true;
+  
+  // Show modal
+  document.getElementById('commissionerDeclarationModal').style.display = 'block';
+}
+
+function closeCommissionerDeclaration() {
+  document.getElementById('commissionerDeclarationModal').style.display = 'none';
+  currentCommissionerTicket = null;
+}
+
+// Handle checkbox changes to enable/disable confirm button
+document.addEventListener('DOMContentLoaded', function() {
+  const checkboxes = ['commAck1', 'commAck2', 'commAck3', 'commAck4'];
+  const confirmBtn = document.getElementById('confirmCommissionerBtn');
+  
+  checkboxes.forEach(id => {
+    const checkbox = document.getElementById(id);
+    if (checkbox) {
+      checkbox.addEventListener('change', function() {
+        const allChecked = checkboxes.every(cbId => document.getElementById(cbId)?.checked);
+        if (confirmBtn) {
+          confirmBtn.disabled = !allChecked;
+          if (allChecked) {
+            confirmBtn.style.background = '#065f46';
+            confirmBtn.style.transform = 'scale(1.02)';
+          } else {
+            confirmBtn.style.background = '';
+            confirmBtn.style.transform = '';
+          }
+        }
+      });
+    }
+  });
+});
+
+async function confirmCommissionerAcceptance() {
+  if (!currentCommissionerTicket) return;
+  
+  const ticketId = currentCommissionerTicket.id;
+  
+  try {
+    // قبول التذكرة
+    if (window.CommissionerManager) {
+      await window.CommissionerManager.acceptCommissioner(myEmail);
+    }
+    
+    // حفظ معرف التذكرة المقبولة
+    const acceptedTickets = JSON.parse(localStorage.getItem('acceptedCommissionerTickets') || '[]');
+    if (!acceptedTickets.includes(ticketId)) {
+      acceptedTickets.push(ticketId);
+      localStorage.setItem('acceptedCommissionerTickets', JSON.stringify(acceptedTickets));
+    }
+    
+    // حفظ سجل القبول مع الطابع الزمني
+    const acceptanceLog = JSON.parse(localStorage.getItem('commissionerAcceptanceLogs') || '[]');
+    acceptanceLog.push({
+      ticketId: ticketId,
+      acceptedAt: new Date().toISOString(),
+      timestamp: Date.now(),
+      userAgent: navigator.userAgent
+    });
+    localStorage.setItem('commissionerAcceptanceLogs', JSON.stringify(acceptanceLog));
+    
+    // تحديث authUser في localStorage
+    const authUser = JSON.parse(localStorage.getItem('authUser') || '{}');
+    authUser.isCommissioner = true;
+    authUser.commissionerAccepted = true;
+    authUser.commissionerAcceptedAt = new Date().toISOString();
+    localStorage.setItem('authUser', JSON.stringify(authUser));
+    
+    // إغلاق المودال
+    closeCommissionerDeclaration();
+    
+    // رسالة نجاح
+    alert('✅ تم قبول الصلاحيات الإدارية بنجاح\n\nتذكر: أنت الآن مسؤول عن جميع الإجراءات التي تتخذها باستخدام هذه الصلاحيات');
+    
+    // إعادة تحميل التذاكر
+    await loadCommissionerTickets();
+  } catch (error) {
+    console.error('Error accepting commissioner ticket:', error);
+    alert('⚠️ حدث خطأ أثناء قبول الصلاحيات');
+  }
+}
+
+/* رفض Commissioner Ticket */
+async function declineCommissionerTicket(ticketId) {
+  const reason = prompt('يرجى توضيح سبب رفض الصلاحيات الإدارية:');
+  if (!reason || !reason.trim()) {
+    return;
+  }
+  
+  try {
+    // رفض التذكرة
+    if (window.CommissionerManager) {
+      await window.CommissionerManager.declineCommissioner(myEmail);
+    }
+    
+    // حفظ معرف التذكرة المرفوضة
+    const declinedTickets = JSON.parse(localStorage.getItem('declinedCommissionerTickets') || '[]');
+    if (!declinedTickets.find(t => t.ticketId === ticketId)) {
+      declinedTickets.push({
+        ticketId: ticketId,
+        reason: reason,
+        declinedAt: new Date().toISOString()
+      });
+      localStorage.setItem('declinedCommissionerTickets', JSON.stringify(declinedTickets));
+    }
+    
+    // إخفاء التذكرة المرفوضة من القائمة
+    commissionerTickets = commissionerTickets.filter(t => t.id !== ticketId);
+    
+    alert('تم رفض الصلاحيات الإدارية');
+    
+    // إعادة تحميل التذاكر
+    await loadCommissionerTickets();
+  } catch (error) {
+    console.error('Error declining commissioner ticket:', error);
+    alert('⚠️ حدث خطأ أثناء رفض الصلاحيات');
+  }
+}
+
+/* تشغيل */
+addDelegationStatus(); // إضافة الحالات الجديدة للتفويضات الموجودة
+draw();
+
+// إعداد إدارة التفويضات
+setupManagementEvents();
+toggleAdminDelegationSection();
+
+// استبدال دالة قبول التفويض الأصلية
+window.confirmAcceptDelegation = confirmAcceptDelegationEnhanced;
+
+// تحميل Commissioner Tickets
+setTimeout(() => {
+  if (window.apiClient && window.CommissionerManager) {
+    loadCommissionerTickets();
+  } else {
+    console.warn('Waiting for API client and Commissioner Manager...');
+    // Try again after 1 second
+    setTimeout(() => {
+      if (window.apiClient && window.CommissionerManager) {
+        loadCommissionerTickets();
+      } else {
+        console.error('API client or Commissioner Manager not available after 1.5 seconds');
+      }
+    }, 1000);
+  }
+}, 500);
+
+// Also load on window load as backup
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if (window.apiClient && window.CommissionerManager && commissionerTickets.length === 0) {
+      console.log('🔄 Loading commissioner tickets on window.load');
+      loadCommissionerTickets();
+    }
+  }, 1000);
+});
+</script>
+  <!-- JavaScript Files -->
+  <script src="../jS/notification-store.js"></script>
+  <script src="../jS/form-validation-utils.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/commissioner-manager.js"></script>
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/employee-delegations.js"></script>
+  <script src="../jS/signature.js"></script>
+</body>
+</html>
+

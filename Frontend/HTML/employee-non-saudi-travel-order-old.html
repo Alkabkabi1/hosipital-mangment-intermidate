@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/unified-form-styles.css">
+    
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>🏥</text></svg>">
+    <title>مستشفى الملك عبدالعزيز – أمر إركاب متعاقدين</title>
+    
+    <!-- خط -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --primary:#2B6CB0; --primary-600:#255b92;
+            --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b;
+            --border:#e5e7eb; --ok:#16a34a; --danger:#dc2626; --chip:#eef2ff;
+            --warn:#f59e0b; --good:#16a34a; --bad:#ef4444;
+            --shadow:0 8px 24px rgba(2,6,23,.06), 0 1px 1px rgba(2,6,23,.04);
+            --radius:18px;
+        }
+        *{box-sizing:border-box}
+        body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,Segoe UI,Arial}
+        a{color:inherit;text-decoration:none}
+
+        .header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+        .header .in{max-width:1200px;margin:auto;display:flex;align-items:center;gap:16px;padding:10px 16px}
+        .brand{display:flex;align-items:center;gap:10px}
+        .brand img{width:44px;height:44px;object-fit:contain}
+        .brand .title{font-weight:800;line-height:1}
+        .brand small{color:var(--muted);display:block;margin-top:2px}
+        .nav-quick{margin-right:auto;display:flex;gap:8px}
+        .quick{padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:#fff}
+        .bell{position:relative;padding:8px;border:1px solid var(--border);border-radius:12px;background:#fff}
+        .avatar{width:38px;height:38px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:800}
+
+        .container{max-width:1200px;margin:18px auto;padding:0 16px}
+
+        .form-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:20px}
+        .form-container h2{margin-top:0;margin-bottom:6px}
+        .form-container p{margin-top:0;color:var(--muted)}
+        .section-title{font-weight:700;margin:24px 0 12px;color:#0f172a;font-size:18px}
+        .form-group{margin-bottom:18px}
+        .form-group label{display:block;margin-bottom:8px;font-weight:600;color:var(--text)}
+        .form-control{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:14px;transition:border-color .2s}
+        .form-control:focus{border-color:var(--primary);outline:none}
+        .row{display:flex;gap:16px;flex-wrap:wrap}
+        .col-6{flex:1;min-width:240px}
+        .col-4{flex:1;min-width:200px}
+        .col-3{flex:1;min-width:180px}
+        .inline-inputs{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+        .inline-inputs .form-control{flex:1;min-width:160px}
+        .helper-text{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6}
+        .btn{padding:12px 24px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s ease}
+        .btn-primary{background:var(--primary);color:#fff}
+        .btn-primary:hover{background:var(--primary-600)}
+        .btn-secondary{background:#6c757d;color:#fff}
+        .btn-secondary:hover{background:#545b62}
+        .btn-light{background:#e2e8f0;color:#111}
+
+        table.form-table{width:100%;border-collapse:collapse}
+        table.form-table th,table.form-table td{border:1px solid var(--border);padding:10px;font-size:14px;text-align:right}
+        table.form-table th{background:#f3f4f6;font-weight:700}
+        .dependents-actions{display:flex;justify-content:flex-end;margin-top:10px}
+        .remove-row{background:#fee2e2;color:#b91c1c;border:none;border-radius:6px;padding:6px 10px;font-size:13px;cursor:pointer}
+        .remove-row:hover{background:#fecaca}
+
+        .checklist{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+        .checklist label{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:#1f2937}
+        .signature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+        .signature-card{border:1px solid var(--border);border-radius:12px;padding:16px;background:#f8fafc}
+        .signature-card h4{margin:0 0 12px;font-size:15px;color:#0f172a}
+
+        .status-info{background:#e7f3ff;border:1px solid #b3d7ff;border-radius:8px;padding:20px;margin:20px 0}
+        .workflow-steps{display:flex;justify-content:space-between;margin:20px 0;flex-wrap:wrap;gap:10px}
+        .workflow-step{background:#f8f9fa;border:1px solid #dee2e6;border-radius:20px;padding:8px 16px;font-size:14px;font-weight:bold;color:#495057;flex:1;min-width:120px;text-align:center;transition:all .3s ease}
+        .workflow-step.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .workflow-step.completed{background:var(--good);color:#fff;border-color:var(--good)}
+        .workflow-arrow{color:var(--primary);font-size:18px;font-weight:bold}
+
+        .application{background:#fff;border:2px solid #000;padding:24px;max-width:920px;margin:20px auto;box-shadow:0 4px 8px rgba(0,0,0,.1)}
+        .app-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+        .app-header .dates{font-size:14px;color:#111;line-height:1.6}
+        .app-header .logo-lockup{display:flex;align-items:center;gap:12px}
+        .app-title{font-weight:800;font-size:18px;background:#4b5563;color:#fff;padding:10px 16px;border-radius:6px;display:inline-block;margin-bottom:12px}
+        .print-table{width:100%;border-collapse:collapse;margin:10px 0 16px}
+        .print-table th,.print-table td{border:1px solid #111;padding:8px 10px;font-size:13px}
+        .print-table th{background:#f3f4f6}
+        .guarantee-block{border:1px solid #111;padding:12px;border-radius:8px;margin:14px 0;line-height:1.9;font-size:14px}
+        .commitment{text-align:justify;line-height:1.8;font-size:14px;margin:16px 0}
+        .hr-certification{border:1px solid #111;padding:14px;border-radius:8px;margin-top:20px}
+        .hr-certification h3{margin:0 0 12px;font-size:16px;color:#111}
+        .hr-checklist{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+        .hr-check{display:flex;align-items:center;gap:8px}
+        .signature-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}
+        .signature-box{flex:1;border:1px solid #111;padding:12px;border-radius:8px;min-width:220px}
+        .signature-box h4{margin:0 0 8px;font-size:14px}
+        .notes-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px;margin-top:18px}
+        .note-item{border:1px solid #d1d5db;border-radius:10px;padding:10px 12px;background:#f8fafc;font-size:13px}
+
+        @media print {
+            body{background:#fff;margin:0;padding:0}
+            .header,.form-container,.workflow-controls{display:none !important}
+            .application{margin:0;border-radius:0;box-shadow:none;border:2px solid #000;padding:20px}
+        }
+
+        @media (max-width:768px){
+            .row{flex-direction:column}
+            .workflow-steps{flex-direction:column}
+            .workflow-arrow{transform:rotate(90deg)}
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div>
+        <div class="title">مستشفى الملك عبدالعزيز</div>
+        <small>أمر الإركاب للمتعاقدين غير السعوديين والمرافقين</small>
+      </div>
+    </div>
+    <div class="nav-quick">
+      <a class="quick" href="employee-dashboard.html">🏠 الرئيسية</a>
+    </div>
+    <div class="bell" title="التنبيهات">🔔</div>
+    <div class="avatar" title="الملف الشخصي">S</div>
+  </div>
+</header>
+
+<main class="container">
+    <div class="form-container">
+        <h2>أمر الإركاب للمتعاقدين غير السعوديين والمرافقين</h2>
+        <p>املأ بيانات النموذج التالية بنفس محتوى النموذج الورقي، وبعد الاعتماد يمكنك طباعة النسخة الرسمية وإرسالها للإدارة لاعتمادها أو رفضها.</p>
+
+        <form id="travelOrderForm">
+            <div class="section-title">أولاً: بيانات المتعاقد</div>
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="contractorName">اسم المتعاقد *</label>
+                        <input type="text" id="contractorName" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="jobTitle">المسمى الوظيفي *</label>
+                        <input type="text" id="jobTitle" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="department">القسم / الجهة *</label>
+                        <input type="text" id="department" class="form-control" placeholder="مثال: الموارد البشرية" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="nationality">الجنسية *</label>
+                        <input type="text" id="nationality" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="iqamaNumber">رقم الإقامة *</label>
+                        <input type="text" id="iqamaNumber" class="form-control" pattern="[0-9]{10,}" title="أدخل رقم الإقامة بالأرقام" required>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="passportNumber">رقم الجواز *</label>
+                        <input type="text" id="passportNumber" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="employeeNumber">الرقم الوظيفي / رقم العقد</label>
+                        <input type="text" id="employeeNumber" class="form-control" placeholder="إن وجد">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="contactNumber">رقم التواصل</label>
+                        <input type="tel" id="contactNumber" class="form-control" placeholder="05xxxxxxxx">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="travelDestination">الجهة / المقر المراد السفر إليه *</label>
+                        <input type="text" id="travelDestination" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">ثانياً: بيانات المرافقين (إن وجدوا)</div>
+            <table class="form-table">
+                <thead>
+                    <tr>
+                        <th>أسماء المرافقين</th>
+                        <th>القرابة</th>
+                        <th>الجنسية</th>
+                        <th>رقم الإقامة</th>
+                        <th>رقم الجواز</th>
+                        <th>ملاحظات (موافقة المنحة أو التحويل)</th>
+                        <th style="width:70px">إزالة</th>
+                    </tr>
+                </thead>
+                <tbody id="dependentsTableBody">
+                    <!-- rows will be added dynamically -->
+                </tbody>
+            </table>
+            <div class="dependents-actions">
+                <button type="button" class="btn btn-light" id="addDependentRow">➕ إضافة مرافق</button>
+            </div>
+
+            <div class="section-title">ثالثاً: بيانات كفالة المتعاقد</div>
+            <div class="form-group">
+                <label>فترة العمل المطلوبة</label>
+                <div class="inline-inputs">
+                    <span>تبدأ من تاريخ</span>
+                    <input type="date" id="workStartDate" class="form-control" required>
+                    <span>إلى تاريخ</span>
+                    <input type="date" id="workEndDate" class="form-control" required>
+                    <span>لمدة</span>
+                    <input type="number" min="1" id="workDurationDays" class="form-control" placeholder="عدد الأيام" required>
+                    <span>يوم</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>فترة مرافقي المتعاقد (إن وجدوا)</label>
+                <div class="inline-inputs">
+                    <span>تبدأ من تاريخ</span>
+                    <input type="date" id="dependentsStartDate" class="form-control">
+                    <span>إلى تاريخ</span>
+                    <input type="date" id="dependentsEndDate" class="form-control">
+                    <span>لمدة</span>
+                    <input type="number" min="1" id="dependentsDurationDays" class="form-control" placeholder="عدد الأيام">
+                    <span>يوم</span>
+                </div>
+                <div class="helper-text">اترك الحقول فارغة إن لم يوجد مرافقون.</div>
+            </div>
+
+            <div class="section-title">رابعاً: التعهد</div>
+            <div class="form-group">
+                <label for="sponsorName">اسم الموظف / المسؤول المعتمد *</label>
+                <input type="text" id="sponsorName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="sponsorId">رقم الهوية</label>
+                <input type="text" id="sponsorId" class="form-control" placeholder="أدخل رقم الهوية إن وجد">
+            </div>
+            <div class="form-group">
+                <label for="sponsorCommitment">نص التعهد</label>
+                <textarea id="sponsorCommitment" class="form-control" rows="3" placeholder="أتعهد بأنني المسؤول عن صحة البيانات أعلاه وبسريان إقامة المتعاقد ومرافقيه..."></textarea>
+            </div>
+
+            <div class="signature-grid">
+                <div class="signature-card">
+                    <h4>توقيع المتعهد</h4>
+                    <div class="form-group">
+                        <label for="sponsorSignature">التوقيع *</label>
+                        <input type="text" id="sponsorSignature" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sponsorSignatureDate">التاريخ *</label>
+                        <input type="date" id="sponsorSignatureDate" class="form-control" required>
+                    </div>
+                </div>
+                <div class="signature-card">
+                    <h4>تصريح الإدارة</h4>
+                    <div class="form-group">
+                        <label for="directorSignature">اسم المدير التنفيذي</label>
+                        <input type="text" id="directorSignature" class="form-control" placeholder="إن وجد">
+                    </div>
+                    <div class="form-group">
+                        <label for="directorNotes">ملاحظات إضافية</label>
+                        <textarea id="directorNotes" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">خامساً: مصادقة قسم الموارد البشرية بالجهة التابعة للموظف</div>
+            <div class="checklist">
+                <label><input type="checkbox" id="checkFormApproved"> تم اعتماد النموذج من الجهة التابع لها الموظف.</label>
+                <label><input type="checkbox" id="checkResidenceValid"> تم التأكد من صلاحية إقامة المتعاقد والمرافقين.</label>
+                <label><input type="checkbox" id="checkPassportCopies"> تم إرفاق صورة من جواز السفر والإقامة.</label>
+                <label><input type="checkbox" id="checkHousingForm"> تمت تعبئة نموذج المرافقين (إن وجدوا).</label>
+                <label><input type="checkbox" id="checkPdfUpload"> في حال كان الطلب إلكترونياً يتم رفع ملف PDF واحد لجميع المرفقات.</label>
+                <label><input type="checkbox" id="checkOtherNotes"> تمت مراجعة أي اشتراطات أخرى صادرة من تجمع مكة المكرمة الصحي.</label>
+            </div>
+
+            <div class="signature-grid" style="margin-top:18px">
+                <div class="signature-card">
+                    <h4>الموظف المختص</h4>
+                    <div class="form-group">
+                        <label for="hrOfficerName">الاسم *</label>
+                        <input type="text" id="hrOfficerName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hrOfficerSignature">التوقيع</label>
+                        <input type="text" id="hrOfficerSignature" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="hrOfficerStamp">الختم</label>
+                        <input type="text" id="hrOfficerStamp" class="form-control">
+                    </div>
+                </div>
+                <div class="signature-card">
+                    <h4>مدير إدارة الموارد البشرية</h4>
+                    <div class="form-group">
+                        <label for="hrManagerName">الاسم</label>
+                        <input type="text" id="hrManagerName" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="hrManagerSignature">التوقيع</label>
+                        <input type="text" id="hrManagerSignature" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="hrManagerStamp">الختم</label>
+                        <input type="text" id="hrManagerStamp" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="text-align:center;margin-top:24px">
+                <button type="submit" class="btn btn-primary">تقديم الطلب</button>
+                <button type="button" class="btn btn-secondary" onclick="clearTravelOrderForm()">مسح البيانات</button>
+                <button type="button" class="btn btn-primary" id="printBtn" style="display:none">طباعة النموذج</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="applicationContainer" style="display:none">
+        <div class="application">
+            <div class="app-header">
+                <div class="dates">
+                    <div>التاريخ الهجري: <span id="printHijri">—</span></div>
+                    <div>التاريخ الميلادي: <span id="printGregorian">—</span></div>
+                </div>
+                <div class="logo-lockup">
+                    <img src="public/image.png" alt="شعار" style="width:58px;height:58px;object-fit:contain">
+                    <div style="text-align:right">
+                        <div style="font-weight:800">تجمع مكة المكرمة الصحي</div>
+                        <div style="font-weight:700">Makkah Healthcare Cluster</div>
+                        <div style="font-size:13px;color:#374151">مستشفى الملك عبدالعزيز</div>
+                    </div>
+                </div>
+            </div>
+            <div class="app-title">أمر الإركاب للمتعاقدين غير السعوديين والمرافقين</div>
+
+            <table class="print-table">
+                <tr>
+                    <th>اسم المتعاقد</th>
+                    <td id="p_contractorName"></td>
+                    <th>المسمى الوظيفي</th>
+                    <td id="p_jobTitle"></td>
+                </tr>
+                <tr>
+                    <th>القسم / الجهة</th>
+                    <td id="p_department"></td>
+                    <th>الرقم الوظيفي / رقم العقد</th>
+                    <td id="p_employeeNumber"></td>
+                </tr>
+                <tr>
+                    <th>الجنسية</th>
+                    <td id="p_nationality"></td>
+                    <th>رقم الإقامة</th>
+                    <td id="p_iqamaNumber"></td>
+                </tr>
+                <tr>
+                    <th>رقم الجواز</th>
+                    <td id="p_passportNumber"></td>
+                    <th>رقم التواصل</th>
+                    <td id="p_contactNumber"></td>
+                </tr>
+                <tr>
+                    <th>المقر المراد السفر إليه</th>
+                    <td id="p_travelDestination"></td>
+                    <th>فترة العمل</th>
+                    <td id="p_workPeriod"></td>
+                </tr>
+            </table>
+
+            <div style="font-weight:700;margin-top:16px">بيانات المرافقين</div>
+            <table class="print-table">
+                <thead>
+                    <tr>
+                        <th>أسماء المرافقين</th>
+                        <th>القرابة</th>
+                        <th>الجنسية</th>
+                        <th>رقم الإقامة</th>
+                        <th>رقم الجواز</th>
+                        <th>ملاحظات (موافقة المنحة أو التحويل)</th>
+                    </tr>
+                </thead>
+                <tbody id="printDependentsBody">
+                    <tr><td colspan="6" style="text-align:center;color:#64748b">لا يوجد مرافقون</td></tr>
+                </tbody>
+            </table>
+
+            <div class="guarantee-block">
+                <div>أقر أنا <span id="p_sponsorName">—</span> بأن إقامة المتعاقد الموضحة بياناته أعلاه لا تزال سارية المفعول، وسوف يتم تجديدها خلال مدة العمل التي تبدأ من تاريخ <span id="p_workStart">—</span> إلى تاريخ <span id="p_workEnd">—</span> ولمدة <span id="p_workDuration">—</span> يوم.</div>
+                <div style="margin-top:10px">كما أقر بأن إقامة مرافقي المتعاقد (إن وجدوا) سارية المفعول، وسيتم تجديدها خلال المدة من <span id="p_dependentsStart">—</span> إلى <span id="p_dependentsEnd">—</span> ولمدة <span id="p_dependentsDuration">—</span> يوم.</div>
+            </div>
+
+            <div class="commitment">
+                <strong>التعهد:</strong>
+                <span id="p_sponsorCommitment">—</span>
+            </div>
+
+            <div class="hr-certification">
+                <h3>مصادقة قسم الموارد البشرية بالجهة التابعة للموظف</h3>
+                <div class="hr-checklist">
+                    <div class="hr-check"><span id="p_checkFormApproved">☐</span> تم اعتماد النموذج من الجهة التابع لها الموظف.</div>
+                    <div class="hr-check"><span id="p_checkResidenceValid">☐</span> تم التأكد من صلاحية إقامة المتعاقد والمرافقين.</div>
+                    <div class="hr-check"><span id="p_checkPassportCopies">☐</span> تم إرفاق صورة من جواز السفر والإقامة.</div>
+                    <div class="hr-check"><span id="p_checkHousingForm">☐</span> تمت تعبئة نموذج المرافقين (إن وجدوا).</div>
+                    <div class="hr-check"><span id="p_checkPdfUpload">☐</span> في حال الطلب إلكتروني تم رفع ملف PDF واحد لجميع المرفقات.</div>
+                    <div class="hr-check"><span id="p_checkOtherNotes">☐</span> تمت مراجعة الاشتراطات الصادرة من تجمع مكة المكرمة الصحي.</div>
+                </div>
+
+                <div class="signature-row">
+                    <div class="signature-box">
+                        <h4>الموظف المختص</h4>
+                        <div>الاسم: <span id="p_hrOfficerName">—</span></div>
+                        <div>التوقيع: <span id="p_hrOfficerSignature">—</span></div>
+                        <div>الختم: <span id="p_hrOfficerStamp">—</span></div>
+                    </div>
+                    <div class="signature-box">
+                        <h4>مدير إدارة الموارد البشرية</h4>
+                        <div>الاسم: <span id="p_hrManagerName">—</span></div>
+                        <div>التوقيع: <span id="p_hrManagerSignature">—</span></div>
+                        <div>الختم: <span id="p_hrManagerStamp">—</span></div>
+                    </div>
+                    <div class="signature-box">
+                        <h4>اعتماد المدير التنفيذي</h4>
+                        <div>الاسم: <span id="p_directorSignature">—</span></div>
+                        <div>ملاحظات: <span id="p_directorNotes">—</span></div>
+                        <div>توقيع المتعهد: <span id="p_sponsorSignature">—</span></div>
+                        <div>تاريخ التوقيع: <span id="p_sponsorSignatureDate">—</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notes-list">
+                <div class="note-item">1- يتم تقديم الطلب من الموظف.</div>
+                <div class="note-item">2- يتم اعتماد الطلب من الموظف المختص.</div>
+                <div class="note-item">3- يتم اعتماد الطلب من مساعد المدير التنفيذي للموارد البشرية.</div>
+                <div class="note-item">4- يتم اعتماد الطلب من المدير التنفيذي للمستشفى.</div>
+                <div class="note-item">5- يتم طباعة الشهادة من قبل الموظف.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="workflow-controls" id="workflowControls" style="display:none">
+        <div class="status-info">
+            <h4>مراحل العملية</h4>
+            <div class="workflow-steps">
+                <div class="workflow-step active" id="step1"><span>1. تقديم الطلب</span></div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step" id="step2"><span>2. اعتماد الموظف المختص</span></div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step" id="step3"><span>3. اعتماد مساعد المدير التنفيذي</span></div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step" id="step4"><span>4. اعتماد المدير التنفيذي</span></div>
+                <div class="workflow-arrow">→</div>
+                <div class="workflow-step" id="step5"><span>5. طباعة الشهادة</span></div>
+            </div>
+            <div class="workflow-actions">
+                <button id="submitRequest" class="btn btn-primary">تقديم الطلب</button>
+                <button id="printApplication" class="btn btn-warning" style="display:none">طباعة النموذج</button>
+            </div>
+            <p id="statusMessage">املأ البيانات واضغط "تقديم الطلب" لبدء العملية.</p>
+        </div>
+    </div>
+</main>
+
+<!-- Phase 1: Foundation -->
+<script src="../jS/dependency-guard.js"></script>
+<script src="../jS/error-handler.js"></script>
+<script src="../jS/notification-store.js"></script>
+<script src="../jS/notification-utils.js"></script>
+
+<!-- Phase 2: Core -->
+<script src="../jS/app-init.js"></script>
+<script src="../jS/api-client.js"></script>
+<script src="../jS/role-permissions.js"></script>
+
+<!-- Phase 3: Form Script -->
+<script src="../jS/employee-non-saudi-travel-order.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

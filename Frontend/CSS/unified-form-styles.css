@@ -1,0 +1,323 @@
+/* Unified Form Styles - Matches Clearance/Onboarding Design */
+/* Apply to all employee request forms for consistency */
+
+:root {
+  --primary: #2B6CB0;
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --field-bg: #ffffff;
+  --field-text: #0f172a;
+  --field-border: #000000;
+  --field-placeholder: #6b7280;
+  --field-focus: rgba(0, 0, 0, .15);
+  --qbox-radius: 16px;
+  --qbox-border: #e5e7eb;
+  --qbox-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+  --danger: #dc2626;
+  --success: #16a34a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =================== Header =================== */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .inner {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.brand img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.tt {
+  display: flex;
+  flex-direction: column;
+}
+
+.tt h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.tt span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.back {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.back:hover {
+  background: #f9fafb;
+}
+
+/* =================== Container =================== */
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+/* =================== Form Sections =================== */
+.form-section {
+  background: var(--surface);
+  border: 1px solid var(--qbox-border);
+  border-radius: var(--qbox-radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--qbox-shadow);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  color: var(--primary);
+}
+
+/* =================== Form Grid =================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.form-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.form-grid.triple {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.form-grid.quad {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+/* =================== Form Fields =================== */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 12px;
+  border: 2px solid var(--field-border);
+  border-radius: 8px;
+  background: var(--field-bg);
+  color: var(--field-text);
+  font-family: inherit;
+  font-size: 14px;
+  width: 100%;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--field-focus);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.field input[data-ltr] {
+  direction: ltr;
+  text-align: left;
+}
+
+.field small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* =================== Checkboxes & Radio Buttons =================== */
+.checkbox-group,
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkbox-item,
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checkbox-item:hover,
+.radio-item:hover {
+  background: #f9fafb;
+  border-color: var(--primary);
+}
+
+.checkbox-item input,
+.radio-item input {
+  cursor: pointer;
+  width: auto;
+  margin: 0;
+}
+
+/* =================== Buttons =================== */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-outline {
+  background: #fff;
+  color: var(--text);
+  border: 2px solid var(--border);
+}
+
+.btn-outline:hover {
+  background: #f8fafc;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #1e40af;
+}
+
+.btn-primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+  border: none;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.btn-success {
+  background: var(--success);
+  color: #fff;
+  border: none;
+}
+
+.btn-success:hover {
+  background: #15803d;
+}
+
+/* =================== Helper Text =================== */
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.error-message {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* =================== Mobile Responsive =================== */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid.triple,
+  .form-grid.quad {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    max-width: 100%;
+  }
+
+  .app-header .inner {
+    flex-wrap: wrap;
+  }
+}
+

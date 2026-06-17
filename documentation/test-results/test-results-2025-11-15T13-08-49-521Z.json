@@ -1,0 +1,199 @@
+{
+  "timestamp": "2025-11-15T13-08-49-521Z",
+  "testEnvironment": {
+    "database": "nora_database",
+    "backend": "localhost:3037",
+    "testUser": "اسيل محمود عربي المغربي"
+  },
+  "results": {
+    "phase1": [
+      {
+        "timestamp": "2025-11-15T13:08:48.792Z",
+        "test": "Assignment Request Creation",
+        "status": "FAIL",
+        "details": "Error: Resource not found (Status: 404)"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:48.800Z",
+        "test": "Assignment Termination Creation",
+        "status": "FAIL",
+        "details": "Error: Resource not found"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:48.805Z",
+        "test": "Internal Transfer Creation",
+        "status": "FAIL",
+        "details": "Error: Resource not found"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:48.904Z",
+        "test": "Employee Authorization",
+        "status": "FAIL",
+        "details": "Error: Clearance not found"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:48.916Z",
+        "test": "Admin Employee Data",
+        "status": "FAIL",
+        "details": "Admin API error: Insufficient privileges - غير مصرح"
+      }
+    ],
+    "phase2": [
+      {
+        "timestamp": "2025-11-15T13:08:48.931Z",
+        "test": "clearance Creation",
+        "status": "PASS",
+        "details": "Request created successfully"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:48.952Z",
+        "test": "onboarding Creation",
+        "status": "PASS",
+        "details": "Request created successfully"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:48.957Z",
+        "test": "certificate Creation",
+        "status": "FAIL",
+        "details": "Error: Resource not found (404)"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:48.961Z",
+        "test": "experience Creation",
+        "status": "FAIL",
+        "details": "Error: Resource not found (404)"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:48.996Z",
+        "test": "delegation Creation",
+        "status": "FAIL",
+        "details": "Error: Table 'nora_database.delegation_forms' doesn't exist (500)"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.002Z",
+        "test": "exit Creation",
+        "status": "FAIL",
+        "details": "Error: Resource not found (404)"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.005Z",
+        "test": "leave Creation",
+        "status": "FAIL",
+        "details": "Error: Resource not found (404)"
+      }
+    ],
+    "phase3": [
+      {
+        "timestamp": "2025-11-15T13:08:49.347Z",
+        "test": "Admin Dashboard Data",
+        "status": "SKIP",
+        "details": "No admin access"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.347Z",
+        "test": "Approval Process",
+        "status": "SKIP",
+        "details": "No admin access or requests to approve"
+      }
+    ],
+    "phase4": [
+      {
+        "timestamp": "2025-11-15T13:08:49.358Z",
+        "test": "employee-maternity-leave-request.html Loading",
+        "status": "PASS",
+        "details": "Page loads without errors"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.362Z",
+        "test": "employee-saudi-doctors-housing.html Loading",
+        "status": "PASS",
+        "details": "Page loads without errors"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.366Z",
+        "test": "Endpoint /admin/stats",
+        "status": "FAIL",
+        "details": "Error: Insufficient privileges - غير مصرح"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.370Z",
+        "test": "Endpoint /admin/requests/summary",
+        "status": "FAIL",
+        "details": "Error: Insufficient privileges - غير مصرح"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.374Z",
+        "test": "Endpoint /employee/requests/summary",
+        "status": "FAIL",
+        "details": "Error: Resource not found"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.377Z",
+        "test": "Endpoint /multi-approval/types",
+        "status": "FAIL",
+        "details": "Error: Resource not found"
+      }
+    ],
+    "phase5": [
+      {
+        "timestamp": "2025-11-15T13:08:49.426Z",
+        "test": "Table Assignment_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.450Z",
+        "test": "Table Assignment_Termination_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.464Z",
+        "test": "Table Internal_Transfer_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.477Z",
+        "test": "Table Certificate_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.486Z",
+        "test": "Table Experience_Certificate_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.497Z",
+        "test": "Table Request_Approvals",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.501Z",
+        "test": "Employee Data Linkage",
+        "status": "FAIL",
+        "details": "Database query failed: Bind parameters must not contain undefined. To pass SQL NULL specify JS null"
+      },
+      {
+        "timestamp": "2025-11-15T13:08:49.519Z",
+        "test": "Approval System Integrity",
+        "status": "PASS",
+        "details": "Request_Approvals supports all request types"
+      }
+    ]
+  },
+  "createdRequests": [
+    {
+      "type": "clearance"
+    }
+  ],
+  "summary": {
+    "totalTests": 28,
+    "passed": 11,
+    "failed": 15,
+    "skipped": 2
+  }
+}

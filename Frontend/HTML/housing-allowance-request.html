@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/unified-form-styles.css">
+    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>🏥</text></svg>">
+  <title>مستشفى الملك عبدالعزيز – طلب بدل سكن</title>
+
+  <!-- خط -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =================== ألوان وهوية عامة =================== */
+    :root {
+      --primary: #2B6CB0;
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+
+      --field-bg: #ffffff;
+      --field-text: #0f172a;
+      --field-border: #000000;
+      --field-placeholder: #6b7280;
+      --field-focus: rgba(0, 0, 0, .15);
+
+      --qbox-radius: 16px;
+      --qbox-border: #e5e7eb;
+      --qbox-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+    }
+
+    /* =================== هيدر =================== */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0
+    }
+
+    .header .in {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .brand img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800
+    }
+
+    .brand small {
+      color: var(--muted);
+      display: block;
+      margin-top: 2px
+    }
+
+    .back {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* =================== المحتوى =================== */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 16px
+    }
+
+    /* =================== صناديق الأقسام =================== */
+    .qbox {
+      background: var(--surface);
+      border: 1px solid var(--qbox-border);
+      border-radius: var(--qbox-radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--qbox-shadow);
+    }
+
+    .qbox-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* =================== شبكة الحقول =================== */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .grid.single {
+      grid-template-columns: 1fr;
+    }
+
+    .grid.triple {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    /* =================== الحقول =================== */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .field input, .field select, .field textarea {
+      padding: 12px;
+      border: 2px solid var(--field-border);
+      border-radius: 8px;
+      background: var(--field-bg);
+      color: var(--field-text);
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--field-focus);
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .field input[data-ltr] {
+      direction: ltr;
+      text-align: left;
+    }
+
+    .field .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* =================== أزرار الإجراءات =================== */
+    .footer-actions {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .hint-text {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: #f8fafc;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: 2px solid var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: #1e40af;
+      border-color: #1e40af;
+    }
+
+    .btn-primary:disabled {
+      background: #9ca3af;
+      border-color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    /* =================== التنبيهات =================== */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border-left: 4px solid;
+    }
+
+    .alert-success {
+      background: #dcfce7;
+      border-color: var(--success);
+      color: #166534;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      border-color: var(--danger);
+      color: #991b1b;
+    }
+
+    .alert-warning {
+      background: #fef3c7;
+      border-color: var(--warning);
+      color: #92400e;
+    }
+
+    /* =================== محاذاة الموبايل =================== */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .grid.triple {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="in">
+      <div class="brand">
+        <img src="public/image.png" alt="شعار المستشفى">
+        <div>
+          <h1>مستشفى الملك عبدالعزيز</h1>
+          <small>طلب بدل سكن</small>
+        </div>
+      </div>
+      <a href="employee-dashboard.html" class="back">رجوع للوحة</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="alertContainer"></div>
+    
+    <!-- Container 1: Employee Information -->
+    <section class="qbox">
+      <h2 class="qbox-title">
+        🧑 معلومات الموظف
+      </h2>
+      <form id="housingAllowanceForm">
+        <div class="grid">
+          <div class="field">
+            <label for="employeeName">اسم الموظف *</label>
+            <input type="text" id="employeeName" name="employeeName" required>
+          </div>
+          <div class="field">
+            <label for="employeeEmail">البريد الإلكتروني *</label>
+            <input type="email" id="employeeEmail" name="employeeEmail" required data-ltr>
+          </div>
+        </div>
+        
+        <div class="grid">
+          <div class="field">
+            <label for="employeeNumber">رقم الموظف</label>
+            <input type="text" id="employeeNumber" name="employeeNumber">
+          </div>
+          <div class="field">
+            <label for="jobTitle">المسمى الوظيفي *</label>
+            <input type="text" id="jobTitle" name="jobTitle" required>
+          </div>
+        </div>
+        
+        <div class="grid">
+          <div class="field">
+            <label for="department">القسم *</label>
+            <input type="text" id="department" name="department" required>
+          </div>
+          <div class="field">
+            <label for="requestDate">تاريخ الطلب *</label>
+            <input type="date" id="requestDate" name="requestDate" required>
+          </div>
+        </div>
+    </section>
+
+    <!-- Container 2: Housing Allowance Details -->
+    <section class="qbox">
+      <h2 class="qbox-title">
+        🏠 تفاصيل بدل السكن
+      </h2>
+      
+      <div class="grid">
+        <div class="field">
+          <label for="allowanceType">نوع بدل السكن *</label>
+          <select id="allowanceType" name="allowanceType" required>
+            <option value="">اختر نوع البدل</option>
+            <option value="saudi_doctors">بدل سكن للأطباء السعوديين</option>
+            <option value="general_housing">بدل سكن عام</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="monthlyAmount">المبلغ الشهري المطلوب (ريال)</label>
+          <input type="number" id="monthlyAmount" name="monthlyAmount" min="0" step="0.01" data-ltr>
+          <div class="hint">اتركه فارغاً إذا كان المبلغ حسب اللوائح</div>
+        </div>
+      </div>
+      
+      <div class="grid single">
+        <div class="field">
+          <label for="justification">مبرر طلب بدل السكن *</label>
+          <textarea id="justification" name="justification" required 
+                    placeholder="اشرح الأسباب التي تستدعي الحصول على بدل السكن..."></textarea>
+        </div>
+      </div>
+      
+      <div class="grid single">
+        <div class="field">
+          <label for="accommodationDetails">تفاصيل السكن الحالي</label>
+          <textarea id="accommodationDetails" name="accommodationDetails" 
+                    placeholder="وصف للسكن الحالي، المسافة من العمل، التكاليف، إلخ..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Container 3: Additional Information -->
+    <section class="qbox">
+      <h2 class="qbox-title">
+        📋 معلومات إضافية
+      </h2>
+      
+      <div class="grid single">
+        <div class="field">
+          <label for="requestNotes">ملاحظات إضافية</label>
+          <textarea id="requestNotes" name="requestNotes" 
+                    placeholder="أي معلومات إضافية تود إضافتها لطلبك..."></textarea>
+        </div>
+      </div>
+      
+      <div class="grid">
+        <div class="field">
+          <label for="supervisorName">اسم المشرف المباشر</label>
+          <input type="text" id="supervisorName" name="supervisorName">
+        </div>
+        <div class="field">
+          <label for="contactPhone">رقم الهاتف للتواصل</label>
+          <input type="tel" id="contactPhone" name="contactPhone" data-ltr>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+      <p class="hint-text">تأكد من صحة جميع البيانات قبل الإرسال</p>
+      <div class="actions">
+        <button type="button" class="btn btn-outline" onclick="clearForm()">مسح النموذج</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">إرسال الطلب</button>
+      </div>
+    </div>
+    </form>
+  </main>
+
+  <!-- JavaScript للنموذج -->
+  <script>
+    // تحضير النموذج عند التحميل
+    document.addEventListener('DOMContentLoaded', function() {
+      setupForm();
+      loadUserInfo();
+      setDefaultDate();
+    });
+
+    function setupForm() {
+      const form = document.getElementById('housingAllowanceForm');
+      if (form) {
+        form.addEventListener('submit', handleSubmit);
+      }
+    }
+
+    async function loadUserInfo() {
+      try {
+        // جلب معلومات المستخدم المسجل دخوله
+        const user = await apiClient.getCurrentUser();
+        if (user) {
+          document.getElementById('employeeName').value = user.name || '';
+          document.getElementById('employeeEmail').value = user.email || '';
+          document.getElementById('department').value = user.department || '';
+        }
+      } catch (error) {
+        console.warn('Could not load user info:', error);
+      }
+    }
+
+    function setDefaultDate() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('requestDate').value = today;
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.textContent;
+      
+      try {
+        // تعطيل الزر أثناء الإرسال
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري الإرسال...';
+        
+        // جمع بيانات النموذج
+        const formData = collectFormData();
+        
+        // التحقق من صحة البيانات
+        if (!validateFormData(formData)) {
+          return;
+        }
+        
+        // إرسال الطلب
+        const response = await apiClient.createHousingAllowanceRequest(formData);
+        
+        if (response.success) {
+          showAlert('success', `تم إنشاء طلب بدل السكن بنجاح! رقم المرجع: ${response.data.reference_number}`);
+          
+          // إعادة توجيه للوحة التحكم بعد 3 ثوان
+          setTimeout(() => {
+            window.location.href = 'employee-dashboard.html';
+          }, 3000);
+          
+        } else {
+          throw new Error(response.message || 'فشل في إنشاء الطلب');
+        }
+        
+      } catch (error) {
+        console.error('Error submitting housing allowance request:', error);
+        showAlert('error', error.message || 'حدث خطأ أثناء إرسال الطلب');
+        
+      } finally {
+        // إعادة تفعيل الزر
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    }
+
+    function collectFormData() {
+      const form = document.getElementById('housingAllowanceForm');
+      const formData = new FormData(form);
+      
+      return {
+        employee_name: formData.get('employeeName'),
+        employee_email: formData.get('employeeEmail'),
+        employee_dept: formData.get('department'),
+        employee_number: formData.get('employeeNumber'),
+        job_title: formData.get('jobTitle'),
+        request_date: formData.get('requestDate'),
+        
+        allowance_type: formData.get('allowanceType'),
+        monthly_amount: formData.get('monthlyAmount') ? parseFloat(formData.get('monthlyAmount')) : null,
+        justification: formData.get('justification'),
+        accommodation_details: formData.get('accommodationDetails'),
+        
+        request_notes: formData.get('requestNotes'),
+        supervisor_name: formData.get('supervisorName'),
+        contact_phone: formData.get('contactPhone')
+      };
+    }
+
+    function validateFormData(data) {
+      const errors = [];
+      
+      // التحقق من الحقول المطلوبة
+      if (!data.employee_name) errors.push('اسم الموظف مطلوب');
+      if (!data.employee_email) errors.push('البريد الإلكتروني مطلوب');
+      if (!data.job_title) errors.push('المسمى الوظيفي مطلوب');
+      if (!data.department) errors.push('القسم مطلوب');
+      if (!data.request_date) errors.push('تاريخ الطلب مطلوب');
+      if (!data.allowance_type) errors.push('نوع بدل السكن مطلوب');
+      if (!data.justification) errors.push('مبرر طلب بدل السكن مطلوب');
+      
+      // التحقق من صحة البريد الإلكتروني
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (data.employee_email && !emailPattern.test(data.employee_email)) {
+        errors.push('صيغة البريد الإلكتروني غير صحيحة');
+      }
+      
+      // التحقق من المبلغ الشهري (إذا تم إدخاله)
+      if (data.monthly_amount && data.monthly_amount <= 0) {
+        errors.push('المبلغ الشهري يجب أن يكون أكبر من صفر');
+      }
+      
+      // عرض الأخطاء
+      if (errors.length > 0) {
+        showAlert('error', 'يرجى تصحيح الأخطاء التالية:\n' + errors.join('\n'));
+        return false;
+      }
+      
+      return true;
+    }
+
+    function showAlert(type, message) {
+      const alertContainer = document.getElementById('alertContainer');
+      
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.textContent = message;
+      
+      // مسح التنبيهات السابقة
+      alertContainer.innerHTML = '';
+      alertContainer.appendChild(alertDiv);
+      
+      // التمرير للتنبيه
+      alertDiv.scrollIntoView({ behavior: 'smooth' });
+      
+      // إزالة التنبيه بعد 5 ثوان (للتنبيهات الناجحة)
+      if (type === 'success') {
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 5000);
+      }
+    }
+
+    function clearForm() {
+      if (confirm('هل أنت متأكد من أنك تريد مسح جميع البيانات؟')) {
+        document.getElementById('housingAllowanceForm').reset();
+        setDefaultDate();
+        loadUserInfo(); // إعادة تحميل معلومات المستخدم
+        showAlert('warning', 'تم مسح النموذج');
+      }
+    }
+
+    // API Client placeholder (will be replaced with actual implementation)
+    const apiClient = {
+      async getCurrentUser() {
+        // سيتم استبدال هذا بالتكامل الفعلي مع API
+        return JSON.parse(localStorage.getItem('user') || '{}');
+      },
+      
+      async createHousingAllowanceRequest(data) {
+        // سيتم استبدال هذا بالتكامل الفعلي مع API
+        try {
+          const response = await fetch('/api/unified-requests/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+              request_type: 'housing_allowance',
+              form_data: data
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          
+          return await response.json();
+          
+        } catch (error) {
+          throw new Error('فشل في إرسال الطلب. تحقق من اتصال الإنترنت.');
+        }
+      }
+    };
+  </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

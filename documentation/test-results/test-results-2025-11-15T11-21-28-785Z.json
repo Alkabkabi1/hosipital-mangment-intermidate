@@ -1,0 +1,195 @@
+{
+  "timestamp": "2025-11-15T11-21-28-785Z",
+  "testEnvironment": {
+    "database": "nora_database",
+    "backend": "localhost:3037",
+    "testUser": "اسيل محمود عربي المغربي"
+  },
+  "results": {
+    "phase1": [
+      {
+        "timestamp": "2025-11-15T11:21:28.219Z",
+        "test": "Assignment Request Creation",
+        "status": "FAIL",
+        "details": "Error: Table 'nora_database.assignment_status_history' doesn't exist (Status: 500)"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.233Z",
+        "test": "Assignment Termination Creation",
+        "status": "FAIL",
+        "details": "Error: Table 'nora_database.assignment_termination_status_history' doesn't exist"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.239Z",
+        "test": "Internal Transfer Creation",
+        "status": "FAIL",
+        "details": "Error: [\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"currentPosition\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"targetPosition\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.244Z",
+        "test": "Employee Authorization",
+        "status": "SKIP",
+        "details": "Could not create clearance request for testing"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.249Z",
+        "test": "Admin Employee Data",
+        "status": "FAIL",
+        "details": "Admin API error: Forbidden"
+      }
+    ],
+    "phase2": [
+      {
+        "timestamp": "2025-11-15T11:21:28.254Z",
+        "test": "clearance Creation",
+        "status": "FAIL",
+        "details": "Error: Request failed with status code 422 (422)"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.261Z",
+        "test": "onboarding Creation",
+        "status": "FAIL",
+        "details": "Error: Request failed with status code 422 (422)"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.270Z",
+        "test": "certificate Creation",
+        "status": "FAIL",
+        "details": "Error: [\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"occupation\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n] (500)"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.285Z",
+        "test": "experience Creation",
+        "status": "FAIL",
+        "details": "Error: Unknown column 'job_title' in 'field list' (500)"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.289Z",
+        "test": "delegation Creation",
+        "status": "FAIL",
+        "details": "Error: [\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"referenceNumber\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  },\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"requestDate\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n] (500)"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.294Z",
+        "test": "exit Creation",
+        "status": "FAIL",
+        "details": "Error: Resource not found (404)"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.300Z",
+        "test": "leave Creation",
+        "status": "FAIL",
+        "details": "Error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null (500)"
+      }
+    ],
+    "phase3": [
+      {
+        "timestamp": "2025-11-15T11:21:28.624Z",
+        "test": "Admin Dashboard Data",
+        "status": "SKIP",
+        "details": "No admin access"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.624Z",
+        "test": "Approval Process",
+        "status": "SKIP",
+        "details": "No admin access or requests to approve"
+      }
+    ],
+    "phase4": [
+      {
+        "timestamp": "2025-11-15T11:21:28.634Z",
+        "test": "employee-maternity-leave-request.html Loading",
+        "status": "PASS",
+        "details": "Page loads without errors"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.637Z",
+        "test": "employee-saudi-doctors-housing.html Loading",
+        "status": "PASS",
+        "details": "Page loads without errors"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.640Z",
+        "test": "Endpoint /admin/stats",
+        "status": "FAIL",
+        "details": "Error: Forbidden"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.642Z",
+        "test": "Endpoint /admin/requests/summary",
+        "status": "FAIL",
+        "details": "Error: Forbidden"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.650Z",
+        "test": "Endpoint /employee/requests/summary",
+        "status": "FAIL",
+        "details": "Error: Resource not found"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.653Z",
+        "test": "Endpoint /multi-approval/types",
+        "status": "FAIL",
+        "details": "Error: Resource not found"
+      }
+    ],
+    "phase5": [
+      {
+        "timestamp": "2025-11-15T11:21:28.689Z",
+        "test": "Table Assignment_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.705Z",
+        "test": "Table Assignment_Termination_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.723Z",
+        "test": "Table Internal_Transfer_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.737Z",
+        "test": "Table Certificate_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.756Z",
+        "test": "Table Experience_Certificate_Requests",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.772Z",
+        "test": "Table Request_Approvals",
+        "status": "PASS",
+        "details": "Table exists"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.772Z",
+        "test": "Employee Data Linkage",
+        "status": "SKIP",
+        "details": "No requests created to test"
+      },
+      {
+        "timestamp": "2025-11-15T11:21:28.784Z",
+        "test": "Approval System Integrity",
+        "status": "PASS",
+        "details": "Request_Approvals supports all request types"
+      }
+    ]
+  },
+  "createdRequests": [],
+  "summary": {
+    "totalTests": 28,
+    "passed": 9,
+    "failed": 15,
+    "skipped": 4
+  }
+}

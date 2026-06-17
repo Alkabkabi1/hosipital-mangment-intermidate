@@ -1,0 +1,158 @@
+diff --git a/Frontend/jS/admin-dashboard.js b/Frontend/jS/admin-dashboard.js
+--- a/Frontend/jS/admin-dashboard.js
++++ b/Frontend/jS/admin-dashboard.js
+@@
+-const PENDING_STATUSES = ['قيد المراجعة','قيد المراجعة','قيد المراجعة'];
+-const APPROVED_STATUS = 'موافق';
+-const REJECTED_STATUS = 'مرفوض';
+-const PENDING_SET = new Set(PENDING_STATUSES);
++const isPending = (s) => (window.normalizeStatus ? window.normalizeStatus(s) : 'pending') === 'pending';
++const toBadgeClass = (s) => {
++  const color = window.getStatusColor ? window.getStatusColor(s) : (isPending(s) ? 'warning' : ((window.normalizeStatus ? window.normalizeStatus(s) : '') === 'approved' ? 'success' : 'error'));
++  return color === 'success' ? 's-done' : color === 'error' ? 's-rejected' : 's-pending';
++};
+@@
+-  const status    = r.status ?? r.current_status ?? 'قيد المراجعة';
++  const statusRaw = r.status ?? r.current_status ?? 'قيد المراجعة';
+@@
+-    status,
++    status: window.getStatusDisplay ? window.getStatusDisplay(statusRaw) : statusRaw,
+@@
+-  const directToday    = all.filter(r => r.type!=='clearance' && PENDING_SET.has(r.status) && isToday(r.createdAt)).length;
+-  const clearanceToday = all.filter(r => r.type==='clearance'  && PENDING_SET.has(r.status) && isToday(r.createdAt)).length;
++  const directToday    = all.filter(r => r.type!=='clearance' && isPending(r.status) && isToday(r.createdAt)).length;
++  const clearanceToday = all.filter(r => r.type==='clearance'  && isPending(r.status) && isToday(r.createdAt)).length;
+@@
+-  const badge = (s)=> s==='موافق' ? 's-done' : (s==='مرفوض' ? 's-rejected' : 's-pending');
++  const badge = (s)=> toBadgeClass(s);
+@@
+-    const cur = (r.approvers||[]).find(a=>a.status==='قيد المراجعة');
++    const cur = (r.approvers||[]).find(a=> (window.normalizeStatus ? window.normalizeStatus(a.status) : 'pending') === 'pending');
+@@
+-        <td><span class="status ${badge(r.status)}">${r.status}</span></td>
++        <td><span class="status ${badge(r.status)}">${window.getStatusDisplay ? window.getStatusDisplay(r.status) : r.status}</span></td>
+
+diff --git a/Frontend/jS/employee-dashboard.js b/Frontend/jS/employee-dashboard.js
+--- a/Frontend/jS/employee-dashboard.js
++++ b/Frontend/jS/employee-dashboard.js
+@@
+ function getPendingCount(clearances, onboardings, delegations) {
+   let pending = 0;
+   
+-  clearances.forEach(item => {
+-    if (item.status === 'قيد المراجعة' || item.status === 'قيد المراجعة') pending++;
+-  });
+-  
+-  onboardings.forEach(item => {
+-    if (item.status === 'قيد المراجعة' || item.status === 'قيد المراجعة') pending++;
+-  });
+-  
+-  delegations.forEach(item => {
+-    if (item.status === 'قيد المراجعة' || item.status === 'قيد المراجعة') pending++;
+-  });
++  const isPending = (s) => (window.normalizeStatus ? window.normalizeStatus(s) : 'pending') === 'pending';
++  clearances.forEach(item => { if (isPending(item.status)) pending++; });
++  onboardings.forEach(item => { if (isPending(item.status)) pending++; });
++  delegations.forEach(item => { if (isPending(item.status)) pending++; });
+   
+   return pending;
+ }
+
+diff --git a/Frontend/jS/employee-approvals.js b/Frontend/jS/employee-approvals.js
+--- a/Frontend/jS/employee-approvals.js
++++ b/Frontend/jS/employee-approvals.js
+@@
+ async function loadPendingClearances() {
+@@
+   } catch (error) {
+     console.warn('API not available, loading from localStorage');
+-    return JSON.parse(localStorage.getItem('requestsClearance') || '[]')
+-      .filter(r => r.status === 'قيد المراجعة');
++    const isPending = (s) => (window.normalizeStatus ? window.normalizeStatus(s) : 'pending') === 'pending';
++    return JSON.parse(localStorage.getItem('requestsClearance') || '[]').filter(r => isPending(r.status));
+   }
+ }
+@@
+ async function loadPendingOnboardings() {
+@@
+   } catch (error) {
+     console.warn('API not available, loading from localStorage');
+-    return JSON.parse(localStorage.getItem('requestsOnboarding') || '[]')
+-      .filter(r => r.status === 'قيد المراجعة');
++    const isPending = (s) => (window.normalizeStatus ? window.normalizeStatus(s) : 'pending') === 'pending';
++    return JSON.parse(localStorage.getItem('requestsOnboarding') || '[]').filter(r => isPending(r.status));
+   }
+ }
+
+diff --git b/Frontend/HTML/admin-dashboard.html a/Frontend/HTML/admin-dashboard.html
+--- a/Frontend/HTML/admin-dashboard.html
++++ b/Frontend/HTML/admin-dashboard.html
+@@
+-  </style>
++  </style>
++  <meta name="api-base" content="https://api.dev.example.com">
++  <script src="../jS/status-mapper.js"></script>
++  <script src="../jS/sync-manager.js"></script>
++  <script src="../jS/api-client.js"></script>
+ </head>
+
+diff --git a/Frontend/HTML/employee-dashboard.html b/Frontend/HTML/employee-dashboard.html
+--- a/Frontend/HTML/employee-dashboard.html
++++ b/Frontend/HTML/employee-dashboard.html
+@@
+-</style>
++</style>
++<meta name="api-base" content="https://api.dev.example.com">
++<script src="../jS/status-mapper.js"></script>
++<script src="../jS/sync-manager.js"></script>
++<script src="../jS/api-client.js"></script>
+ </head>
+
+diff --git a/Frontend/HTML/employee-approvals.html b/Frontend/HTML/employee-approvals.html
+--- a/Frontend/HTML/employee-approvals.html
++++ b/Frontend/HTML/employee-approvals.html
+@@
+-</style>
++</style>
++<meta name="api-base" content="https://api.dev.example.com">
++<script src="../jS/status-mapper.js"></script>
++<script src="../jS/sync-manager.js"></script>
++<script src="../jS/api-client.js"></script>
+ </head>
+
+diff --git a/Frontend/HTML/clearance-request.html b/Frontend/HTML/clearance-request.html
+--- a/Frontend/HTML/clearance-request.html
++++ b/Frontend/HTML/clearance-request.html
+@@
+-</style>
++</style>
++<meta name="api-base" content="https://api.dev.example.com">
++<script src="../jS/status-mapper.js"></script>
++<script src="../jS/sync-manager.js"></script>
++<script src="../jS/api-client.js"></script>
+ </head>
+
+diff --git a/Frontend/HTML/direct-request.html b/Frontend/HTML/direct-request.html
+--- a/Frontend/HTML/direct-request.html
++++ b/Frontend/HTML/direct-request.html
+@@
+-  </style>
++  </style>
++  <meta name="api-base" content="https://api.dev.example.com">
++  <script src="../jS/status-mapper.js"></script>
++  <script src="../jS/sync-manager.js"></script>
++  <script src="../jS/api-client.js"></script>
+   </head>
+
+diff --git a/Frontend/HTML/delegation-request.html b/Frontend/HTML/delegation-request.html
+--- a/Frontend/HTML/delegation-request.html
++++ b/Frontend/HTML/delegation-request.html
+@@
+-</style>
++</style>
++<meta name="api-base" content="https://api.dev.example.com">
++<script src="../jS/status-mapper.js"></script>
++<script src="../jS/sync-manager.js"></script>
++<script src="../jS/api-client.js"></script>
+ </head>
+

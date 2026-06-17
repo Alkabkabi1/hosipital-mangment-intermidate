@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اعتماد الأوصاف الوظيفية | نظام إدارة المستشفى</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2B6CB0;
+      --success: #059669;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --bg: #f8fafc;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    .header {
+      background: white;
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-title h1 {
+      font-size: 1.75rem;
+      color: var(--primary);
+      font-weight: 800;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-right: 4px solid var(--primary);
+    }
+    
+    .stat-card.warning {
+      border-right-color: var(--warning);
+    }
+    
+    .stat-card.success {
+      border-right-color: var(--success);
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    
+    .card-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .request-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+    }
+    
+    .request-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+    
+    .request-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .employee-info {
+      flex: 1;
+    }
+    
+    .employee-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    
+    .employee-meta {
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+    
+    .request-date {
+      background: var(--bg);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    
+    .description-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      white-space: pre-wrap;
+      line-height: 1.8;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .notes-box {
+      background: #eff6ff;
+      border-right: 4px solid #3b82f6;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .notes-box strong {
+      color: #1e40af;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Tajawal', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #047857;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #b91c1c;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+    
+    .btn-secondary {
+      background: var(--muted);
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #475569;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+    }
+    
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+    }
+    
+    .spinner {
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .toast {
+      position: fixed;
+      top: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      z-index: 2000;
+      display: none;
+    }
+    
+    .toast.success {
+      border-right: 4px solid var(--success);
+    }
+    
+    .toast.error {
+      border-right: 4px solid var(--danger);
+    }
+    
+    .toast.show {
+      display: block;
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+
+  <header class="header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>📋 اعتماد الأوصاف الوظيفية</h1>
+      </div>
+      <button class="btn btn-secondary" onclick="window.location.href='admin-dashboard.html'">
+        🏠 لوحة التحكم
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card warning">
+        <div class="stat-label">قيد المراجعة</div>
+        <div class="stat-value" id="pendingCount">0</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">معتمد</div>
+        <div class="stat-value" id="approvedCount">0</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>الأوصاف الوظيفية المعلقة</h2>
+      </div>
+      
+      <div id="requestsContainer">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>جاري تحميل الطلبات...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../jS/api-client.js"></script>
+  <script>
+    const authUser = JSON.parse(localStorage.getItem('authUser') || 'null');
+    if (!authUser || !['admin', 'ADMIN', 'HR'].includes(authUser.role?.toUpperCase())) {
+      alert('يجب أن تكون مسؤولاً للوصول إلى هذه الصفحة');
+      window.location.href = 'login.html';
+    }
+
+    let pendingRequests = [];
+    let allRequests = [];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadJobDescriptions();
+    });
+
+    async function loadJobDescriptions() {
+      try {
+        const [pendingResponse, allResponse] = await Promise.all([
+          apiClient.makeRequest('/admin/job-descriptions/pending'),
+          apiClient.makeRequest('/admin/job-descriptions')
+        ]);
+        
+        pendingRequests = pendingResponse.data || pendingResponse || [];
+        allRequests = allResponse.data || allResponse || [];
+        
+        console.log('✅ Loaded job descriptions:', { pending: pendingRequests.length, all: allRequests.length });
+        
+        updateStats();
+        renderRequests();
+      } catch (error) {
+        console.error('❌ Error loading job descriptions:', error);
+        showToast('فشل تحميل البيانات: ' + error.message, 'error');
+        showEmptyState('فشل تحميل البيانات');
+      }
+    }
+
+    function updateStats() {
+      const approved = allRequests.filter(r => r.verified).length;
+      document.getElementById('pendingCount').textContent = pendingRequests.length;
+      document.getElementById('approvedCount').textContent = approved;
+    }
+
+    function renderRequests() {
+      const container = document.getElementById('requestsContainer');
+      
+      if (pendingRequests.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">✓</div>
+            <h3>لا توجد طلبات معلقة</h3>
+            <p>جميع الأوصاف الوظيفية تمت مراجعتها</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = pendingRequests.map(request => `
+        <div class="request-card">
+          <div class="request-header">
+            <div class="employee-info">
+              <div class="employee-name">${request.full_name_ar || request.employee_name}</div>
+              <div class="employee-meta">
+                ${request.employee_number ? `رقم الموظف: ${request.employee_number} • ` : ''}
+                ${request.department_name || 'لا يوجد قسم'} • 
+                ${request.position || 'لا يوجد مسمى وظيفي'}
+              </div>
+            </div>
+            <div class="request-date">
+              📅 ${formatDate(request.created_at)}
+            </div>
+          </div>
+          
+          <div class="description-box">
+            ${request.job_description}
+          </div>
+          
+          ${request.submission_notes ? `
+            <div class="notes-box">
+              <strong>ملاحظات الموظف:</strong>
+              <p style="margin:0.5rem 0 0 0;color:var(--muted);">${request.submission_notes}</p>
+            </div>
+          ` : ''}
+          
+          <div class="actions">
+            <button class="btn btn-success" onclick="approveRequest(${request.id})">
+              ✓ موافقة
+            </button>
+            <button class="btn btn-danger" onclick="rejectRequest(${request.id})">
+              ✗ رفض
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showEmptyState(message) {
+      document.getElementById('requestsContainer').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <h3>${message}</h3>
+        </div>
+      `;
+    }
+
+    async function approveRequest(id) {
+      if (!confirm('هل أنت متأكد من الموافقة على هذا الوصف الوظيفي؟')) return;
+      
+      try {
+        await apiClient.makeRequest(`/admin/job-descriptions/${id}/approve`, {
+          method: 'POST'
+        });
+        
+        showToast('✅ تم اعتماد الوصف الوظيفي بنجاح', 'success');
+        loadJobDescriptions(); // Reload
+      } catch (error) {
+        console.error('Error approving:', error);
+        showToast('❌ ' + (error.message || 'حدث خطأ'), 'error');
+      }
+    }
+
+    async function rejectRequest(id) {
+      const reason = prompt('سبب الرفض (اختياري):');
+      if (reason === null) return; // User cancelled
+      
+      try {
+        await apiClient.makeRequest(`/admin/job-descriptions/${id}/reject`, {
+          method: 'POST',
+          body: JSON.stringify({ reason })
+        });
+        
+        showToast('تم رفض الوصف الوظيفي', 'success');
+        loadJobDescriptions(); // Reload
+      } catch (error) {
+        console.error('Error rejecting:', error);
+        showToast('❌ ' + (error.message || 'حدث خطأ'), 'error');
+      }
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '—';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('ar-SA', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
+

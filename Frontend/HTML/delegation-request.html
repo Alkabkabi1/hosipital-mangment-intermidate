@@ -1,0 +1,278 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/unified-form-styles.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>مستشفى الملك عبدالعزيز – طلب تفويض</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2B6CB0; --bg:#f5f6f8; --surface:#ffffff; --text:#0f172a;
+  --muted:#6b7280; --border:#e5e7eb;
+  /* حقول: أبيض + حدود سوداء */
+  --field-bg:#ffffff; --field-text:#0f172a; --field-border:#000; --field-placeholder:#6b7280; --field-focus:rgba(0,0,0,.15);
+  /* مربعات الأقسام */
+  --qbox-radius:16px; --qbox-border:#e5e7eb; --qbox-shadow:0 6px 18px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,Segoe UI,Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+.app-header{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border)}
+.app-header .inner{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.tt{display:flex;flex-direction:column}
+.tt h1{margin:0;font-size:18px;font-weight:800}
+.tt span{font-size:12px;color:var(--muted)}
+.back{border:1px solid var(--border);border-radius:10px;padding:8px 12px;background:#fff;cursor:pointer}
+.container{max-width:1200px;margin:20px auto;padding:0 16px}
+.section-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--qbox-shadow);margin-bottom:18px}
+.section-header{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #eef2f7;padding-bottom:10px;margin-bottom:12px}
+.section-title{margin:0;font-weight:800;font-size:18px;color:var(--primary)}
+.section-dot{width:10px;height:10px;background:var(--primary);border-radius:999px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;text-align:right}
+.form-grid .full-row{grid-column:1 / -1}
+.form-grid.boxed{gap:18px}
+.form-grid.boxed .form-group{background:#fff;border:2px solid var(--qbox-border);border-radius:var(--qbox-radius);padding:14px 16px;box-shadow:var(--qbox-shadow)}
+.form-grid.boxed .form-group label{display:block;font-weight:700;font-size:15px;margin-bottom:8px}
+.input,.select,.textarea{width:100%;background:var(--field-bg);color:var(--field-text);border:1px solid var(--field-border);border-radius:10px;height:56px;padding:12px 14px;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s}
+.textarea{height:auto;min-height:110px;resize:vertical}
+.input::placeholder,.textarea::placeholder{color:var(--field-placeholder)}
+.input:focus,.select:focus,.textarea:focus{border-color:#000;box-shadow:0 0 0 3px var(--field-focus)}
+input[type="email"]{direction:ltr;text-align:left} input[data-ltr]{direction:ltr;text-align:left}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:700;background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border-color:transparent}
+.hint{color:var(--muted);font-size:13px}
+@media (max-width:900px){.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  
+
+<header class="app-header">
+  <div class="inner">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>طلب تفويض</span>
+      </div>
+    </div>
+    <button class="back" onclick="history.back()">رجوع</button>
+  </div>
+</header>
+
+<main class="container">
+  <!-- بيانات المفوِّض (تعبئة تلقائية) -->
+  <section class="section-card">
+    <div class="section-header">
+      <h3 class="section-title">بيانات المفوِّض</h3><span class="section-dot"></span>
+    </div>
+    <div class="form-grid boxed">
+      <div class="form-group">
+        <label>الاسم</label>
+        <input class="input" id="fromName" readonly placeholder="—">
+      </div>
+      <div class="form-group">
+        <label>البريد</label>
+        <input class="input" id="fromEmail" readonly placeholder="—">
+      </div>
+      <div class="form-group">
+        <label>القسم</label>
+        <input class="input" id="fromDept" readonly placeholder="—">
+      </div>
+      <div class="form-group">
+        <label>المسمى الوظيفي</label>
+        <input class="input" id="fromTitle" readonly placeholder="—">
+      </div>
+    </div>
+  </section>
+
+  <!-- بيانات المفوَّض له -->
+  <section class="section-card">
+    <div class="section-header">
+      <h3 class="section-title">بيانات المفوَّض له</h3><span class="section-dot"></span>
+    </div>
+    <div class="form-grid boxed">
+      <div class="form-group">
+        <label>الاسم الكامل *</label>
+        <input class="input" id="toName" placeholder="الاسم الرباعي" required>
+      </div>
+      <div class="form-group">
+        <label>البريد الإلكتروني *</label>
+        <input class="input" id="toEmail" type="email" placeholder="name@kauh.sa" required>
+      </div>
+      <div class="form-group">
+        <label>القسم</label>
+        <input class="input" id="toDept" placeholder="القسم">
+      </div>
+      <div class="form-group">
+        <label>المسمى الوظيفي</label>
+        <input class="input" id="toTitle" placeholder="المسمى الوظيفي">
+      </div>
+    </div>
+  </section>
+
+  <!-- الصلاحيات -->
+  <section class="section-card">
+    <div class="section-header">
+      <h3 class="section-title">صلاحيات التفويض</h3><span class="section-dot"></span>
+    </div>
+    <div class="form-grid boxed">
+      <div class="form-group full-row">
+        <label>اختر الصلاحيات</label>
+        <div class="form-grid" style="grid-template-columns:repeat(2,1fr);gap:8px 14px">
+          <label><input type="checkbox" class="perm" value="اعتماد طلب مباشرة"> اعتماد طلب مباشرة</label>
+          <label><input type="checkbox" class="perm" value="اعتماد طلب إخلاء طرف"> اعتماد طلب إخلاء طرف</label>
+          <label><input type="checkbox" class="perm" value="إنشاء تقارير"> إنشاء تقارير</label>
+          <label><input type="checkbox" class="perm" value="إدارة التفويضات"> إدارة التفويضات</label>
+        </div>
+        <div class="hint" style="margin-top:8px">تقدر تضيف صلاحية مخصصة:</div>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <input class="input" id="permCustom" placeholder="اكتب صلاحية جديدة">
+          <button class="btn" id="btnAddPerm">إضافة</button>
+        </div>
+        <div id="permChips" class="hint" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- المدة والملاحظات -->
+  <section class="section-card">
+    <div class="section-header">
+      <h3 class="section-title">المدة والملاحظات</h3><span class="section-dot"></span>
+    </div>
+    <div class="form-grid boxed">
+      <div class="form-group">
+        <label>تاريخ بداية التفويض *</label>
+        <input class="input" id="validFrom" type="date" required>
+      </div>
+      <div class="form-group">
+        <label>تاريخ نهاية التفويض *</label>
+        <input class="input" id="validTo" type="date" required>
+      </div>
+      <div class="form-group full-row">
+        <label>ملاحظات</label>
+        <textarea class="textarea" id="notes" placeholder="أي تفاصيل إضافية"></textarea>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="history.back()">إلغاء</button>
+      <button class="btn btn-primary" id="btnSubmit">إرسال التفويض</button>
+    </div>
+  </section>
+</main>
+
+<!-- JavaScript Files -->
+  <script src="../jS/notification-store.js"></script>
+<script src="../jS/form-validation-utils.js"></script>
+<script src="../jS/api-client.js"></script>
+<script src="../jS/app-init.js"></script>
+<script src="../jS/delegation-request.js"></script>
+
+<script>
+ 
+
+
+// ===== حماية الصفحة =====
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser) window.location.href='login.html';
+if(authUser && authUser.role==='admin') window.location.href='admin-dashboard.html';
+
+// ===== تعبئة بيانات المفوِّض من آخر نموذج إنشاء حساب (إن وجد) =====
+(function prefill(){
+  fromEmail.value = authUser?.email || '';
+  const signups = JSON.parse(localStorage.getItem('signupRequests')||'[]').slice().reverse();
+  const mine = signups.find(s =>
+    (s.privateMail?.toLowerCase()===authUser?.email?.toLowerCase()) ||
+    (s.mohMail?.toLowerCase()===authUser?.email?.toLowerCase())
+  );
+  if(mine){
+    fromName.value = mine.fullName||''; fromDept.value = mine.department||''; fromTitle.value = mine.jobTitle||'';
+  }
+  // تاريخ افتراضي: اليوم وحتى +30 يوم
+  const today = new Date(); const to = new Date(Date.now()+30*24*3600*1000);
+  validFrom.value = today.toISOString().slice(0,10);
+  validTo.value   = to.toISOString().slice(0,10);
+})();
+
+// ===== إدارة صلاحيات مخصصة (chips) =====
+let extraPerms = [];
+function renderChips(){
+  permChips.innerHTML = extraPerms.length? ('تمت الإضافة: ' + extraPerms.map(p=>`<span style="background:#eef2ff;border-radius:999px;padding:2px 8px;margin-inline:3px;display:inline-block">${p}</span>`).join(' ')) : '';
+}
+btnAddPerm.addEventListener('click', ()=>{
+  const v = (permCustom.value||'').trim();
+  if(!v) return;
+  extraPerms.push(v); permCustom.value=''; renderChips();
+});
+
+// ===== إرسال التفويض =====
+btnSubmit.addEventListener('click', ()=>{
+  const to = {
+    name: toName.value.trim(), email: toEmail.value.trim(),
+    dept: toDept.value.trim(), title: toTitle.value.trim()
+  };
+  if(!to.name || !to.email){ alert('يرجى تعبئة اسم وبريد المفوَّض له.'); return; }
+  if(!validFrom.value || !validTo.value){ alert('حدد بداية ونهاية التفويض.'); return; }
+
+  const checked = Array.from(document.querySelectorAll('.perm:checked')).map(i=>i.value);
+  const permissions = checked.concat(extraPerms);
+  if(permissions.length===0){ alert('اختر/أضف صلاحية واحدة على الأقل.'); return; }
+
+  const id = Math.floor(Date.now()/1000);
+  const data = {
+    id,
+    createdAt: Date.now(),
+    from: authUser?.email || '',
+    fromName: fromName.value||'',
+    fromDept: fromDept.value||'',
+    to: to.email,
+    toName: to.name,
+    toDept: to.dept,
+    toTitle: to.title,
+    permissions,
+    validFrom: new Date(validFrom.value).getTime(),
+    validTo: new Date(validTo.value).getTime(),
+    notes: (notes.value||'').trim(),
+    active: true,
+    createdBy: authUser?.email || null
+  };
+
+  const list = JSON.parse(localStorage.getItem('delegations')||'[]');
+  list.push(data);
+  localStorage.setItem('delegations', JSON.stringify(list));
+
+  const notis = NotificationStore.getAll();
+  notis.unshift({id:'n'+id, title:`تم إنشاء تفويض لـ ${to.name}`, time:'الآن', unread:true});
+  NotificationStore.setAll(notis);
+
+  alert('تم إرسال التفويض بنجاح.');
+  window.location.href = 'employee-dashboard.html';
+});
+</script>
+
+<!-- Additional JavaScript Files with proper loading order -->
+<!-- Phase 1: Foundation scripts -->
+<script src="../jS/dependency-guard.js"></script>
+<script src="../jS/error-handler.js"></script>
+
+<script>
+// Wait for dependencies before any additional initialization
+if (typeof window.waitForDependencies === 'function') {
+  window.waitForDependencies(() => {
+    console.log('✅ Delegation request page: Dependencies loaded');
+  }, ['NotificationStore']);
+}
+</script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

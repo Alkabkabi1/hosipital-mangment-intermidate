@@ -1,0 +1,89 @@
+diff --git a/Frontend/jS/workflow-manager.js b/Frontend/jS/workflow-manager.js
+--- a/Frontend/jS/workflow-manager.js
++++ b/Frontend/jS/workflow-manager.js
+@@
+   advanceToNextApprover(request) {
+-    const nextPendingApprover = request.approvers.find(a => a.status === this.STATUSES.PENDING);
++    const nextPendingApprover = request.approvers.find(a =>
++      (window.normalizeStatus ? window.normalizeStatus(a.status) : a.status) === 'pending'
++    );
+@@
+       const oldStatus = department.status;
+       department.status = newStatus;
+-      department.approved_at = newStatus === this.STATUSES.APPROVED ? Date.now() : null;
++      department.approved_at = ((window.normalizeStatus ? window.normalizeStatus(newStatus) : newStatus) === 'approved') ? Date.now() : null;
+@@
+-  getDepartmentStatusSummary(request) {
++  getDepartmentStatusSummary(request) {
+     if (!request.departments) return { total: 0, approved: 0, rejected: 0, pending: 0 };
+     
+     const summary = {
+       total: request.departments.length,
+-      approved: request.departments.filter(d => d.status === this.STATUSES.APPROVED).length,
+-      rejected: request.departments.filter(d => d.status === this.STATUSES.REJECTED).length,
+-      pending: request.departments.filter(d => d.status === this.STATUSES.PENDING).length
++      approved: request.departments.filter(d => (window.normalizeStatus ? window.normalizeStatus(d.status) : d.status) === 'approved').length,
++      rejected: request.departments.filter(d => (window.normalizeStatus ? window.normalizeStatus(d.status) : d.status) === 'rejected').length,
++      pending:  request.departments.filter(d => (window.normalizeStatus ? window.normalizeStatus(d.status) : d.status) === 'pending').length
+     };
+@@
+-    const allApproved = request.departments.every(d => d.status === this.STATUSES.APPROVED);
+-    const hasRejected = request.departments.some(d => d.status === this.STATUSES.REJECTED);
++    const allApproved = request.departments.every(d => (window.normalizeStatus ? window.normalizeStatus(d.status) : d.status) === 'approved');
++    const hasRejected = request.departments.some(d => (window.normalizeStatus ? window.normalizeStatus(d.status) : d.status) === 'rejected');
+
+diff --git a/Frontend/jS/admin-clearance-detail.js b/Frontend/jS/admin-clearance-detail.js
+--- a/Frontend/jS/admin-clearance-detail.js
++++ b/Frontend/jS/admin-clearance-detail.js
+@@
+-    status: currentClearance.status,
++    status: (window.getStatusDisplay ? window.getStatusDisplay(currentClearance.status) : currentClearance.status),
+
+diff --git a/Frontend/jS/admin-direct-detail.js b/Frontend/jS/admin-direct-detail.js
+--- a/Frontend/jS/admin-direct-detail.js
++++ b/Frontend/jS/admin-direct-detail.js
+@@
+-    status: currentOnboarding.status,
++    status: (window.getStatusDisplay ? window.getStatusDisplay(currentOnboarding.status) : currentOnboarding.status),
+@@
+-    status: currentOnboarding.status,
++    status: (window.getStatusDisplay ? window.getStatusDisplay(currentOnboarding.status) : currentOnboarding.status),
+
+diff --git a/Frontend/jS/admin-delegation-detail.js b/Frontend/jS/admin-delegation-detail.js
+--- a/Frontend/jS/admin-delegation-detail.js
++++ b/Frontend/jS/admin-delegation-detail.js
+@@
+-    status: currentDelegation.status,
++    status: (window.getStatusDisplay ? window.getStatusDisplay(currentDelegation.status) : currentDelegation.status),
+
+diff --git a/Frontend/jS/admin-clearance-inbox.js b/Frontend/jS/admin-clearance-inbox.js
+--- a/Frontend/jS/admin-clearance-inbox.js
++++ b/Frontend/jS/admin-clearance-inbox.js
+@@
+-      request.status,
++      (window.getStatusDisplay ? window.getStatusDisplay(request.status) : request.status),
+
+diff --git a/Frontend/jS/admin-direct-inbox.js b/Frontend/jS/admin-direct-inbox.js
+--- a/Frontend/jS/admin-direct-inbox.js
++++ b/Frontend/jS/admin-direct-inbox.js
+@@
+-      request.status,
++      (window.getStatusDisplay ? window.getStatusDisplay(request.status) : request.status),
+
+diff --git a/Frontend/jS/admin-delegations.js b/Frontend/jS/admin-delegations.js
+--- a/Frontend/jS/admin-delegations.js
++++ b/Frontend/jS/admin-delegations.js
+@@
+-    delegation.end_date ? DateUtils.formatDate(delegation.end_date) : '',
+-    delegation.status
++    delegation.end_date ? DateUtils.formatDate(delegation.end_date) : '',
++    (window.getStatusDisplay ? window.getStatusDisplay(delegation.status) : delegation.status)
+
+diff --git a/Frontend/jS/employee-delegations.js b/Frontend/jS/employee-delegations.js
+--- a/Frontend/jS/employee-delegations.js
++++ b/Frontend/jS/employee-delegations.js
+@@
+-      `${DateUtils.formatDate(d.valid_from)} - ${DateUtils.formatDate(d.valid_to)}`,
+-      d.status
++      (DateUtils.formatDate(d.valid_from) + ' - ' + DateUtils.formatDate(d.valid_to)),
++      (window.getStatusDisplay ? window.getStatusDisplay(d.status) : d.status)

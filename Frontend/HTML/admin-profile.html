@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>مستشفى الملك عبدالعزيز – الملف الشخصي (أدمن)</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2B6CB0; --primary-600:#255b92;
+  --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b;
+  --border:#e5e7eb; --ok:#16a34a; --danger:#dc2626; --chip:#eef2ff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,Segoe UI,Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+
+/* هيدر */
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt span{font-size:12px;color:var(--muted)}
+.btn{border:1px solid var(--border);border-radius:12px;padding:10px 14px;background:#fff;cursor:pointer;font-weight:800}
+.btn.primary{background:var(--primary);border-color:transparent;color:#fff}
+.btn.danger{background:#fff;border-color:#fecaca;color:var(--danger)}
+.btn:active{transform:translateY(1px)}
+
+/* التخطيط */
+.container{max-width:1100px;margin:18px auto;padding:0 16px}
+.grid{display:grid;grid-template-columns:310px 1fr;gap:16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.card h3{margin:0 0 12px 0}
+
+/* بطاقة البروفايل اليسار */
+.center{display:flex;flex-direction:column;align-items:center;gap:12px}
+.avatar{width:120px;height:120px;border-radius:999px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:48px;font-weight:800;position:relative;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chip{background:var(--chip);border:1px solid #c7d2fe;color:#334155;border-radius:999px;padding:6px 10px;font-size:12px}
+
+/* نماذج */
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px}
+.form .full{grid-column:1 / -1}
+.group label{display:block;font-weight:700;font-size:14px;margin-bottom:6px}
+.input,.select,.textarea{
+  width:100%;background:#fff;color:var(--text);
+  border:1px solid var(--border);border-radius:12px;height:48px;padding:10px 12px;font-size:15px;outline:none
+}
+.textarea{height:auto;min-height:110px;resize:vertical}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(43,108,176,.18)}
+.help{font-size:12px;color:var(--muted)}
+.row-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+
+/* توست */
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 16px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:none}
+
+/* موبايل */
+@media(max-width:900px){ .grid{grid-template-columns:1fr} }
+input[type="email"]{direction:ltr;text-align:left}
+input[type="tel"], input[data-ltr]{direction:ltr;text-align:left}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>الملف الشخصي – أدمن</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="location.href='admin-dashboard.html'">رجوع</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="grid">
+    <!-- يسار: بطاقة البروفايل ورفع الصورة -->
+    <section class="card">
+      <div class="center">
+        <div id="avatar" class="avatar" title="الصورة الشخصية">
+          <span id="avatarLetter">U</span>
+        </div>
+        <div class="row-actions" style="justify-content:center">
+          <label class="btn">
+            تغيير الصورة
+            <input id="fileInput" type="file" accept="image/*" hidden>
+          </label>
+          <button class="btn danger" id="btnRemovePhoto">حذف الصورة</button>
+        </div>
+        <div class="chips">
+          <span class="chip" id="chipEmail">—</span>
+          <span class="chip" id="chipDept">—</span>
+          <span class="chip" id="chipTitle">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- يمين: معلوماتي -->
+    <section class="card">
+      <h3>معلومات الحساب</h3>
+      <div class="form">
+        <div class="group"><label>الاسم الكامل</label><div id="userName" class="field-value">جاري التحميل...</div></div>
+        <div class="group full"><label>البريد الإلكتروني</label><div id="userEmail" class="field-value" data-email>جاري التحميل...</div></div>
+        <div class="group"><label>الدور</label><div id="userRole" class="field-value">جاري التحميل...</div></div>
+        
+        <!-- Excel data from App_Users -->
+        <div class="group"><label>رقم الهوية الوطنية</label><div id="nationalId" class="field-value" data-ltr>جاري التحميل...</div></div>
+        <div class="group"><label>الرقم الوظيفي</label><div id="employeeNumber" class="field-value" data-ltr>جاري التحميل...</div></div>
+        <div class="group"><label>الجنسية</label><div id="nationality" class="field-value">جاري التحميل...</div></div>
+        <div class="group"><label>القسم</label><div id="department" class="field-value">جاري التحميل...</div></div>
+        <div class="group"><label>المسمى الوظيفي</label><div id="jobTitle" class="field-value">جاري التحميل...</div></div>
+        <div class="group"><label>الوظيفة</label><div id="position" class="field-value">جاري التحميل...</div></div>
+        <div class="group"><label>رقم الموظف</label><div id="employeeId" class="field-value" data-ltr>جاري التحميل...</div></div>
+        <div class="group"><label>رقم الجوال</label><div id="phone" class="field-value" data-ltr>جاري التحميل...</div></div>
+        <div class="group"><label>نوع التوظيف</label><div id="employmentType" class="field-value">جاري التحميل...</div></div>
+        <div class="group"><label>تاريخ الإنضمام</label><div id="joinDate" class="field-value">جاري التحميل...</div></div>
+        <div class="group"><label>آخر تسجيل دخول</label><div id="lastLogin" class="field-value">جاري التحميل...</div></div>
+      </div>
+      
+      <h3 style="margin-top:24px;margin-bottom:12px">تحديث البيانات</h3>
+      <form id="formProfile" class="form">
+        <div class="group"><label>الاسم الكامل *</label><input class="input" id="fullName" required></div>
+        <div class="group"><label>الجوال *</label><input class="input" id="mobile" type="tel" inputmode="tel" placeholder="05xxxxxxxx" required></div>
+
+        <div class="group"><label>القسم</label><input class="input" id="departmentInput" placeholder="مثل: قسم تقنية المعلومات"></div>
+        <div class="group"><label>المسمى الوظيفي</label><input class="input" id="jobTitleInput" placeholder="مثل: مدير النظام"></div>
+
+        <div class="group"><label>الرقم الوظيفي</label><input class="input" id="jobNo" data-ltr placeholder="123456"></div>
+        <div class="group"><label>الجنسية</label><input class="input" id="nationalityInput" placeholder="مثال: سعودي"></div>
+
+        <div class="group full"><label>البريد الخاص</label><input class="input" id="privateMail" type="email" readonly></div>
+        <div class="group full"><label>بريد وزارة الصحة (MOH)</label><input class="input" id="mohMail" type="email" readonly></div>
+
+        <div class="row-actions full">
+          <button type="button" class="btn" onclick="resetToSignup()">إرجاع لقيم النموذج</button>
+          <button type="submit" class="btn primary">حفظ التعديلات</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- أمان الحساب -->
+  <section class="card" style="margin-top:16px">
+    <h3>أمان الحساب</h3>
+    <div class="form">
+      <div class="group full">
+        <label>تغيير كلمة المرور</label>
+        <div class="help">للتجربة فقط (محليًا). إذا كانت هناك كلمة مرور محفوظة مسبقًا، يلزم إدخال القديمة بشكل صحيح.</div>
+      </div>
+      <div class="group"><label>كلمة المرور الحالية</label><input class="input" id="oldPass" type="password" placeholder="••••••••"></div>
+      <div class="group"><label>كلمة المرور الجديدة *</label><input class="input" id="newPass" type="password" placeholder="على الأقل 8 أحرف"></div>
+      <div class="group"><label>تأكيد كلمة المرور *</label><input class="input" id="newPass2" type="password" placeholder="أعد إدخال كلمة المرور"></div>
+      <div class="row-actions full">
+        <button class="btn primary" id="btnChangePass" type="button">حفظ كلمة المرور</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ======================== بيانات الدخول ========================
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser){ location.href='login.html'; }
+if(authUser.role !== 'admin'){ location.href='employee-dashboard.html'; }
+const myEmail = (authUser.email||'').toLowerCase();
+document.getElementById('avatarLetter').textContent = (authUser.email||'?').trim()[0]?.toUpperCase() || 'U';
+
+// ======================== مفاتيح التخزين ========================
+const KEY_PROFILES = 'userProfiles';
+const KEY_PASSWORDS = 'userPasswords';
+
+// ======================== أدوات صغيرة ========================
+const $ = sel => document.querySelector(sel);
+function toast(msg, ok=true){
+  const t=$('#toast'); t.textContent=msg; t.style.display='block';
+  t.style.background = ok ? '#111827' : '#7f1d1d';
+  setTimeout(()=> t.style.display='none', 1800);
+}
+function getProfiles(){ try{ return JSON.parse(localStorage.getItem(KEY_PROFILES)||'{}'); }catch{ return {}; } }
+function setProfiles(obj){ localStorage.setItem(KEY_PROFILES, JSON.stringify(obj)); }
+function getPasswords(){ try{ return JSON.parse(localStorage.getItem(KEY_PASSWORDS)||'{}'); }catch{ return {}; } }
+function setPasswords(obj){ localStorage.setItem(KEY_PASSWORDS, JSON.stringify(obj)); }
+
+// ======================== تحميل بيانات أولية ========================
+const signups = JSON.parse(localStorage.getItem('signupRequests')||'[]').slice().reverse();
+const fromSignup = signups.find(s =>
+  s.privateMail?.toLowerCase?.()===myEmail || s.mohMail?.toLowerCase?.()===myEmail
+) || {};
+
+const profiles = getProfiles();
+const mine = Object.assign({}, {
+  fullName: fromSignup.fullName || '',
+  mobile: fromSignup.mobile || '',
+  department: fromSignup.department || '',
+  jobTitle: fromSignup.jobTitle || '',
+  jobNo: fromSignup.jobNo || '',
+  nationality: fromSignup.nationality || '',
+  gender: fromSignup.gender || '',
+  birthDate: fromSignup.birthDate || '',
+  privateMail: fromSignup.privateMail || (authUser.email||''),
+  mohMail: fromSignup.mohMail || '',
+  avatar: ''
+}, profiles[myEmail] || {});
+
+function fillForm(data){
+  $('#fullName').value = data.fullName||'';
+  $('#mobile').value = data.mobile||'';
+  const deptInput = $('#departmentInput');
+  const jobInput = $('#jobTitleInput');
+  const natInput = $('#nationalityInput');
+  if (deptInput) deptInput.value = data.department||'';
+  if (jobInput) jobInput.value = data.jobTitle||'';
+  if (natInput) natInput.value = data.nationality||'';
+  $('#jobNo').value = data.jobNo||'';
+  $('#privateMail').value = data.privateMail||'';
+  $('#mohMail').value = data.mohMail||'';
+  $('#chipEmail').textContent = data.privateMail || authUser.email || '—';
+  $('#chipDept').textContent = data.department || '—';
+  $('#chipTitle').textContent = data.jobTitle || '—';
+  
+  // Update read-only profile display fields
+  const userNameEl = $('#userName');
+  const userEmailEl = $('#userEmail');
+  const userRoleEl = $('#userRole');
+  const nationalIdEl = $('#nationalId');
+  const employeeNumberEl = $('#employeeNumber');
+  const nationalityEl = $('#nationality');
+  const departmentEl = $('#department');
+  const jobTitleEl = $('#jobTitle');
+  const positionEl = $('#position');
+  const employeeIdEl = $('#employeeId');
+  const phoneEl = $('#phone');
+  const employmentTypeEl = $('#employmentType');
+  
+  if (userNameEl) userNameEl.textContent = data.fullName || authUser.name || '—';
+  if (userEmailEl) userEmailEl.textContent = data.privateMail || authUser.email || '—';
+  if (userRoleEl) userRoleEl.textContent = authUser.role || '—';
+  if (employeeNumberEl) employeeNumberEl.textContent = data.jobNo || '—';
+  if (nationalityEl) nationalityEl.textContent = data.nationality || '—';
+  if (departmentEl) departmentEl.textContent = data.department || '—';
+  if (jobTitleEl) jobTitleEl.textContent = data.jobTitle || '—';
+  if (positionEl) positionEl.textContent = data.jobTitle || '—';
+  if (phoneEl) phoneEl.textContent = data.mobile || '—';
+  
+  if(data.avatar){
+    setAvatarImage(data.avatar);
+  }else{
+    resetAvatarToLetter();
+  }
+}
+
+// Load profile data from backend and update display
+async function loadBackendProfile() {
+  try {
+    if (window.apiClient && typeof window.apiClient.getProfile === 'function') {
+      const profile = await window.apiClient.getProfile();
+      console.log('📋 Loaded profile from backend:', profile);
+      
+      // Update display fields with backend data
+      const userNameEl = $('#userName');
+      const userEmailEl = $('#userEmail');
+      const userRoleEl = $('#userRole');
+      const nationalIdEl = $('#nationalId');
+      const employeeNumberEl = $('#employeeNumber');
+      const nationalityEl = $('#nationality');
+      const departmentEl = $('#department');
+      const jobTitleEl = $('#jobTitle');
+      const positionEl = $('#position');
+      const employeeIdEl = $('#employeeId');
+      const phoneEl = $('#phone');
+      const employmentTypeEl = $('#employmentType');
+      
+      if (userNameEl) userNameEl.textContent = profile.full_name_ar || profile.name || '—';
+      if (userEmailEl) userEmailEl.textContent = profile.email || '—';
+      if (userRoleEl) userRoleEl.textContent = (profile.role || 'admin');
+      if (nationalIdEl) nationalIdEl.textContent = profile.app_users_national_id || profile.national_id || '—';
+      if (employeeNumberEl) employeeNumberEl.textContent = profile.app_users_employee_number || profile.employee_number || '—';
+      if (nationalityEl) nationalityEl.textContent = profile.app_users_nationality || profile.nationality || '—';
+      if (departmentEl) departmentEl.textContent = profile.app_users_department_name || profile.department_name || '—';
+      if (jobTitleEl) jobTitleEl.textContent = profile.app_users_job_title || profile.job_title_name_ar || '—';
+      if (positionEl) positionEl.textContent = profile.position || profile.job_title || '—';
+      if (employeeIdEl) employeeIdEl.textContent = profile.employee_id || '—';
+      if (phoneEl) phoneEl.textContent = profile.app_users_phone || profile.phone_primary || '—';
+      if (employmentTypeEl) {
+        const empType = profile.app_users_employment_type || profile.contract_type || '—';
+        // Translate to Arabic
+        const typeMap = {
+          'permanent': 'دائم',
+          'contract': 'عقد',
+          'part_time': 'دوام جزئي',
+          'temporary': 'مؤقت'
+        };
+        employmentTypeEl.textContent = typeMap[empType] || empType;
+      }
+      
+      // Update dates if available
+      const joinDateEl = $('#joinDate');
+      const lastLoginEl = $('#lastLogin');
+      if (joinDateEl && profile.created_at) {
+        const date = new Date(profile.created_at);
+        joinDateEl.textContent = date.toLocaleDateString('ar-SA', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+      if (lastLoginEl && profile.last_login) {
+        const date = new Date(profile.last_login);
+        lastLoginEl.textContent = date.toLocaleDateString('ar-SA', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      
+      console.log('✅ Admin profile loaded with Excel data:', {
+        national_id: profile.app_users_national_id,
+        employee_number: profile.app_users_employee_number,
+        job_title: profile.app_users_job_title,
+        phone: profile.app_users_phone
+      });
+    }
+  } catch (error) {
+    console.error('Error loading backend profile:', error);
+  }
+}
+
+// Translate Arabic name to English in real-time
+function translateArabicToEnglish(arabicName) {
+  if (!arabicName || arabicName === '—' || arabicName === 'غير محدد') {
+    return '—';
+  }
+  
+  // Arabic to English letter mapping (transliteration)
+  const transliterationMap = {
+    'ا': 'a', 'أ': 'a', 'إ': 'i', 'آ': 'a',
+    'ب': 'b', 'ت': 't', 'ث': 'th',
+    'ج': 'j', 'ح': 'h', 'خ': 'kh',
+    'د': 'd', 'ذ': 'dh', 'ر': 'r', 'ز': 'z',
+    'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'd',
+    'ط': 't', 'ظ': 'dh', 'ع': 'a', 'غ': 'gh',
+    'ف': 'f', 'ق': 'q', 'ك': 'k', 'ل': 'l',
+    'م': 'm', 'ن': 'n', 'ه': 'h', 'و': 'w',
+    'ي': 'y', 'ى': 'a', 'ة': 'h', 'ء': 'a',
+    ' ': ' '
+  };
+  
+  let result = '';
+  for (let i = 0; i < arabicName.length; i++) {
+    const char = arabicName[i];
+    result += transliterationMap[char] || char;
+  }
+  
+  // Capitalize first letter of each word
+  return result.split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+function translateEmploymentType(type) {
+  if (!type || type === '—') return '—';
+  
+  const typeMap = {
+    'permanent': 'دائم',
+    'contract': 'عقد',
+    'part_time': 'دوام جزئي',
+    'temporary': 'مؤقت',
+    'civil_service': 'خدمة مدنية',
+    'self_employment': 'تشغيل ذاتي',
+    'surplus_workforce': 'قوى زائدة',
+    'locum': 'لوكم',
+    'partial_assignment': 'تكليف جزئي'
+  };
+  
+  return typeMap[type] || type;
+}
+
+fillForm(mine);
+// Load backend profile data after form is filled
+setTimeout(() => loadBackendProfile(), 500);
+
+function resetToSignup(){
+  const base = {
+    fullName: fromSignup.fullName || '',
+    mobile: fromSignup.mobile || '',
+    department: fromSignup.department || '',
+    jobTitle: fromSignup.jobTitle || '',
+    jobNo: fromSignup.jobNo || '',
+    nationality: fromSignup.nationality || '',
+    privateMail: fromSignup.privateMail || (authUser.email||''),
+    mohMail: fromSignup.mohMail || '',
+    avatar: (profiles[myEmail]?.avatar || '')
+  };
+  fillForm(base);
+  // Reload backend profile data to refresh display
+  setTimeout(() => loadBackendProfile(), 500);
+}
+
+$('#formProfile').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const obj = getProfiles();
+  const deptInput = $('#departmentInput');
+  const jobInput = $('#jobTitleInput');
+  const natInput = $('#nationalityInput');
+  
+  obj[myEmail] = {
+    fullName: $('#fullName').value.trim(),
+    mobile: $('#mobile').value.trim(),
+    department: deptInput ? deptInput.value.trim() : '',
+    jobTitle: jobInput ? jobInput.value.trim() : '',
+    jobNo: $('#jobNo').value.trim(),
+    nationality: natInput ? natInput.value.trim() : '',
+    privateMail: $('#privateMail').value,
+    mohMail: $('#mohMail').value,
+    avatar: (obj[myEmail]?.avatar || mine.avatar || '')
+  };
+  setProfiles(obj);
+  $('#chipDept').textContent = obj[myEmail].department || '—';
+  $('#chipTitle').textContent = obj[myEmail].jobTitle || '—';
+  
+  // Update display fields
+  const departmentEl = $('#department');
+  const jobTitleEl = $('#jobTitle');
+  const nationalityEl = $('#nationality');
+  if (departmentEl) departmentEl.textContent = obj[myEmail].department || '—';
+  if (jobTitleEl) jobTitleEl.textContent = obj[myEmail].jobTitle || '—';
+  if (nationalityEl) nationalityEl.textContent = obj[myEmail].nationality || '—';
+  
+  toast('تم حفظ بيانات الملف الشخصي');
+});
+
+const fileInput = $('#fileInput');
+fileInput.addEventListener('change', ()=>{
+  const f = fileInput.files[0];
+  if(!f) return;
+  if(f.size > 2*1024*1024){ toast('الحد الأقصى 2MB للصورة', false); return; }
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const dataURL = e.target.result;
+    setAvatarImage(dataURL);
+    const obj = getProfiles();
+    obj[myEmail] = Object.assign({}, obj[myEmail]||mine, { avatar: dataURL });
+    setProfiles(obj);
+    toast('تم تحديث الصورة');
+  };
+  reader.readAsDataURL(f);
+});
+
+$('#btnRemovePhoto').addEventListener('click', ()=>{
+  const obj=getProfiles();
+  if(obj[myEmail]) obj[myEmail].avatar='';
+  setProfiles(obj);
+  resetAvatarToLetter();
+  toast('تم حذف الصورة');
+});
+
+function setAvatarImage(dataURL){
+  const av = $('#avatar');
+  av.innerHTML = `<img alt="avatar">`;
+  av.querySelector('img').src = dataURL;
+}
+function resetAvatarToLetter(){
+  const av = $('#avatar');
+  av.innerHTML = `<span id="avatarLetter">${(authUser.email||'?')[0]?.toUpperCase()||'U'}</span>`;
+}
+
+$('#btnChangePass').addEventListener('click', ()=>{
+  const passMap = getPasswords();
+  const cur = passMap[myEmail] || '';
+  const old = $('#oldPass').value;
+  const p1  = $('#newPass').value;
+  const p2  = $('#newPass2').value;
+
+  if(cur && old !== cur){ toast('كلمة المرور الحالية غير صحيحة', false); return; }
+  if(p1.length < 8){ toast('كلمة المرور الجديدة قصيرة (حد أدنى 8)', false); return; }
+  if(p1 !== p2){ toast('تأكيد كلمة المرور غير متطابق', false); return; }
+
+  passMap[myEmail] = p1;
+  setPasswords(passMap);
+  $('#oldPass').value=''; $('#newPass').value=''; $('#newPass2').value='';
+  toast('تم حفظ كلمة المرور');
+});
+</script>
+  <!-- JavaScript Files -->
+  <script src="../jS/form-validation-utils.js"></script>
+  <script src="../jS/api-client.js"></script>
+<script src="../jS/role-permissions.js"></script>
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/admin-profile.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

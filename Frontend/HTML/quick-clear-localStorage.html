@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick LocalStorage Clear</title>
+</head>
+<body>
+    <h1>🧹 Quick LocalStorage Cleanup</h1>
+    <div id="result"></div>
+    
+    <script>
+        console.log('🧹 Auto-clearing localStorage...');
+        
+        // Clear all request data
+        const keysToRemove = [
+            'requestsClearance',
+            'requestsOnboarding', 
+            'requestsDelegation',
+            'delegations',
+            'userProfiles',
+            'notifications'
+        ];
+
+        let removedCount = 0;
+        keysToRemove.forEach(key => {
+            if (localStorage.getItem(key)) {
+                console.log(`🗑️ Removing: ${key}`);
+                localStorage.removeItem(key);
+                removedCount++;
+            }
+        });
+
+        document.getElementById('result').innerHTML = `
+            <h2>✅ Cleanup Complete</h2>
+            <p>Removed ${removedCount} localStorage keys</p>
+            <p>Remaining keys: ${localStorage.length}</p>
+            <button onclick="window.close()">Close</button>
+        `;
+        
+        console.log(`✅ Cleared ${removedCount} localStorage keys`);
+        
+        // Auto-close after 3 seconds
+        setTimeout(() => {
+            alert('LocalStorage cleared! You can close this tab.');
+        }, 1000);
+    </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

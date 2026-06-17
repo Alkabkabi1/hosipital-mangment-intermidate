@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Test Approve/Reject Functions</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-section { background: white; margin: 20px 0; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb; }
+        .success { border-left-color: #10b981; }
+        .error { border-left-color: #ef4444; }
+        .warning { border-left-color: #f59e0b; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; max-height: 300px; }
+        button { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button.approve { background: #10b981; }
+        button.reject { background: #ef4444; }
+        button:hover { opacity: 0.9; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 4px; }
+        .result.success { background: #dcfce7; color: #166534; }
+        .result.error { background: #fecaca; color: #dc2626; }
+        .result.warning { background: #fef3c7; color: #d97706; }
+        input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Approve/Reject Functions</h1>
+    
+    <div class="test-section">
+        <h3>📊 Test 1: Check Current Pending Requests</h3>
+        <button onclick="checkPendingRequests()">Check Database</button>
+        <div id="test1-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>✅ Test 2: Test Approval Function</h3>
+        <div>
+            <input type="text" id="approve-type" placeholder="Type (clearance/onboarding)" value="clearance">
+            <input type="number" id="approve-id" placeholder="Request ID" value="1">
+            <input type="text" id="approve-note" placeholder="Note (optional)">
+            <button class="approve" onclick="testApproval()">Test Approve</button>
+        </div>
+        <div id="test2-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>❌ Test 3: Test Rejection Function</h3>
+        <div>
+            <input type="text" id="reject-type" placeholder="Type (clearance/onboarding)" value="clearance">
+            <input type="number" id="reject-id" placeholder="Request ID" value="2">
+            <input type="text" id="reject-note" placeholder="Note (optional)">
+            <button class="reject" onclick="testRejection()">Test Reject</button>
+        </div>
+        <div id="test3-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Test 4: Check Request Status After Action</h3>
+        <div>
+            <input type="number" id="status-id" placeholder="Request ID" value="1">
+            <button onclick="checkRequestStatus()">Check Status</button>
+        </div>
+        <div id="test4-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🗄️ Test 5: Direct Database Query</h3>
+        <button onclick="directDatabaseCheck()">Query Database Directly</button>
+        <div id="test5-result" class="result"></div>
+    </div>
+
+    <!-- Load required scripts -->
+    <script src="../jS/dependency-guard.js"></script>
+    <script src="../jS/error-handler.js"></script>
+    <script src="../jS/notification-utils.js"></script>
+    <script src="../jS/app-init.js"></script>
+    <script src="../jS/api-client.js"></script>
+
+    <script>
+        // Wait for API client to be ready
+        window.waitForDependencies(() => {
+            console.log('✅ Test page ready');
+        }, ['apiClient']);
+
+        // Test 1: Check Current Pending Requests
+        async function checkPendingRequests() {
+            const result = document.getElementById('test1-result');
+            result.className = 'result warning';
+            result.innerHTML = '🔄 Checking pending requests...';
+            
+            try {
+                const response = await fetch('/api/admin/requests/recent?limit=10&onlyPending=true');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        ✅ Current Pending Requests: ${Array.isArray(data) ? data.length : 'Invalid format'}<br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `❌ API Error: ${data.message || 'Unknown error'}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Request failed: ${error.message}`;
+            }
+        }
+
+        // Test 2: Test Approval
+        async function testApproval() {
+            const result = document.getElementById('test2-result');
+            const type = document.getElementById('approve-type').value;
+            const id = document.getElementById('approve-id').value;
+            const note = document.getElementById('approve-note').value;
+            
+            result.className = 'result warning';
+            result.innerHTML = `🔄 Testing approval for ${type} ID ${id}...`;
+            
+            try {
+                console.log(`🔄 Testing approval: ${type} ID ${id}`);
+                const response = await fetch(`/api/admin/requests/${type}/${id}/approve`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiClient.token}`
+                    },
+                    body: JSON.stringify({ note })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        ✅ Approval successful!<br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `
+                        ❌ Approval failed: ${data.message || 'Unknown error'}<br>
+                        Status: ${response.status}<br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Approval test failed: ${error.message}`;
+                console.error('Approval test error:', error);
+            }
+        }
+
+        // Test 3: Test Rejection
+        async function testRejection() {
+            const result = document.getElementById('test3-result');
+            const type = document.getElementById('reject-type').value;
+            const id = document.getElementById('reject-id').value;
+            const note = document.getElementById('reject-note').value;
+            
+            result.className = 'result warning';
+            result.innerHTML = `🔄 Testing rejection for ${type} ID ${id}...`;
+            
+            try {
+                console.log(`🔄 Testing rejection: ${type} ID ${id}`);
+                const response = await fetch(`/api/admin/requests/${type}/${id}/reject`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiClient.token}`
+                    },
+                    body: JSON.stringify({ note })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        ✅ Rejection successful!<br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `
+                        ❌ Rejection failed: ${data.message || 'Unknown error'}<br>
+                        Status: ${response.status}<br>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Rejection test failed: ${error.message}`;
+                console.error('Rejection test error:', error);
+            }
+        }
+
+        // Test 4: Check Request Status
+        async function checkRequestStatus() {
+            const result = document.getElementById('test4-result');
+            const id = document.getElementById('status-id').value;
+            
+            result.className = 'result warning';
+            result.innerHTML = `🔄 Checking status for request ID ${id}...`;
+            
+            try {
+                // Try to get the request from both clearance and onboarding endpoints
+                const responses = await Promise.allSettled([
+                    fetch(`/api/clearance/${id}`, {
+                        headers: { 'Authorization': `Bearer ${apiClient.token}` }
+                    }).then(r => r.json()),
+                    fetch(`/api/onboarding/${id}`, {
+                        headers: { 'Authorization': `Bearer ${apiClient.token}` }
+                    }).then(r => r.json())
+                ]);
+                
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ Request Status Check:<br>
+                    <strong>Clearance Endpoint:</strong> ${responses[0].status === 'fulfilled' ? 'Found' : 'Not Found'}<br>
+                    <strong>Onboarding Endpoint:</strong> ${responses[1].status === 'fulfilled' ? 'Found' : 'Not Found'}<br>
+                    <pre>${JSON.stringify({
+                        clearance: responses[0].status === 'fulfilled' ? responses[0].value : responses[0].reason,
+                        onboarding: responses[1].status === 'fulfilled' ? responses[1].value : responses[1].reason
+                    }, null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Status check failed: ${error.message}`;
+            }
+        }
+
+        // Test 5: Direct Database Check
+        async function directDatabaseCheck() {
+            const result = document.getElementById('test5-result');
+            result.className = 'result warning';
+            result.innerHTML = '🔄 Querying database directly...';
+            
+            try {
+                // Use the same endpoint that the dashboard uses
+                const response = await fetch('/api/admin/requests/recent?limit=50&onlyPending=false', {
+                    headers: { 'Authorization': `Bearer ${apiClient.token}` }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && Array.isArray(data)) {
+                    const pendingRequests = data.filter(r => ['قيد الاعتماد','قيد الانتظار','قيد المراجعة'].includes(r.status));
+                    const approvedRequests = data.filter(r => r.status === 'مكتمل' || r.status === 'موافق عليه');
+                    const rejectedRequests = data.filter(r => r.status === 'مرفوض');
+                    
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        ✅ Direct Database Query Results:<br>
+                        - Total Requests: ${data.length}<br>
+                        - Pending: ${pendingRequests.length}<br>
+                        - Approved: ${approvedRequests.length}<br>
+                        - Rejected: ${rejectedRequests.length}<br>
+                        <br>
+                        <strong>All Requests:</strong><br>
+                        <pre>${JSON.stringify(data.map(r => ({
+                            id: r.id,
+                            type: r.type,
+                            status: r.status,
+                            reference: r.reference_number
+                        })), null, 2)}</pre>
+                    `;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `❌ Database query failed: ${JSON.stringify(data)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Database check failed: ${error.message}`;
+            }
+        }
+    </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

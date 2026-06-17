@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Test Inbox Data</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .section { background: white; margin: 20px 0; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb; }
+        .success { border-left-color: #10b981; }
+        .error { border-left-color: #ef4444; }
+        button { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { opacity: 0.9; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 4px; }
+        .result.success { background: #dcfce7; color: #166534; }
+        .result.error { background: #fecaca; color: #dc2626; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; max-height: 300px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Inbox Data</h1>
+    
+    <div class="section">
+        <h3>📊 Direct Database Query</h3>
+        <button onclick="queryDatabase()">Query Database Directly</button>
+        <div id="db-result" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h3>🔍 Test API Endpoints</h3>
+        <button onclick="testAPIs()">Test All API Endpoints</button>
+        <div id="api-result" class="result"></div>
+    </div>
+
+    <script>
+        async function queryDatabase() {
+            const result = document.getElementById('db-result');
+            result.className = 'result warning';
+            result.innerHTML = '🔄 Querying database...';
+            
+            try {
+                // Get admin token from localStorage
+                const authToken = localStorage.getItem('authToken');
+                if (!authToken) {
+                    result.className = 'result error';
+                    result.innerHTML = '❌ No auth token found. Please login first.';
+                    return;
+                }
+
+                // Query all requests directly from the unified endpoint
+                const response = await fetch('/api/admin/requests/recent?limit=100&onlyPending=false', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && Array.isArray(data)) {
+                    const clearanceRequests = data.filter(r => r.type === 'clearance');
+                    const onboardingRequests = data.filter(r => r.type === 'onboarding');
+                    const delegationRequests = data.filter(r => r.type === 'delegation');
+                    
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        ✅ Database Query Results:<br>
+                        - Total Requests: ${data.length}<br>
+                        - Clearance: ${clearanceRequests.length}<br>
+                        - Onboarding: ${onboardingRequests.length}<br>
+                        - Delegation: ${delegationRequests.length}<br>
+                        <br>
+                        <strong>Request Details:</strong><br>
+                        <pre>${JSON.stringify(data.map(r => ({
+                            id: r.id,
+                            type: r.type,
+                            status: r.status,
+                            reference: r.reference_number,
+                            employee: r.employee_name
+                        })), null, 2)}</pre>
+                    `;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `❌ Database query failed: ${JSON.stringify(data)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Database query error: ${error.message}`;
+            }
+        }
+
+        async function testAPIs() {
+            const result = document.getElementById('api-result');
+            result.className = 'result warning';
+            result.innerHTML = '🔄 Testing API endpoints...';
+            
+            try {
+                const authToken = localStorage.getItem('authToken');
+                if (!authToken) {
+                    result.className = 'result error';
+                    result.innerHTML = '❌ No auth token found. Please login first.';
+                    return;
+                }
+
+                const endpoints = [
+                    { name: 'All Clearances', url: '/api/clearance/admin/all' },
+                    { name: 'All Onboardings', url: '/api/onboarding/admin/all' },
+                    { name: 'Pending Clearances', url: '/api/clearance/admin/pending' },
+                    { name: 'Pending Onboardings', url: '/api/onboarding/admin/pending' }
+                ];
+
+                const results = await Promise.allSettled(
+                    endpoints.map(async endpoint => {
+                        const response = await fetch(endpoint.url, {
+                            headers: { 'Authorization': `Bearer ${authToken}` }
+                        });
+                        const data = await response.json();
+                        return { 
+                            name: endpoint.name, 
+                            url: endpoint.url,
+                            status: response.status, 
+                            success: response.ok,
+                            data: response.ok ? data : data.message || 'Unknown error',
+                            count: response.ok && Array.isArray(data) ? data.length : 'N/A'
+                        };
+                    })
+                );
+
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ API Endpoint Test Results:<br>
+                    <pre>${JSON.stringify(results.map(r => r.status === 'fulfilled' ? r.value : r.reason), null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ API test error: ${error.message}`;
+            }
+        }
+
+        // Auto-run on load
+        window.onload = function() {
+            console.log('🔍 Inbox data test loaded');
+            setTimeout(queryDatabase, 1000);
+        };
+    </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

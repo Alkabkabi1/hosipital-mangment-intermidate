@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <title>قرارات النقل الداخلي – الأدمن</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root{--primary:#a855f7;--bg:#f5f6f8;--surface:#fff;--text:#0f172a;--muted:#64748b;--border:#e5e7eb}
+        *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+        .header{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);z-index:10}
+        .header .in{max-width:1200px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 16px}
+        .btn{border:1px solid var(--border);border-radius:10px;padding:8px 16px;background:#fff;font-weight:700;cursor:pointer}
+        .btn:hover{background:var(--primary);color:#fff}
+        .container{max-width:1200px;margin:16px auto;padding:0 16px}
+        .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px}
+        .table{width:100%;border-collapse:separate;border-spacing:0}
+        th,td{padding:12px;border-bottom:1px solid var(--border);text-align:right}
+        th{font-size:13px;color:var(--muted);font-weight:600}
+        .badge{display:inline-block;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600}
+        .badge-pending{background:#fef3c7;color:#92400e}
+        .badge-approved{background:#d1fae5;color:#065f46}
+        .badge-rejected{background:#fee2e2;color:#991b1b}
+        .btn-sm{padding:6px 12px;font-size:13px;border-radius:8px;cursor:pointer;border:none;color:white;font-weight:600}
+    </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div><b>مستشفى الملك عبدالعزيز</b> – <small>قرارات النقل الداخلي</small></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="location.href='admin-dashboard.html'">رجوع</button>
+      <button class="btn" onclick="loadRequests()">تحديث</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2 style="margin:0 0 16px 0">قرارات النقل الداخلي</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>اسم الموظف</th>
+          <th>من قسم</th>
+          <th>إلى قسم</th>
+          <th>تاريخ السريان</th>
+          <th>الحالة</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="requestsTable">
+        <tr><td colspan="7" style="text-align:center;color:var(--muted)">جاري التحميل...</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<script src="../jS/dependency-guard.js"></script>
+<script src="../jS/error-handler.js"></script>
+<script src="../jS/app-init.js"></script>
+<script src="../jS/api-client.js"></script>
+
+<script>
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser){ location.href='login.html'; }
+
+async function loadRequests() {
+  try {
+    const authToken = localStorage.getItem('authToken');
+    const response = await fetch('http://localhost:3037/api/admin/internal-transfers', {
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    });
+    
+    if (!response.ok) throw new Error('Failed to load');
+    
+    const result = await response.json();
+    const requests = result.data || result || [];
+    
+    const tbody = document.getElementById('requestsTable');
+    if (requests.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted)">لا توجد طلبات</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = requests.map(req => {
+      const statusClass = req.status === 'مكتمل' || req.status === 'approved' ? 'badge-approved' : 
+                          req.status === 'مرفوض' || req.status === 'rejected' ? 'badge-rejected' : 'badge-pending';
+      
+      return `
+        <tr>
+          <td>${req.id}</td>
+          <td>${req.employee_name}</td>
+          <td>${req.current_department}</td>
+          <td>${req.target_department}</td>
+          <td>${req.effective_date ? new Date(req.effective_date).toLocaleDateString('ar-SA') : '-'}</td>
+          <td><span class="badge ${statusClass}">${req.status}</span></td>
+          <td>
+            <button class="btn-sm" style="background:#a855f7" onclick="viewDetails(${req.id})">عرض</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+    
+  } catch (error) {
+    console.error('Error:', error);
+    document.getElementById('requestsTable').innerHTML = 
+      '<tr><td colspan="7" style="text-align:center;color:#ef4444">حدث خطأ في التحميل</td></tr>';
+  }
+}
+
+function viewDetails(id) {
+  window.location.href = `admin-internal-transfer-detail.html?id=${id}`;
+}
+
+loadRequests();
+</script>
+
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

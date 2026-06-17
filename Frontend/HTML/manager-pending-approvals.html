@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+<meta charset="UTF-8"/>
+<parameter name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>مستشفى الملك عبدالعزيز – الطلبات المعلقة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb;
+  --ok:#dcfce7; --late:#fee2e2; --chip:#eef2ff; --warn:#fef3c7;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,Segoe UI,Arial,sans-serif}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:40px;height:40px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt small{color:var(--muted)}
+
+.container{max-width:1200px;margin:18px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:14px}
+.card h3{margin:0 0 10px 0}
+
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px}
+.kpi .t{display:flex;justify-content:space-between;align-items:center}
+.kpi .chip{background:var(--chip);border-radius:999px;padding:4px 10px;font-size:12px;color:#334155}
+.kpi .n{font-size:28px;font-weight:800;margin-top:4px}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.input,.select{height:44px;border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:#fff}
+.input{min-width:220px}
+.btn{border:1px solid var(--border);border-radius:10px;padding:10px 14px;background:#fff;cursor:pointer;font-weight:800}
+.btn.primary{background:var(--primary);border-color:transparent;color:#fff}
+.btn.success{background:#10b981;border-color:transparent;color:#fff}
+.btn.danger{background:#ef4444;border-color:transparent;color:#fff}
+
+.table{width:100%;border-collapse:separate;border-spacing:0}
+th,td{padding:10px;border-bottom:1px solid var(--border);text-align:right;vertical-align:top}
+th{font-size:13px;color:#64748b}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-clearance{background:#e0efff;color:#1e40af} .b-onboarding{background:#dcfce7;color:#065f46} .b-delegation{background:#fef3c7;color:#92400e}
+.progress-indicator{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* Modal */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);z-index:50}
+.modal.show{display:flex}
+.modal-card{background:#fff;border-radius:12px;max-width:600px;width:90%;padding:20px;box-shadow:0 20px 40px rgba(0,0,0,.3)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--border)}
+.modal-body{margin-bottom:16px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.close-btn{background:none;border:none;font-size:24px;cursor:pointer;color:var(--muted)}
+.textarea{width:100%;min-height:100px;border:1px solid var(--border);border-radius:10px;padding:10px;font-family:inherit}
+
+@media(max-width:700px){ 
+  .input{min-width:0;width:100%} 
+  .kpis{grid-template-columns:1fr 1fr} 
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt"><h1>مستشفى الملك عبدالعزيز</h1><small>الطلبات المعلقة</small></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="location.href='employee-dashboard.html'">رجوع</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <!-- KPIs -->
+  <section class="kpis">
+    <div class="kpi"><div class="t"><b>إجمالي المعلقة</b><span class="chip">All</span></div><div class="n" id="kTotal">0</div></div>
+    <div class="kpi"><div class="t"><b>إخلاء طرف</b><span class="chip">Clearance</span></div><div class="n" id="kClearance">0</div></div>
+    <div class="kpi"><div class="t"><b>مباشرة عمل</b><span class="chip">Onboarding</span></div><div class="n" id="kOnboarding">0</div></div>
+    <div class="kpi"><div class="t"><b>تفويضات</b><span class="chip">Delegation</span></div><div class="n" id="kDelegation">0</div></div>
+  </section>
+
+  <!-- Pending Approvals Table -->
+  <section class="card">
+    <h3>الطلبات التي تحتاج موافقتك</h3>
+    <div class="filters">
+      <select id="fType" class="select">
+        <option value="">كل الأنواع</option>
+        <option value="clearance">إخلاء طرف</option>
+        <option value="onboarding">مباشرة عمل</option>
+        <option value="delegation">تفويض</option>
+      </select>
+      <input id="fSearch" class="input" placeholder="بحث: رقم الطلب / اسم الموظف">
+      <button class="btn" onclick="filterRequests()">تطبيق</button>
+      <button class="btn" onclick="resetFilters()">مسح</button>
+      <button class="btn primary" onclick="loadPendingApprovals()">تحديث</button>
+    </div>
+
+    <div id="loadingIndicator" style="text-align:center;padding:20px;display:none;">
+      <p>جاري التحميل...</p>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>رقم الطلب</th>
+          <th>النوع</th>
+          <th>الموظف</th>
+          <th>القسم</th>
+          <th>التقدم</th>
+          <th>تاريخ التقديم</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="requestsTable"></tbody>
+    </table>
+  </section>
+</main>
+
+<!-- Approval Modal -->
+<div id="approvalModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>الموافقة على الطلب</h3>
+      <button class="close-btn" onclick="closeApprovalModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>رقم الطلب:</strong> <span id="modalRequestId"></span></p>
+      <p><strong>النوع:</strong> <span id="modalRequestType"></span></p>
+      <p><strong>الموظف:</strong> <span id="modalEmployeeName"></span></p>
+      <br>
+      <label><strong>ملاحظة (اختياري):</strong></label>
+      <textarea id="approvalNote" class="textarea" placeholder="أضف ملاحظة..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeApprovalModal()">إلغاء</button>
+      <button class="btn success" onclick="confirmApproval()">✓ موافقة</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rejection Modal -->
+<div id="rejectionModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>رفض الطلب</h3>
+      <button class="close-btn" onclick="closeRejectionModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>رقم الطلب:</strong> <span id="rejectModalRequestId"></span></p>
+      <p><strong>النوع:</strong> <span id="rejectModalRequestType"></span></p>
+      <p><strong>الموظف:</strong> <span id="rejectModalEmployeeName"></span></p>
+      <br>
+      <label><strong>سبب الرفض (مطلوب):</strong></label>
+      <textarea id="rejectionNote" class="textarea" placeholder="يرجى توضيح سبب الرفض..." required></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeRejectionModal()">إلغاء</button>
+      <button class="btn danger" onclick="confirmRejection()">✗ رفض</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Authentication */
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser){ location.href='login.html'; }
+
+let allPendingRequests = [];
+let currentRequest = null;
+
+/* Check if user is a manager or HR */
+async function checkManagerPermission() {
+  try {
+    if (!window.apiClient || !window.apiClient.getMyRoles) {
+      console.warn('API client not ready, assuming manager permissions');
+      return true;
+    }
+    
+    const response = await window.apiClient.getMyRoles();
+    const roles = response?.data || response || [];
+    
+    const isManager = roles.some(role => {
+      const roleName = (role.role_name || role.roleName || role).toUpperCase();
+      return ['MANAGER', 'HR', 'ADMIN'].includes(roleName);
+    });
+    
+    if (!isManager) {
+      alert('ليس لديك صلاحيات الموافقة على الطلبات');
+      location.href = 'employee-dashboard.html';
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error checking manager permission:', error);
+    return true; // Allow access on error
+  }
+}
+
+/* Load pending approvals */
+async function loadPendingApprovals() {
+  try {
+    document.getElementById('loadingIndicator').style.display = 'block';
+    
+    // Call the API to get pending approvals
+    if (window.apiClient && typeof window.apiClient.getPendingApprovals === 'function') {
+      const response = await window.apiClient.getPendingApprovals();
+      allPendingRequests = response?.data || response || [];
+    } else {
+      // Fallback: Fetch directly
+      const authToken = localStorage.getItem('authToken');
+      const res = await fetch('http://localhost:3037/api/approvals/pending', {
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!res.ok) {
+        throw new Error(`فشل تحميل الطلبات: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      allPendingRequests = data?.data || data || [];
+    }
+    
+    console.log('✅ Loaded pending approvals:', allPendingRequests.length);
+    updateKPIs();
+    renderTable();
+    
+  } catch (error) {
+    console.error('Error loading pending approvals:', error);
+    alert('حدث خطأ في تحميل الطلبات: ' + (error.message || error));
+    allPendingRequests = [];
+    renderTable();
+  } finally {
+    document.getElementById('loadingIndicator').style.display = 'none';
+  }
+}
+
+/* Update KPIs */
+function updateKPIs() {
+  const total = allPendingRequests.length;
+  const clearance = allPendingRequests.filter(r => r.request_type === 'clearance').length;
+  const onboarding = allPendingRequests.filter(r => r.request_type === 'onboarding').length;
+  const delegation = allPendingRequests.filter(r => r.request_type === 'delegation').length;
+  
+  document.getElementById('kTotal').textContent = total;
+  document.getElementById('kClearance').textContent = clearance;
+  document.getElementById('kOnboarding').textContent = onboarding;
+  document.getElementById('kDelegation').textContent = delegation;
+}
+
+/* Render table */
+function renderTable() {
+  const tbody = document.getElementById('requestsTable');
+  const type = document.getElementById('fType').value;
+  const search = (document.getElementById('fSearch').value || '').toLowerCase();
+  
+  let filtered = allPendingRequests;
+  
+  if (type) {
+    filtered = filtered.filter(r => r.request_type === type);
+  }
+  
+  if (search) {
+    filtered = filtered.filter(r => {
+      const searchStr = `${r.request_id} ${r.employee_name || ''} ${r.employee_email || ''}`.toLowerCase();
+      return searchStr.includes(search);
+    });
+  }
+  
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#64748b;padding:20px;">لا توجد طلبات معلقة</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = filtered.map(req => {
+    const typeLabel = req.request_type === 'clearance' ? 'إخلاء طرف' :
+                      req.request_type === 'onboarding' ? 'مباشرة عمل' : 'تفويض';
+    const typeBadge = req.request_type === 'clearance' ? 'b-clearance' :
+                      req.request_type === 'onboarding' ? 'b-onboarding' : 'b-delegation';
+    
+    const progress = `${req.approved_count || 0} / ${req.total_approvers || 0}`;
+    const date = req.created_at ? new Date(req.created_at).toLocaleDateString('ar-SA') : '—';
+    
+    return `
+      <tr>
+        <td><strong>#${req.request_id}</strong></td>
+        <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
+        <td>${req.employee_name || req.employee_email || '—'}</td>
+        <td>${req.employee_dept || req.department || '—'}</td>
+        <td>
+          ${progress}
+          <div class="progress-indicator">${req.approval_stage || 'قيد المراجعة'}</div>
+        </td>
+        <td>${date}</td>
+        <td style="display:flex;gap:6px;">
+          <button class="btn success" onclick="showApprovalModal(${JSON.stringify(req).replace(/"/g, '&quot;')})">موافقة</button>
+          <button class="btn danger" onclick="showRejectionModal(${JSON.stringify(req).replace(/"/g, '&quot;')})">رفض</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+/* Filter requests */
+function filterRequests() {
+  renderTable();
+}
+
+/* Reset filters */
+function resetFilters() {
+  document.getElementById('fType').value = '';
+  document.getElementById('fSearch').value = '';
+  renderTable();
+}
+
+/* Show approval modal */
+function showApprovalModal(request) {
+  currentRequest = request;
+  document.getElementById('modalRequestId').textContent = '#' + request.request_id;
+  document.getElementById('modalRequestType').textContent = 
+    request.request_type === 'clearance' ? 'إخلاء طرف' :
+    request.request_type === 'onboarding' ? 'مباشرة عمل' : 'تفويض';
+  document.getElementById('modalEmployeeName').textContent = request.employee_name || request.employee_email || '—';
+  document.getElementById('approvalNote').value = '';
+  document.getElementById('approvalModal').classList.add('show');
+}
+
+function closeApprovalModal() {
+  document.getElementById('approvalModal').classList.remove('show');
+  currentRequest = null;
+}
+
+/* Show rejection modal */
+function showRejectionModal(request) {
+  currentRequest = request;
+  document.getElementById('rejectModalRequestId').textContent = '#' + request.request_id;
+  document.getElementById('rejectModalRequestType').textContent = 
+    request.request_type === 'clearance' ? 'إخلاء طرف' :
+    request.request_type === 'onboarding' ? 'مباشرة عمل' : 'تفويض';
+  document.getElementById('rejectModalEmployeeName').textContent = request.employee_name || request.employee_email || '—';
+  document.getElementById('rejectionNote').value = '';
+  document.getElementById('rejectionModal').classList.add('show');
+}
+
+function closeRejectionModal() {
+  document.getElementById('rejectionModal').classList.remove('show');
+  currentRequest = null;
+}
+
+/* Confirm approval */
+async function confirmApproval() {
+  if (!currentRequest) return;
+  
+  const note = document.getElementById('approvalNote').value.trim();
+  
+  try {
+    const authToken = localStorage.getItem('authToken');
+    const response = await fetch(`http://localhost:3037/api/requests/${currentRequest.request_type}/${currentRequest.request_id}/approve`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        decision_note: note || 'موافق'
+      })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'فشلت الموافقة');
+    }
+    
+    alert('✅ تمت الموافقة على الطلب بنجاح');
+    closeApprovalModal();
+    loadPendingApprovals();
+    
+  } catch (error) {
+    console.error('Approval error:', error);
+    alert('حدث خطأ: ' + (error.message || error));
+  }
+}
+
+/* Confirm rejection */
+async function confirmRejection() {
+  if (!currentRequest) return;
+  
+  const note = document.getElementById('rejectionNote').value.trim();
+  
+  if (!note) {
+    alert('يرجى إدخال سبب الرفض');
+    return;
+  }
+  
+  try {
+    const authToken = localStorage.getItem('authToken');
+    const response = await fetch(`http://localhost:3037/api/requests/${currentRequest.request_type}/${currentRequest.request_id}/reject`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        decision_note: note
+      })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'فشل الرفض');
+    }
+    
+    alert('✅ تم رفض الطلب');
+    closeRejectionModal();
+    loadPendingApprovals();
+    
+  } catch (error) {
+    console.error('Rejection error:', error);
+    alert('حدث خطأ: ' + (error.message || error));
+  }
+}
+
+/* Initialize */
+async function init() {
+  const hasPermission = await checkManagerPermission();
+  if (hasPermission) {
+    await loadPendingApprovals();
+  }
+}
+
+init();
+</script>
+  <!-- JavaScript Files -->
+  <script src="../jS/notification-store.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/app-init.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

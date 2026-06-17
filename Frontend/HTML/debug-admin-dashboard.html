@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Admin Dashboard Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-section { background: white; margin: 20px 0; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb; }
+        .success { border-left-color: #10b981; }
+        .error { border-left-color: #ef4444; }
+        .warning { border-left-color: #f59e0b; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; max-height: 200px; }
+        button { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #1d4ed8; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 4px; }
+        .result.success { background: #dcfce7; color: #166534; }
+        .result.error { background: #fecaca; color: #dc2626; }
+        .result.warning { background: #fef3c7; color: #d97706; }
+        .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(15,23,42,.45); z-index: 50; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Admin Dashboard Debug Test</h1>
+    
+    <div class="test-section">
+        <h3>🚀 Test 1: Load Admin Dashboard Scripts</h3>
+        <button onclick="testScriptLoading()">Load Scripts</button>
+        <div id="test1-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>📊 Test 2: Simulate Admin API Data</h3>
+        <button onclick="testAdminAPIData()">Simulate API Response</button>
+        <div id="test2-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔍 Test 3: Test Modal Creation</h3>
+        <button onclick="testModalCreation()">Create Test Modal</button>
+        <div id="test3-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🎯 Test 4: Test viewAdminRequest Function</h3>
+        <button onclick="testViewAdminRequest()">Test View Function</button>
+        <div id="test4-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🌐 Test 5: Live Admin API Test</h3>
+        <button onclick="testLiveAdminAPI()">Test Live Admin API</button>
+        <div id="test5-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>🔧 Test 6: Check Global Data Storage</h3>
+        <button onclick="testGlobalData()">Check Global Variables</button>
+        <div id="test6-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>📋 Test 7: Test Request Lookup</h3>
+        <button onclick="testRequestLookup()">Test Request Finding</button>
+        <div id="test7-result" class="result"></div>
+    </div>
+
+    <!-- Load the actual admin dashboard script for testing -->
+    <script src="../jS/dependency-guard.js"></script>
+    <script src="../jS/error-handler.js"></script>
+    <script src="../jS/notification-utils.js"></script>
+    <script src="../jS/app-init.js"></script>
+    <script src="../jS/api-client.js"></script>
+    <script src="../jS/role-permissions.js"></script>
+
+    <script>
+        let scriptsLoaded = false;
+        let adminDashboardLoaded = false;
+
+        // Test 1: Load Admin Dashboard Scripts
+        function testScriptLoading() {
+            const result = document.getElementById('test1-result');
+            result.className = 'result warning';
+            result.innerHTML = '🔄 Loading admin dashboard script...';
+            
+            try {
+                // Load the admin dashboard script
+                const script = document.createElement('script');
+                script.src = '../jS/admin-dashboard.js?v=1.1';
+                script.onload = function() {
+                    scriptsLoaded = true;
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        ✅ Admin dashboard script loaded successfully!<br>
+                        - viewAdminRequest: ${typeof window.viewAdminRequest || 'undefined'}<br>
+                        - showAdminRequestDetailsModal: ${typeof window.showAdminRequestDetailsModal || 'undefined'}<br>
+                        - loadAdminRequestDetails: ${typeof window.loadAdminRequestDetails || 'undefined'}
+                    `;
+                };
+                script.onerror = function() {
+                    result.className = 'result error';
+                    result.innerHTML = '❌ Failed to load admin dashboard script';
+                };
+                document.head.appendChild(script);
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Script loading error: ${error.message}`;
+            }
+        }
+
+        // Test 2: Simulate Admin API Data
+        function testAdminAPIData() {
+            const result = document.getElementById('test2-result');
+            
+            try {
+                // Create realistic admin API data
+                const mockAdminData = {
+                    recentRequests: [
+                        {
+                            id: 1,
+                            type: 'clearance',
+                            reference_number: 'CLR-001',
+                            status: 'قيد الاعتماد',
+                            employee_name: 'Ahmed Ali',
+                            employee_email: 'ahmed@hospital.com',
+                            employee_dept: 'IT Department',
+                            created_at: '2025-01-01',
+                            reason: 'تغيير الوظيفة'
+                        },
+                        {
+                            id: 2,
+                            type: 'onboarding',
+                            reference_number: 'ONB-002',
+                            status: 'قيد المراجعة',
+                            employee_name: 'Sara Mohammed',
+                            employee_email: 'sara@hospital.com',
+                            employee_dept: 'HR Department',
+                            created_at: '2025-01-02'
+                        }
+                    ],
+                    systemStats: { totalUsers: 100, activeRequests: 15 },
+                    requestsSummary: { pending: 5, approved: 10, rejected: 2 }
+                };
+
+                // Store in global variable
+                window.adminDashboardData = mockAdminData;
+
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ Mock admin data created successfully!<br>
+                    - Recent Requests: ${mockAdminData.recentRequests.length}<br>
+                    - First Request ID: ${mockAdminData.recentRequests[0].id}<br>
+                    - First Request Type: ${mockAdminData.recentRequests[0].type}<br>
+                    - Global Storage: ${window.adminDashboardData ? 'Available' : 'Not Set'}
+                `;
+
+                console.log('🔍 Mock Admin Data:', mockAdminData);
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Mock data creation error: ${error.message}`;
+            }
+        }
+
+        // Test 3: Test Modal Creation
+        function testModalCreation() {
+            const result = document.getElementById('test3-result');
+            
+            try {
+                // Create a test modal manually
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.style.display = 'flex';
+                modal.innerHTML = `
+                    <div style="max-width: 500px; background: white; border-radius: 12px; padding: 20px; position: relative;">
+                        <button onclick="this.closest('.modal').remove()" style="position: absolute; top: 10px; left: 10px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;">×</button>
+                        <h2>Test Modal</h2>
+                        <p>This is a test modal to verify modal creation works.</p>
+                        <button onclick="this.closest('.modal').remove()" style="background: #6b7280; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">Close</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                result.className = 'result success';
+                result.innerHTML = '✅ Test modal created successfully! Check if it appears on screen.';
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Modal creation error: ${error.message}`;
+            }
+        }
+
+        // Test 4: Test viewAdminRequest Function
+        function testViewAdminRequest() {
+            const result = document.getElementById('test4-result');
+            
+            try {
+                // Check if functions exist
+                if (typeof viewAdminRequest === 'undefined') {
+                    result.className = 'result error';
+                    result.innerHTML = '❌ viewAdminRequest function not found. Script may not be loaded.';
+                    return;
+                }
+
+                result.className = 'result warning';
+                result.innerHTML = '🔄 Testing viewAdminRequest function...';
+
+                // Test the function
+                console.log('🔍 Testing viewAdminRequest with type: clearance, id: 1');
+                viewAdminRequest('clearance', 1);
+
+                setTimeout(() => {
+                    const modals = document.querySelectorAll('.modal');
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        ✅ viewAdminRequest function called successfully!<br>
+                        - Function exists: Yes<br>
+                        - Modals created: ${modals.length}<br>
+                        - Check console for detailed logs
+                    `;
+                }, 100);
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ viewAdminRequest test error: ${error.message}`;
+                console.error('viewAdminRequest test error:', error);
+            }
+        }
+
+        // Test 5: Live Admin API Test
+        async function testLiveAdminAPI() {
+            const result = document.getElementById('test5-result');
+            result.className = 'result warning';
+            result.innerHTML = '🔄 Testing live admin API...';
+            
+            try {
+                const responses = await Promise.allSettled([
+                    fetch('/api/admin/stats').then(r => r.json()),
+                    fetch('/api/admin/requests/recent?limit=10&onlyPending=true').then(r => r.json()),
+                    fetch('/api/admin/summary').then(r => r.json())
+                ]);
+                
+                const [statsResult, recentResult, summaryResult] = responses;
+                
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ Live Admin API Test Results:<br>
+                    - Stats API: ${statsResult.status === 'fulfilled' ? '✅ Success' : '❌ ' + statsResult.reason}<br>
+                    - Recent Requests: ${recentResult.status === 'fulfilled' ? '✅ Success (' + (Array.isArray(recentResult.value) ? recentResult.value.length : 'Invalid') + ' items)' : '❌ ' + recentResult.reason}<br>
+                    - Summary API: ${summaryResult.status === 'fulfilled' ? '✅ Success' : '❌ ' + summaryResult.reason}<br>
+                    <pre>${JSON.stringify({
+                        stats: statsResult.status === 'fulfilled' ? statsResult.value : statsResult.reason,
+                        recent: recentResult.status === 'fulfilled' ? recentResult.value : recentResult.reason,
+                        summary: summaryResult.status === 'fulfilled' ? summaryResult.value : summaryResult.reason
+                    }, null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Live API test failed: ${error.message}`;
+            }
+        }
+
+        // Test 6: Check Global Data Storage
+        function testGlobalData() {
+            const result = document.getElementById('test6-result');
+            
+            try {
+                const globalVars = {
+                    adminDashboardData: window.adminDashboardData,
+                    dashboardData: window.dashboardData,
+                    apiClient: window.apiClient,
+                    viewAdminRequest: typeof window.viewAdminRequest,
+                    showAdminRequestDetailsModal: typeof window.showAdminRequestDetailsModal
+                };
+
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ Global Variables Check:<br>
+                    <pre>${JSON.stringify(globalVars, null, 2)}</pre>
+                `;
+                
+                console.log('🔍 Global Variables:', globalVars);
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Global data check error: ${error.message}`;
+            }
+        }
+
+        // Test 7: Test Request Lookup
+        function testRequestLookup() {
+            const result = document.getElementById('test7-result');
+            
+            try {
+                if (!window.adminDashboardData) {
+                    result.className = 'result warning';
+                    result.innerHTML = '⚠️ No admin data available. Run Test 2 first.';
+                    return;
+                }
+
+                const recentRequests = Array.isArray(window.adminDashboardData.recentRequests) ? 
+                    window.adminDashboardData.recentRequests : [];
+
+                const testId = 1;
+                const testType = 'clearance';
+                const foundRequest = recentRequests.find(r => r.id == testId && r.type === testType);
+
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ Request Lookup Test:<br>
+                    - Total Requests: ${recentRequests.length}<br>
+                    - Searching for: ID=${testId}, Type=${testType}<br>
+                    - Found Request: ${foundRequest ? 'Yes' : 'No'}<br>
+                    ${foundRequest ? `<pre>${JSON.stringify(foundRequest, null, 2)}</pre>` : ''}
+                `;
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Request lookup error: ${error.message}`;
+            }
+        }
+
+        // Auto-run basic tests on load
+        window.onload = function() {
+            console.log('🔍 Admin Dashboard Debug Test loaded');
+            
+            // Wait a bit for dependencies to load
+            setTimeout(() => {
+                testScriptLoading();
+                setTimeout(testAdminAPIData, 1000);
+            }, 500);
+        };
+    </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

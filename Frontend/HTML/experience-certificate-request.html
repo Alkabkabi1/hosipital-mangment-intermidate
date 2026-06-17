@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/unified-form-styles.css">
+    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>🏥</text></svg>">
+  <title>مستشفى الملك عبدالعزيز – طلب شهادة خبرة</title>
+
+  <!-- خط -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =================== ألوان وهوية عامة =================== */
+    :root {
+      --primary: #2B6CB0;
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+
+      --field-bg: #ffffff;
+      --field-text: #0f172a;
+      --field-border: #000000;
+      --field-placeholder: #6b7280;
+      --field-focus: rgba(0, 0, 0, .15);
+
+      --qbox-radius: 16px;
+      --qbox-border: #e5e7eb;
+      --qbox-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+    }
+
+    /* =================== هيدر =================== */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0
+    }
+
+    .header .in {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .brand img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800
+    }
+
+    .brand small {
+      color: var(--muted);
+      display: block;
+      margin-top: 2px
+    }
+
+    .back {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* =================== المحتوى =================== */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 16px
+    }
+
+    /* =================== صناديق الأقسام =================== */
+    .qbox {
+      background: var(--surface);
+      border: 1px solid var(--qbox-border);
+      border-radius: var(--qbox-radius);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--qbox-shadow);
+    }
+
+    .qbox-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* =================== شبكة الحقول =================== */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .grid.single {
+      grid-template-columns: 1fr;
+    }
+
+    .grid.triple {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    /* =================== الحقول =================== */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .field input, .field select, .field textarea {
+      padding: 12px;
+      border: 2px solid var(--field-border);
+      border-radius: 8px;
+      background: var(--field-bg);
+      color: var(--field-text);
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--field-focus);
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .field input[data-ltr] {
+      direction: ltr;
+      text-align: left;
+    }
+
+    .field .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .duration-calc {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--primary);
+    }
+
+    /* باقي الأنماط كما هي */
+    .footer-actions {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .hint-text {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: #f8fafc;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: 2px solid var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: #1e40af;
+      border-color: #1e40af;
+    }
+
+    .btn-primary:disabled {
+      background: #9ca3af;
+      border-color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border-left: 4px solid;
+    }
+
+    .alert-success {
+      background: #dcfce7;
+      border-color: var(--success);
+      color: #166534;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      border-color: var(--danger);
+      color: #991b1b;
+    }
+
+    .alert-warning {
+      background: #fef3c7;
+      border-color: var(--warning);
+      color: #92400e;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .grid.triple {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="in">
+      <div class="brand">
+        <img src="public/image.png" alt="شعار المستشفى">
+        <div>
+          <h1>مستشفى الملك عبدالعزيز</h1>
+          <small>طلب شهادة خبرة</small>
+        </div>
+      </div>
+      <a href="employee-dashboard.html" class="back">رجوع للوحة</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="alertContainer"></div>
+    
+    <!-- Container 1: Employee Information -->
+    <section class="qbox">
+      <h2 class="qbox-title">
+        🧑 معلومات الموظف
+      </h2>
+      <form id="experienceForm">
+        <div class="grid">
+          <div class="field">
+            <label for="employeeName">اسم الموظف *</label>
+            <input type="text" id="employeeName" name="employeeName" required>
+          </div>
+          <div class="field">
+            <label for="employeeEmail">البريد الإلكتروني *</label>
+            <input type="email" id="employeeEmail" name="employeeEmail" required data-ltr>
+          </div>
+        </div>
+        
+        <div class="grid">
+          <div class="field">
+            <label for="employeeNumber">رقم الموظف</label>
+            <input type="text" id="employeeNumber" name="employeeNumber">
+          </div>
+          <div class="field">
+            <label for="requestDate">تاريخ الطلب *</label>
+            <input type="date" id="requestDate" name="requestDate" required>
+          </div>
+        </div>
+    </section>
+
+    <!-- Container 2: Job Experience Details -->
+    <section class="qbox">
+      <h2 class="qbox-title">
+        💼 تفاصيل الوظيفة والخبرة
+      </h2>
+      
+      <div class="grid">
+        <div class="field">
+          <label for="jobTitle">المسمى الوظيفي *</label>
+          <input type="text" id="jobTitle" name="jobTitle" required>
+        </div>
+        <div class="field">
+          <label for="department">القسم *</label>
+          <input type="text" id="department" name="department" required>
+        </div>
+      </div>
+      
+      <div class="grid">
+        <div class="field">
+          <label for="startDate">تاريخ بداية العمل *</label>
+          <input type="date" id="startDate" name="startDate" required onchange="calculateExperience()">
+        </div>
+        <div class="field">
+          <label for="endDate">تاريخ نهاية العمل</label>
+          <input type="date" id="endDate" name="endDate" onchange="calculateExperience()">
+          <div class="hint">اتركه فارغاً إذا كان ما زال يعمل</div>
+        </div>
+      </div>
+      
+      <div class="grid">
+        <div class="field">
+          <label for="experienceYears">سنوات الخبرة</label>
+          <input type="number" id="experienceYears" name="experienceYears" min="0" max="50" data-ltr>
+        </div>
+        <div class="field">
+          <label for="experienceMonths">أشهر الخبرة الإضافية</label>
+          <input type="number" id="experienceMonths" name="experienceMonths" min="0" max="11" data-ltr>
+        </div>
+      </div>
+      
+      <div id="experienceDurationDisplay" class="duration-calc" style="display: none;">
+        <strong>إجمالي مدة الخدمة المحسوبة:</strong> <span id="calculatedDuration">-</span>
+      </div>
+    </section>
+
+    <!-- Container 3: Additional Information -->
+    <section class="qbox">
+      <h2 class="qbox-title">
+        📋 معلومات إضافية
+      </h2>
+      
+      <div class="grid">
+        <div class="field">
+          <label for="supervisorName">اسم المشرف المباشر</label>
+          <input type="text" id="supervisorName" name="supervisorName">
+        </div>
+        <div class="field">
+          <label for="certificateLanguage">لغة الشهادة</label>
+          <select id="certificateLanguage" name="certificateLanguage">
+            <option value="arabic">العربية</option>
+            <option value="english">الإنجليزية</option>
+            <option value="both">العربية والإنجليزية</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="grid single">
+        <div class="field">
+          <label for="requestPurpose">الغرض من طلب الشهادة</label>
+          <textarea id="requestPurpose" name="requestPurpose" 
+                    placeholder="اذكر الغرض من طلب شهادة الخبرة (مثل: للتقدم لوظيفة، للهجرة، للدراسة، إلخ)..."></textarea>
+        </div>
+      </div>
+      
+      <div class="grid single">
+        <div class="field">
+          <label for="requestNotes">ملاحظات إضافية</label>
+          <textarea id="requestNotes" name="requestNotes" 
+                    placeholder="أي معلومات إضافية تود إضافتها لطلبك..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+      <p class="hint-text">تأكد من صحة جميع البيانات قبل الإرسال</p>
+      <div class="actions">
+        <button type="button" class="btn btn-outline" onclick="clearForm()">مسح النموذج</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">إرسال الطلب</button>
+      </div>
+    </div>
+    </form>
+  </main>
+
+  <!-- JavaScript للنموذج -->
+  <script>
+    // تحضير النموذج عند التحميل
+    document.addEventListener('DOMContentLoaded', function() {
+      setupForm();
+      loadUserInfo();
+      setDefaultDate();
+    });
+
+    function setupForm() {
+      const form = document.getElementById('experienceForm');
+      if (form) {
+        form.addEventListener('submit', handleSubmit);
+      }
+    }
+
+    async function loadUserInfo() {
+      try {
+        // جلب معلومات المستخدم المسجل دخوله
+        const user = await apiClient.getCurrentUser();
+        if (user) {
+          document.getElementById('employeeName').value = user.name || '';
+          document.getElementById('employeeEmail').value = user.email || '';
+          document.getElementById('employeeNumber').value = user.employee_number || '';
+          document.getElementById('jobTitle').value = user.job_title || '';
+          document.getElementById('department').value = user.department || '';
+          
+          // تعيين تاريخ بداية العمل إذا كان متوفراً
+          if (user.start_date) {
+            document.getElementById('startDate').value = user.start_date;
+            calculateExperience();
+          }
+        }
+      } catch (error) {
+        console.warn('Could not load user info:', error);
+      }
+    }
+
+    function setDefaultDate() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('requestDate').value = today;
+    }
+
+    function calculateExperience() {
+      const startDateInput = document.getElementById('startDate');
+      const endDateInput = document.getElementById('endDate');
+      const experienceYearsInput = document.getElementById('experienceYears');
+      const experienceMonthsInput = document.getElementById('experienceMonths');
+      const durationDisplay = document.getElementById('experienceDurationDisplay');
+      const calculatedDurationSpan = document.getElementById('calculatedDuration');
+      
+      const startDate = startDateInput.value;
+      const endDate = endDateInput.value || new Date().toISOString().split('T')[0];
+      
+      if (startDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        if (end >= start) {
+          const diffTime = Math.abs(end - start);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          
+          const years = Math.floor(diffDays / 365);
+          const months = Math.floor((diffDays % 365) / 30);
+          
+          // تحديث الحقول المحسوبة
+          experienceYearsInput.value = years;
+          experienceMonthsInput.value = months;
+          
+          // عرض المدة المحسوبة
+          let durationText = '';
+          if (years > 0) {
+            durationText += `${years} سنة`;
+          }
+          if (months > 0) {
+            if (durationText) durationText += ' و ';
+            durationText += `${months} شهر`;
+          }
+          if (!durationText) {
+            durationText = 'أقل من شهر';
+          }
+          
+          calculatedDurationSpan.textContent = durationText;
+          durationDisplay.style.display = 'block';
+        }
+      }
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.textContent;
+      
+      try {
+        // تعطيل الزر أثناء الإرسال
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري الإرسال...';
+        
+        // جمع بيانات النموذج
+        const formData = collectFormData();
+        
+        // التحقق من صحة البيانات
+        if (!validateFormData(formData)) {
+          return;
+        }
+        
+        // إرسال الطلب
+        const response = await apiClient.createExperienceRequest(formData);
+        
+        if (response.success) {
+          showAlert('success', `تم إنشاء طلب شهادة الخبرة بنجاح! رقم المرجع: ${response.data.reference_number}`);
+          
+          // إعادة توجيه للوحة التحكم بعد 3 ثوان
+          setTimeout(() => {
+            window.location.href = 'employee-dashboard.html';
+          }, 3000);
+          
+        } else {
+          throw new Error(response.message || 'فشل في إنشاء الطلب');
+        }
+        
+      } catch (error) {
+        console.error('Error submitting experience request:', error);
+        showAlert('error', error.message || 'حدث خطأ أثناء إرسال الطلب');
+        
+      } finally {
+        // إعادة تفعيل الزر
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    }
+
+    function collectFormData() {
+      const form = document.getElementById('experienceForm');
+      const formData = new FormData(form);
+      
+      return {
+        employee_name: formData.get('employeeName'),
+        employee_email: formData.get('employeeEmail'),
+        employee_number: formData.get('employeeNumber'),
+        request_date: formData.get('requestDate'),
+        
+        job_title: formData.get('jobTitle'),
+        department: formData.get('department'),
+        start_date: formData.get('startDate'),
+        end_date: formData.get('endDate') || null,
+        
+        experience_years: formData.get('experienceYears') ? parseInt(formData.get('experienceYears')) : null,
+        experience_months: formData.get('experienceMonths') ? parseInt(formData.get('experienceMonths')) : null,
+        
+        supervisor_name: formData.get('supervisorName'),
+        certificate_language: formData.get('certificateLanguage'),
+        request_purpose: formData.get('requestPurpose'),
+        request_notes: formData.get('requestNotes')
+      };
+    }
+
+    function validateFormData(data) {
+      const errors = [];
+      
+      // التحقق من الحقول المطلوبة
+      if (!data.employee_name) errors.push('اسم الموظف مطلوب');
+      if (!data.employee_email) errors.push('البريد الإلكتروني مطلوب');
+      if (!data.job_title) errors.push('المسمى الوظيفي مطلوب');
+      if (!data.department) errors.push('القسم مطلوب');
+      if (!data.request_date) errors.push('تاريخ الطلب مطلوب');
+      if (!data.start_date) errors.push('تاريخ بداية العمل مطلوب');
+      
+      // التحقق من صحة البريد الإلكتروني
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (data.employee_email && !emailPattern.test(data.employee_email)) {
+        errors.push('صيغة البريد الإلكتروني غير صحيحة');
+      }
+      
+      // التحقق من التواريخ
+      if (data.start_date && data.end_date) {
+        const startDate = new Date(data.start_date);
+        const endDate = new Date(data.end_date);
+        
+        if (endDate < startDate) {
+          errors.push('تاريخ نهاية العمل لا يمكن أن يكون قبل تاريخ البداية');
+        }
+        
+        if (startDate > new Date()) {
+          errors.push('تاريخ بداية العمل لا يمكن أن يكون في المستقبل');
+        }
+      }
+      
+      // التحقق من سنوات الخبرة
+      if (data.experience_years && data.experience_years < 0) {
+        errors.push('سنوات الخبرة لا يمكن أن تكون سالبة');
+      }
+      
+      if (data.experience_months && (data.experience_months < 0 || data.experience_months > 11)) {
+        errors.push('أشهر الخبرة يجب أن تكون بين 0 و 11');
+      }
+      
+      // عرض الأخطاء
+      if (errors.length > 0) {
+        showAlert('error', 'يرجى تصحيح الأخطاء التالية:\n' + errors.join('\n'));
+        return false;
+      }
+      
+      return true;
+    }
+
+    function showAlert(type, message) {
+      const alertContainer = document.getElementById('alertContainer');
+      
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.textContent = message;
+      
+      // مسح التنبيهات السابقة
+      alertContainer.innerHTML = '';
+      alertContainer.appendChild(alertDiv);
+      
+      // التمرير للتنبيه
+      alertDiv.scrollIntoView({ behavior: 'smooth' });
+      
+      // إزالة التنبيه بعد 5 ثوان (للتنبيهات الناجحة)
+      if (type === 'success') {
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 5000);
+      }
+    }
+
+    function clearForm() {
+      if (confirm('هل أنت متأكد من أنك تريد مسح جميع البيانات؟')) {
+        document.getElementById('experienceForm').reset();
+        setDefaultDate();
+        loadUserInfo();
+        document.getElementById('experienceDurationDisplay').style.display = 'none';
+        showAlert('warning', 'تم مسح النموذج');
+      }
+    }
+
+    // API Client placeholder (will be replaced with actual implementation)
+    const apiClient = {
+      async getCurrentUser() {
+        // سيتم استبدال هذا بالتكامل الفعلي مع API
+        return JSON.parse(localStorage.getItem('user') || '{}');
+      },
+      
+      async createExperienceRequest(data) {
+        // سيتم استبدال هذا بالتكامل الفعلي مع API
+        try {
+          const response = await fetch('/api/unified-requests/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+              request_type: 'experience',
+              form_data: data
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          
+          return await response.json();
+          
+        } catch (error) {
+          throw new Error('فشل في إرسال الطلب. تحقق من اتصال الإنترنت.');
+        }
+      }
+    };
+  </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>🏥</text></svg>">
+    <title>مستشفى الملك عبدالعزيز – نظام الصلاحيات والاعتمادات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Use existing design system colors */
+        :root {
+            --admin-color: #ef4444;
+            --manager-color: #f59e0b;
+            --hr-color: #8b5cf6;
+            --finance-color: #10b981;
+            --it-color: #3b82f6;
+            --commissioner-color: #ec4899;
+        }
+        
+        /* Header - Match admin-dashboard.html style */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .header .in {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 16px;
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .brand img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+        }
+        
+        .brand .title {
+            font-weight: 800;
+            line-height: 1;
+        }
+        
+        .brand small {
+            color: var(--text-secondary);
+            display: block;
+            margin-top: 2px;
+        }
+        
+        .btn {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: #fff;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--color-primary-500);
+        }
+        
+        /* Container - Match system width */
+        .container {
+            max-width: 1200px;
+            margin: 18px auto;
+            padding: 0 16px;
+        }
+        
+        /* Page Title - Match admin style */
+        .page-header {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 24px rgba(2,6,23,.06), 0 1px 1px rgba(2,6,23,.04);
+        }
+        
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            color: var(--text-primary);
+        }
+        
+        .page-header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+        
+        /* KPI Grid - Match admin-dashboard style exactly */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .kpi-card {
+            grid-column: span 3;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(2,6,23,.06), 0 1px 1px rgba(2,6,23,.04);
+            padding: 18px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .kpi-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            background: #94a3b8;
+            flex-shrink: 0;
+        }
+        
+        .kpi-txt {
+            flex: 1;
+        }
+        
+        .kpi-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .kpi-value {
+            font-size: 26px;
+            font-weight: 800;
+            margin-top: 4px;
+            line-height: 1;
+        }
+        
+        @media(max-width: 900px) {
+            .kpi-card {
+                grid-column: span 6;
+            }
+        }
+        
+        @media(max-width: 600px) {
+            .kpi-card {
+                grid-column: span 12;
+            }
+        }
+        
+        /* Cards - Match system style */
+        .card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(2,6,23,.06), 0 1px 1px rgba(2,6,23,.04);
+            margin-bottom: 16px;
+        }
+        
+        .card-head {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-head h2 {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 16px;
+        }
+        
+        /* Request Cards Grid */
+        .request-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 16px;
+        }
+        
+        .request-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(2,6,23,.06), 0 1px 1px rgba(2,6,23,.04);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        
+        .request-card:hover {
+            box-shadow: 0 12px 32px rgba(2,6,23,.12);
+            border-color: var(--color-primary-500);
+        }
+        
+        .request-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .request-title-group h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+        }
+        
+        .request-title-group p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .request-icon {
+            font-size: 32px;
+            line-height: 1;
+            opacity: 0.9;
+        }
+        
+        .approvers-summary {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #92400e;
+        }
+        
+        .approvers-summary strong {
+            color: #78350f;
+            font-weight: 700;
+        }
+        
+        .approvers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .approver-item {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        
+        .approver-item:hover {
+            background: #f0f7ff;
+            border-color: var(--color-primary-500);
+        }
+        
+        .approver-order {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-primary-500);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .approver-info {
+            flex: 1;
+        }
+        
+        .approver-role {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .approver-role-en {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .approver-badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .badge-required {
+            background: #ef4444;
+        }
+        
+        .badge-optional {
+            background: #94a3b8;
+        }
+        
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .filter-input,
+        .filter-select {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.2s;
+        }
+        
+        .filter-input {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .filter-select {
+            min-width: 150px;
+        }
+        
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-primary-500);
+            box-shadow: 0 0 0 3px var(--color-primary-50);
+        }
+        
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        .user-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 16px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(2,6,23,.04);
+        }
+        
+        .user-card:hover {
+            box-shadow: 0 8px 24px rgba(2,6,23,.12);
+            border-color: var(--color-primary-500);
+        }
+        
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .user-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 2px 0;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .user-roles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .role-badge {
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .user-meta {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .user-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .commissioner-badge {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #92400e;
+        }
+        
+        /* Loading State */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+        
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border-color);
+            border-top-color: var(--color-primary-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #fffbeb;
+            border-radius: 12px;
+            border: 1px solid #fde68a;
+            margin-bottom: 16px;
+        }
+        
+        .legend-title {
+            width: 100%;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .request-cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .filter-input,
+            .filter-select {
+                width: 100%;
+            }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="in">
+            <div class="brand">
+                <img src="public/image.png" alt="logo">
+                <div>
+                    <div class="title">مستشفى الملك عبدالعزيز</div>
+                    <small>نظام الصلاحيات والاعتمادات</small>
+                </div>
+            </div>
+            <button class="btn" onclick="location.href='admin-dashboard.html'">
+                رجوع للوحة التحكم
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p style="font-size: 1.125rem; font-weight: 600;">جاري تحميل بيانات الصلاحيات...</p>
+        </div>
+
+        <!-- Content -->
+        <div id="content" style="display: none;">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>🔐 نظام الصلاحيات والاعتمادات</h1>
+                <p>
+                    نظرة شاملة على جميع أنواع الطلبات والمستخدمين المخولين باعتمادها.
+                    يوضح هذا النظام صلاحيات كل دور وظيفي والطلبات التي يمكنه الموافقة عليها.
+                </p>
+            </div>
+
+            <!-- KPI Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-dot" style="background: var(--color-primary-500);"></div>
+                    <div class="kpi-txt">
+                        <div class="kpi-label">إجمالي المستخدمين</div>
+                        <div class="kpi-value" id="stat-total">0</div>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-dot" style="background: var(--admin-color);"></div>
+                    <div class="kpi-txt">
+                        <div class="kpi-label">مدراء النظام</div>
+                        <div class="kpi-value" id="stat-admin">0</div>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-dot" style="background: var(--manager-color);"></div>
+                    <div class="kpi-txt">
+                        <div class="kpi-label">مدراء الأقسام</div>
+                        <div class="kpi-value" id="stat-manager">0</div>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-dot" style="background: var(--hr-color);"></div>
+                    <div class="kpi-txt">
+                        <div class="kpi-label">الموارد البشرية</div>
+                        <div class="kpi-value" id="stat-hr">0</div>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-dot" style="background: var(--finance-color);"></div>
+                    <div class="kpi-txt">
+                        <div class="kpi-label">المالية</div>
+                        <div class="kpi-value" id="stat-finance">0</div>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-dot" style="background: var(--it-color);"></div>
+                    <div class="kpi-txt">
+                        <div class="kpi-label">تقنية المعلومات</div>
+                        <div class="kpi-value" id="stat-it">0</div>
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-dot" style="background: var(--commissioner-color);"></div>
+                    <div class="kpi-txt">
+                        <div class="kpi-label">المفوضين</div>
+                        <div class="kpi-value" id="stat-commissioner">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <div class="legend-title">🎨 دليل الألوان:</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--admin-color);"></div>
+                    <span>مدير النظام</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--manager-color);"></div>
+                    <span>مدير القسم</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--hr-color);"></div>
+                    <span>الموارد البشرية</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--finance-color);"></div>
+                    <span>المالية</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--it-color);"></div>
+                    <span>تقنية المعلومات</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--commissioner-color);"></div>
+                    <span>مفوض (مؤقت)</span>
+                </div>
+            </div>
+
+            <!-- Request Types Section -->
+            <div class="card">
+                <div class="card-head">
+                    <h2>📋 أنواع الطلبات وصلاحيات الاعتماد</h2>
+                </div>
+                <div class="card-body">
+                    <div class="request-cards-grid" id="requestGrid">
+                        <!-- Request cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div class="card">
+                <div class="card-head">
+                    <h2>👥 المستخدمون ذوو الصلاحيات</h2>
+                </div>
+                <div class="card-body">
+                
+                <!-- Filters -->
+                <div class="filters">
+                    <input 
+                        type="text" 
+                        id="filterSearch" 
+                        class="filter-input" 
+                        placeholder="🔍 بحث بالاسم أو البريد الإلكتروني..."
+                    >
+                    <select id="filterRole" class="filter-select">
+                        <option value="">جميع الأدوار</option>
+                        <option value="ADMIN">مدير النظام</option>
+                        <option value="MANAGER">مدير القسم</option>
+                        <option value="HR">الموارد البشرية</option>
+                        <option value="FINANCE">المالية</option>
+                        <option value="IT">تقنية المعلومات</option>
+                        <option value="COMMISSIONER">المفوضين</option>
+                    </select>
+                    <button class="btn" style="background: var(--color-primary-500); color: white;" onclick="applyFilters()">تطبيق الفلتر</button>
+                    <button class="btn" onclick="resetFilters()">إعادة تعيين</button>
+                </div>
+                
+                    <!-- Users Grid -->
+                    <div class="users-grid" id="usersGrid">
+                        <!-- User cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript Files -->
+    <script src="../jS/notification-store.js"></script>
+    <script src="../jS/api-client.js"></script>
+    <script src="../jS/app-init.js"></script>
+    <script src="../jS/admin-privileges-overview.js"></script>
+    <script src="../jS/signature.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,43 @@
+{
+  "name": "hospital-management-system",
+  "version": "1.0.0",
+  "description": "Hospital Management System - King Abdulaziz Hospital",
+  "main": "Backend/dist/server.js",
+  "scripts": {
+    "start": "npm --prefix Backend start",
+    "dev": "npm --prefix Backend run dev",
+    "install-backend": "npm --prefix Backend install",
+    "install-all": "npm run install-backend",
+    "build": "npm --prefix Backend run build",
+    "test": "npm --prefix Backend test",
+    "test:cover": "npm --prefix Backend run test:cover",
+    "lint": "npm --prefix Backend run lint",
+    "lint:fix": "npm --prefix Backend run lint:fix",
+    "format": "npm --prefix Backend run format",
+    "migrate": "npm --prefix Backend run migrate"
+  },
+  "keywords": [
+    "hospital",
+    "management",
+    "system",
+    "nodejs",
+    "express",
+    "mysql"
+  ],
+  "author": "Norah Mohammed Alkabkabi",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.18.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Alkabkabi1/hosipital-mangment-intermidate"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "mysql2": "^3.15.3"
+  }
+}

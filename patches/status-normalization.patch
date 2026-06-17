@@ -1,0 +1,58 @@
+diff --git a/Frontend/jS/status-mapper.js b/Frontend/jS/status-mapper.js
+new file mode 100644
+--- /dev/null
++++ b/Frontend/jS/status-mapper.js
+@@
++(function initStatusMapper() {
++  const AR_PENDING = ['قيد المراجعة', 'قيد الانتظار', 'بانتظار', 'في الانتظار', 'جاري المراجعة', 'معلق'];
++  const AR_APPROVED = ['موافق', 'تمت الموافقة', 'مقبول', 'اعتماد'];
++  const AR_REJECTED = ['مرفوض', 'تم الرفض', 'رفض'];
++
++  const EN_PENDING = ['pending', 'awaiting', 'in_progress', 'submitted', 'new'];
++  const EN_APPROVED = ['approved', 'accepted', 'done', 'complete', 'completed'];
++  const EN_REJECTED = ['rejected', 'declined', 'denied', 'cancelled', 'canceled'];
++
++  function normalizeStatus(raw) {
++    if (!raw || typeof raw !== 'string') return 'pending';
++    const s = raw.trim();
++    const lower = s.toLowerCase();
++
++    if (EN_APPROVED.includes(lower)) return 'approved';
++    if (EN_REJECTED.includes(lower)) return 'rejected';
++    if (EN_PENDING.includes(lower)) return 'pending';
++
++    // Arabic keyword heuristics
++    if (AR_APPROVED.some(x => s.includes(x))) return 'approved';
++    if (AR_REJECTED.some(x => s.includes(x))) return 'rejected';
++    if (AR_PENDING.some(x => s.includes(x))) return 'pending';
++
++    // Default to pending for unknown/legacy values
++    return 'pending';
++  }
++
++  function getStatusDisplay(status) {
++    const n = normalizeStatus(status);
++    switch (n) {
++      case 'approved': return 'موافق';
++      case 'rejected': return 'مرفوض';
++      default: return 'قيد المراجعة';
++    }
++  }
++
++  function getStatusColor(status) {
++    const n = normalizeStatus(status);
++    switch (n) {
++      case 'approved': return 'success';
++      case 'rejected': return 'error';
++      default: return 'warning';
++    }
++  }
++
++  // Expose globally
++  window.normalizeStatus = normalizeStatus;
++  window.getStatusDisplay = getStatusDisplay;
++  window.getStatusColor = getStatusColor;
++
++  console.log('✅ status-mapper initialized');
++})();
+

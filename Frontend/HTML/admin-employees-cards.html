@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة الموظفين - الأدمن</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/styles.css">
+  <style>
+    :root {
+      --primary: #2B6CB0;
+      --bg: #f5f6f8;
+      --surface: #fff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .header .in {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 16px auto;
+      padding: 0 16px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .page-title {
+      margin: 0;
+      color: #374151;
+    }
+
+    .page-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      background: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn:hover {
+      background: #f3f4f6;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: #1e40af;
+    }
+
+    .input, .select {
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: #fff;
+      font-family: inherit;
+    }
+
+    .search-filters {
+      margin-bottom: 20px;
+    }
+
+    #employeesContainer {
+      margin-bottom: 20px;
+    }
+
+    .pagination-controls {
+      margin-top: 20px;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .textarea {
+      min-height: 80px;
+      resize: vertical;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="in">
+      <div><b>مستشفى الملك عبدالعزيز</b> – <small>إدارة الموظفين</small></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="location.href='admin-dashboard.html'">رجوع</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="page-header">
+      <h1 class="page-title">إدارة الموظفين</h1>
+      <div class="page-actions">
+        <button id="addEmployeeBtn" class="btn btn-primary">إضافة موظف</button>
+        <button id="refreshBtn" class="btn">تحديث</button>
+        <button id="exportBtn" class="btn">تصدير</button>
+        <input id="excelFileInput" type="file" accept=".xlsx,.xls" style="display:none" />
+        <button class="btn" onclick="document.getElementById('excelFileInput').click()">استيراد Excel</button>
+      </div>
+    </div>
+
+    <div class="search-filters">
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <input id="employeeSearch" class="input" placeholder="البحث في الموظفين...">
+        <select id="statusFilter" class="select">
+          <option value="">جميع الحالات</option>
+          <option value="active">نشط</option>
+          <option value="inactive">غير نشط</option>
+          <option value="terminated">منتهي الخدمة</option>
+        </select>
+        <select id="departmentFilter" class="select">
+          <option value="">جميع الأقسام</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="employeesContainer">
+      <!-- Employee cards will be loaded here -->
+    </div>
+
+    <div class="pagination-controls">
+      <div style="display: flex; justify-content: center; align-items: center; gap: 15px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <button id="prevPage" class="btn">السابق</button>
+        <span id="paginationInfo">صفحة 1 من 1</span>
+        <button id="nextPage" class="btn">التالي</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- إضافة مكتبة SheetJS المحلية لقراءة ملفات Excel -->
+  <script src="vendor/xlsx.full.min.js"></script>
+  
+  <!-- JavaScript Files -->
+  <script src="../jS/form-validation-utils.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/role-permissions.js"></script>
+  <script src="../jS/enhanced-error-handler.js"></script>
+  <script src="../jS/admin-employees.js"></script>
+  <script src="../jS/app-init.js"></script>
+
+  <script>
+    // إضافة معالج لاستيراد ملف Excel
+    document.getElementById('excelFileInput')?.addEventListener('change', async (ev) => {
+      const file = ev.target.files?.[0];
+      if (!file) return;
+      
+      showLoadingState();
+      try {
+        if (typeof XLSX === 'undefined') {
+          throw new ReferenceError('XLSX is not defined. تأكد من تضمين vendor/xlsx.full.min.js');
+        }
+        
+        const ab = await file.arrayBuffer();
+        const wb = XLSX.read(ab, { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, { defval: '', raw: false });
+        
+        // استخدام نفس دالة التطبيع من admin-employees.js
+        const normalized = normalizeForCards(rows);
+        
+        // تحديث البيانات المحلية
+        currentEmployees = normalized.slice(0, itemsPerPage);
+        currentPage = 1;
+        totalPages = Math.max(1, Math.ceil(normalized.length / itemsPerPage));
+        
+        displayEmployees(currentEmployees);
+        updatePagination();
+        
+        showSuccess('تم تحميل ملف الإكسل بنجاح');
+      } catch (error) {
+        console.error('خطأ في قراءة الملف:', error);
+        showError('خطأ في قراءة ملف الإكسل: ' + error.message);
+      } finally {
+        hideLoadingState();
+      }
+    });
+  </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

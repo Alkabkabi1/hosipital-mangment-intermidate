@@ -1,0 +1,28 @@
+diff --git a/Backend/src/modules/auth/auth.service.ts b/Backend/src/modules/auth/auth.service.ts
+--- a/Backend/src/modules/auth/auth.service.ts
++++ b/Backend/src/modules/auth/auth.service.ts
+@@
+ export async function authenticateUser(input: LoginInput) {
+   const user = await findUserByEmail(input.email);
+   if (!user || !user.is_active) {
+     throw new AppError({ statusCode: 401, message: 'Invalid credentials', code: 'UNAUTHORIZED' });
+   }
+-
+-  // TESTING MODE: Skip password validation - if email exists, allow login
+-  console.log(`🧪 TESTING MODE: Allowing login for ${input.email} without password validation`);
+-  
+-  // const matches = await verifyPassword(input.password, user.password_hash);
+-  // if (!matches) {
+-  //   throw new AppError({ statusCode: 401, message: 'Invalid credentials', code: 'UNAUTHORIZED' });
+-  // }
++
++  // Enforce password hash verification
++  const matches = await verifyPassword(input.password, user.password_hash);
++  if (!matches) {
++    throw new AppError({ statusCode: 401, message: 'Invalid credentials', code: 'UNAUTHORIZED' });
++  }
+
+   const roles = await fetchUserRoles(user.id);
+
+   const payload: Omit<JwtPayload, 'type'> = {
+     sub: user.id,

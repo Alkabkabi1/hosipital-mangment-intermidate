@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>تفاصيل التفويض – أدمن</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{ --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb; --danger:#dc2626; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+a{text-decoration:none;color:inherit}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt span{font-size:12px;color:var(--muted)}
+.container{max-width:1100px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:16px}
+.hdr{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.kv div{border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-active{background:#dcfce7} .b-exp{background:#fee2e2} .b-stop{background:#e5e7eb}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border-color:transparent}
+.btn-danger{background:#fff;color:#dc2626;border-color:#fecaca}
+.note{font-size:12px;color:var(--muted)}
+@media(max-width:900px){.kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>تفاصيل التفويض – أدمن</span>
+      </div>
+    </div>
+    <button class="btn" onclick="window.location.href='admin-delegations-inbox.html'">رجوع للوارد</button>
+  </div>
+</header>
+
+<main class="container">
+  <div class="card">
+    <div class="hdr">
+      <h2 style="margin:0">تفويض #<span id="did">-</span></h2>
+      <span id="dstate" class="badge b-active">فعّال</span>
+    </div>
+    <div class="kv">
+      <div>المفوِّض: <b id="fromName">-</b> <span class="note" id="fromEmail"></span></div>
+      <div>المفوَّض له: <b id="toName">-</b> <span class="note" id="toEmail"></span></div>
+      <div>القسم: <b id="dept">-</b></div>
+      <div>الصلاحيات: <b id="perms">-</b></div>
+      <div>بداية: <b id="vFrom">-</b></div>
+      <div>نهاية: <b id="vTo">-</b></div>
+      <div>إنشاء: <b id="created">-</b></div>
+      <div>ملاحظات: <b id="notes">-</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hdr"><h3 style="margin:0">الإجراءات</h3></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="btnToggle">إيقاف / تفعيل</button>
+      <button class="btn" id="btnExtend">تمديد 30 يوم</button>
+      <button class="btn" id="btnEditEnd">تعديل تاريخ النهاية</button>
+      <button class="btn btn-danger" id="btnDelete">حذف التفويض</button>
+    </div>
+    <div class="note">عند الإيقاف تصبح الحالة "موقّف" حتى لو لم تنتهِ المدة.</div>
+  </div>
+</main>
+
+<script>
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser) window.location.href='login.html';
+if(authUser && authUser.role!=='admin') window.location.href='employee-dashboard.html';
+
+const id = Number(new URLSearchParams(location.search).get('id'));
+const key='delegations';
+
+function load(){ const list=JSON.parse(localStorage.getItem(key)||'[]'); return {list, idx:list.findIndex(d=>d.id===id)}; }
+function fmt(ts){ return ts? new Date(ts).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'}) : '—'; }
+function state(d){ const now=Date.now(); if(!d.active) return 'موقّف'; if(d.validTo && d.validTo<now) return 'منتهي'; return 'فعّال'; }
+function stateClass(s){ return s==='فعّال'?'b-active':(s==='منتهي'?'b-exp':'b-stop'); }
+
+function draw(){
+  const {list, idx} = load();
+  if(idx<0){ alert('التفويض غير موجود'); location.href='admin-delegations-inbox.html'; return; }
+  const d=list[idx];
+
+  did.textContent=d.id||'-';
+  fromName.textContent=d.fromName||d.from||'-'; fromEmail.textContent=d.from||'';
+  toName.textContent=d.toName||d.to||'-'; toEmail.textContent=d.to||'';
+  dept.textContent=d.toDept||'-';
+  perms.textContent=(d.permissions||[]).join(' • ')||'-';
+  vFrom.textContent=fmt(d.validFrom); vTo.textContent=fmt(d.validTo);
+  created.textContent=fmt(d.createdAt); notes.textContent=d.notes||'-';
+
+  const s=state(d); dstate.textContent=s; dstate.className='badge ' + stateClass(s);
+}
+
+function update(mut){
+  const {list, idx} = load();
+  if(idx<0) return;
+  mut(list[idx]); localStorage.setItem(key, JSON.stringify(list)); draw();
+}
+
+btnToggle.addEventListener('click', ()=>{ update(d=>{ d.active=!d.active; }); });
+btnExtend.addEventListener('click', ()=>{ update(d=>{
+  const base = d.validTo && d.validTo>Date.now()? d.validTo : Date.now();
+  d.validTo = base + 30*24*3600*1000;
+});});
+btnEditEnd.addEventListener('click', ()=>{
+  const val = prompt('أدخل تاريخ النهاية (YYYY-MM-DD):', new Date().toISOString().slice(0,10));
+  if(!val) return;
+  const ts = new Date(val).getTime();
+  if(isNaN(ts)){ alert('تنسيق التاريخ غير صحيح'); return; }
+  update(d=>{ d.validTo = ts; });
+});
+btnDelete.addEventListener('click', ()=>{
+  if(!confirm('هل أنت متأكد من حذف التفويض؟')) return;
+  const {list, idx} = load();
+  list.splice(idx,1);
+  localStorage.setItem(key, JSON.stringify(list));
+  alert('تم حذف التفويض.');
+  location.href='admin-delegations-inbox.html';
+});
+
+draw();
+</script>
+  <!-- JavaScript Files -->
+  <script src="../jS/form-validation-utils.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/admin-delegation-detail.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

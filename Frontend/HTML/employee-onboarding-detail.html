@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="../CSS/design-system.css">
+  <link rel="stylesheet" href="../CSS/base-updated.css">
+  <link rel="stylesheet" href="../CSS/components.css">
+  <link rel="stylesheet" href="../CSS/modern-enhancements.css">
+  <link rel="stylesheet" href="../CSS/visual-enhancements.css">
+  <link rel="stylesheet" href="../CSS/professional-design.css">
+  
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>تفاصيل طلب مباشرة العمل</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #2B6CB0;
+      --primary-hover: #1e40af;
+      --success: #059669;
+      --success-light: #10b981;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-light: #475569;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', sans-serif;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 16px;
+      animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    .page-header {
+      background: linear-gradient(135deg, var(--success), var(--success-light));
+      color: white;
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: pulse 4s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+    
+    .page-header h1 {
+      margin: 0 0 12px 0;
+      font-size: 32px;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .page-header .subtitle {
+      font-size: 16px;
+      opacity: 0.95;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+    
+    .card-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0 0 24px 0;
+      padding-bottom: 14px;
+      border-bottom: 3px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .card-title::before {
+      content: '▸';
+      color: var(--success);
+      font-size: 24px;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+      border-radius: 12px;
+      border: 1px solid #f3f4f6;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .info-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--success), var(--success-light));
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .info-item:hover {
+      background: #ffffff;
+      border-color: var(--success);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.1);
+    }
+    
+    .info-item:hover::before {
+      opacity: 1;
+    }
+    
+    .info-label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .info-value {
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+    }
+    
+    .status-badge:hover {
+      transform: scale(1.05);
+    }
+    
+    .status-pending { 
+      background: linear-gradient(135deg, #fef3c7, #fde68a); 
+      color: #92400e;
+      box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
+    }
+    .status-approved { 
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0); 
+      color: #065f46;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+    }
+    .status-rejected { 
+      background: linear-gradient(135deg, #fee2e2, #fecaca); 
+      color: #991b1b;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    }
+    .status-hold { 
+      background: linear-gradient(135deg, #fed7aa, #fdba74); 
+      color: #9a3412;
+      box-shadow: 0 2px 8px rgba(251, 146, 60, 0.3);
+    }
+    
+    .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      font-size: 15px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(43, 108, 176, 0.3);
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--bg);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    
+    /* Loading Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+      height: 20px;
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    .timeline {
+      position: relative;
+      padding: 24px 0 24px 50px;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      right: 20px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--success), var(--success-light));
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(5, 150, 105, 0.2);
+    }
+    
+    .timeline-item {
+      position: relative;
+      margin-bottom: 28px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+      border-radius: 16px;
+      border-right: 5px solid var(--success);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: all 0.3s ease;
+      animation: slideIn 0.6s ease;
+    }
+    
+    .timeline-item:hover {
+      transform: translateX(-5px);
+      box-shadow: 0 4px 16px rgba(5, 150, 105, 0.15);
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      right: -38px;
+      top: 28px;
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(135deg, var(--success), var(--success-light));
+      border: 4px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px var(--border), 0 0 10px rgba(5, 150, 105, 0.4);
+      z-index: 2;
+    }
+    
+    .timeline-event {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    
+    .timeline-meta {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 24px;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    @media print {
+      .actions, .btn {
+        display: none !important;
+      }
+      
+      .page-header {
+        background: #f3f4f6 !important;
+        color: #374151 !important;
+      }
+      
+      .page-header::before {
+        display: none;
+      }
+      
+      .card:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      
+      .timeline-item:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-header">
+      <h1 id="pageTitle">تفاصيل طلب مباشرة العمل</h1>
+      <div class="subtitle">عرض كامل لتفاصيل الطلب</div>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="history.back()">← رجوع</button>
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ طباعة</button>
+      </div>
+    </div>
+
+    <!-- Basic Information Card -->
+    <div class="card">
+      <h2 class="card-title">المعلومات الأساسية</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">رقم المرجع</span>
+          <span class="info-value" id="referenceNumber">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">حالة الطلب</span>
+          <span class="info-value" id="currentStatus">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">تاريخ الطلب</span>
+          <span class="info-value" id="requestDate">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">تاريخ المباشرة</span>
+          <span class="info-value" id="startDate">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Employee Information -->
+    <div class="card">
+      <h2 class="card-title">معلومات الموظف</h2>
+      <div class="info-grid" id="employeeInfoGrid">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Document Information -->
+    <div class="card">
+      <h2 class="card-title">معلومات المستندات</h2>
+      <div class="info-grid" id="documentInfoGrid">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Employment Details -->
+    <div class="card">
+      <h2 class="card-title">تفاصيل التوظيف</h2>
+      <div class="info-grid" id="employmentInfoGrid">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Additional Details from Form -->
+    <div class="card" id="additionalDetailsCard" style="display: none;">
+      <h2 class="card-title">تفاصيل إضافية</h2>
+      <div class="info-grid" id="additionalDetailsGrid">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="card">
+      <h2 class="card-title">سجل الأحداث</h2>
+      <div class="timeline" id="timelineContainer">
+        <div class="timeline-item">
+          <div class="timeline-event">جاري تحميل البيانات...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 1: Core dependencies -->
+  <script src="../jS/dependency-guard.js"></script>
+  <script src="../jS/error-handler.js"></script>
+  <script src="../jS/notification-utils.js"></script>
+  
+  <!-- Phase 2: Core application scripts -->
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/role-permissions.js"></script>
+  <script src="../jS/detail-view-utils.js?v=2"></script>
+  
+  <!-- Page-specific script -->
+  <script src="../jS/employee-onboarding-detail.js?v=2"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

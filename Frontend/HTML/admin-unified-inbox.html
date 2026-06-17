@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>🏥</text></svg>">
+    <title>صندوق الوارد الموحد – مستشفى الملك عبدالعزيز</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/base.css">
+    <link rel="stylesheet" href="../CSS/styles.css"/>
+
+    <style>
+        :root{
+            --primary:#2B6CB0; --primary-600:#255b92;
+            --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b;
+            --border:#e5e7eb; --ok:#16a34a; --danger:#dc2626; --chip:#eef2ff;
+            --warn:#f59e0b; --good:#16a34a; --bad:#ef4444;
+            --shadow:0 8px 24px rgba(2,6,23,.06), 0 1px 1px rgba(2,6,23,.04);
+            --radius:18px;
+        }
+        *{box-sizing:border-box}
+        body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,Segoe UI,Arial}
+        a{color:inherit;text-decoration:none}
+
+        /* هيدر */
+        .header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+        .header .in{max-width:1400px;margin:auto;display:flex;align-items:center;gap:16px;padding:10px 16px}
+        .brand{display:flex;align-items:center;gap:10px}
+        .brand img{width:44px;height:44px;object-fit:contain}
+        .brand .title{font-weight:800;line-height:1}
+        .brand small{color:var(--muted);display:block;margin-top:2px}
+        .nav-quick{margin-right:auto;display:flex;gap:8px}
+        .quick{padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:#fff;cursor:pointer;transition:all 0.2s}
+        .quick:hover{background:#f8f9fa}
+        .bell{position:relative;padding:8px;border:1px solid var(--border);border-radius:12px;background:#fff}
+        .badge{position:absolute;top:-6px;left:-6px;background:#ef4444;color:#fff;border-radius:999px;padding:2px 6px;font-size:11px}
+        .avatar{width:38px;height:38px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:800}
+
+        /* الحاوية */
+        .container{max-width:1400px;margin:18px auto;padding:0 16px}
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+            position: relative;
+        }
+        
+        .tab:hover {
+            background: #f8f9fa;
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .tab .count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-right: 5px;
+        }
+        
+        .tab.active .count {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* الجدول */
+        .table-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table thead {
+            background: var(--bg);
+        }
+
+        .table th {
+            padding: 16px;
+            text-align: right;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 16px;
+            font-size: 14px;
+            color: var(--text);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 999px;
+            gap: 4px;
+        }
+
+        .status-pending, .status-submitted, .status-قيد-الاعتماد {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-approved, .status-مكتمل {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected, .status-مرفوض {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Type badges */
+        .type-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 999px;
+        }
+
+        .type-onboarding {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .type-clearance {
+            background: #fce7f3;
+            color: #9f1239;
+        }
+
+        .type-certificate {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .type-experience {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .type-exit {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .type-delegation {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .type-leave {
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+
+        .type-assignment {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .type-assignment_termination {
+            background: #fecaca;
+            color: #7f1d1d;
+        }
+
+        .type-internal_transfer {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .type-maternity_leave {
+            background: #fce7f3;
+            color: #831843;
+        }
+
+        .type-housing_allowance {
+            background: #dcfce7;
+            color: #14532d;
+        }
+
+        .type-travel_order {
+            background: #ddd6fe;
+            color: #5b21b6;
+        }
+
+        .type-reward_refund {
+            background: #fef3c7;
+            color: #713f12;
+        }
+
+        .type-airlines_ticket {
+            background: #cffafe;
+            color: #164e63;
+        }
+
+        /* Action buttons */
+        .action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action:hover {
+            background: #f8fafc;
+            border-color: var(--primary);
+        }
+
+        .action.primary {
+            background: var(--primary);
+            border-color: transparent;
+            color: white;
+        }
+
+        .action.primary:hover {
+            background: var(--primary-600);
+        }
+
+        .action.success {
+            background: var(--good);
+            border-color: transparent;
+            color: white;
+        }
+
+        .action.success:hover {
+            background: #15803d;
+        }
+
+        .action.danger {
+            background: var(--bad);
+            border-color: transparent;
+            color: white;
+        }
+
+        .action.danger:hover {
+            background: #dc2626;
+        }
+
+        /* Filters */
+        .filters {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        /* Loading state */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        /* Empty state */
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .table {
+                font-size: 12px;
+            }
+            
+            .table th,
+            .table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div>
+        <div class="title">مستشفى الملك عبدالعزيز</div>
+        <small>صندوق الوارد الموحد</small>
+      </div>
+    </div>
+    <div class="nav-quick">
+      <a class="quick" onclick="navigateToPage('admin-dashboard.html')">🏠 الرئيسية</a>
+      <a class="quick" onclick="navigateToPage('admin-commissioner.html')">إدارة المفوضين</a>
+      <a class="quick" onclick="navigateToPage('admin-role-management.html')">إدارة الصلاحيات</a>
+      <a class="quick" onclick="navigateToPage('admin-employees.html')">الموظفون</a>
+    </div>
+    <div class="bell" title="الإشعارات">🔔</div>
+    <div class="avatar" id="avatar" title="الملف الشخصي">A</div>
+    <a class="quick" onclick="logout()">تسجيل الخروج</a>
+  </div>
+</header>
+
+<main class="container">
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" data-type="all" onclick="inbox.setActiveTab('all')">
+            📋 الكل <span class="count" id="count-all">0</span>
+        </div>
+        <div class="tab" data-type="onboarding" onclick="inbox.setActiveTab('onboarding')">
+            ➕ مباشرة عمل <span class="count" id="count-onboarding">0</span>
+        </div>
+        <div class="tab" data-type="clearance" onclick="inbox.setActiveTab('clearance')">
+            🔚 إخلاء طرف <span class="count" id="count-clearance">0</span>
+        </div>
+        <div class="tab" data-type="certificate" onclick="inbox.setActiveTab('certificate')">
+            📜 شهادة تعريف <span class="count" id="count-certificate">0</span>
+        </div>
+        <div class="tab" data-type="experience" onclick="inbox.setActiveTab('experience')">
+            📋 شهادة خبرة <span class="count" id="count-experience">0</span>
+        </div>
+        <div class="tab" data-type="leave" onclick="inbox.setActiveTab('leave')">
+            🏖️ إجازة <span class="count" id="count-leave">0</span>
+        </div>
+        <div class="tab" data-type="exit" onclick="inbox.setActiveTab('exit')">
+            🚪 إنهاء عمل <span class="count" id="count-exit">0</span>
+        </div>
+        <div class="tab" data-type="assignment" onclick="inbox.setActiveTab('assignment')">
+            📋 تكليف <span class="count" id="count-assignment">0</span>
+        </div>
+        <div class="tab" data-type="assignment_termination" onclick="inbox.setActiveTab('assignment_termination')">
+            ⛔ إنهاء تكليف <span class="count" id="count-assignment_termination">0</span>
+        </div>
+        <div class="tab" data-type="internal_transfer" onclick="inbox.setActiveTab('internal_transfer')">
+            🔄 نقل داخلي <span class="count" id="count-internal_transfer">0</span>
+        </div>
+        <div class="tab" data-type="delegation" onclick="inbox.setActiveTab('delegation')">
+            👥 تفويض <span class="count" id="count-delegation">0</span>
+        </div>
+        <div class="tab" data-type="maternity_leave" onclick="inbox.setActiveTab('maternity_leave')">
+            👶 إجازة أمومة <span class="count" id="count-maternity_leave">0</span>
+        </div>
+        <div class="tab" data-type="housing_allowance" onclick="inbox.setActiveTab('housing_allowance')">
+            🏠 بدل سكن <span class="count" id="count-housing_allowance">0</span>
+        </div>
+        <div class="tab" data-type="travel_order" onclick="inbox.setActiveTab('travel_order')">
+            ✈️ أمر إركاب <span class="count" id="count-travel_order">0</span>
+        </div>
+        <div class="tab" data-type="reward_refund" onclick="inbox.setActiveTab('reward_refund')">
+            💰 مكافأة/استرداد <span class="count" id="count-reward_refund">0</span>
+        </div>
+        <div class="tab" data-type="airlines_ticket" onclick="inbox.setActiveTab('airlines_ticket')">
+            🎫 تذاكر طيران <span class="count" id="count-airlines_ticket">0</span>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+        <div class="filter-group">
+            <label>الحالة:</label>
+            <select id="statusFilter" onchange="inbox.applyFilters()">
+                <option value="">جميع الحالات</option>
+                <option value="pending">معلقة</option>
+                <option value="submitted">مقدمة</option>
+                <option value="قيد الاعتماد">قيد الاعتماد</option>
+                <option value="approved">معتمدة</option>
+                <option value="مكتمل">مكتمل</option>
+                <option value="rejected">مرفوضة</option>
+                <option value="مرفوض">مرفوض</option>
+            </select>
+            
+            <label>البحث:</label>
+            <input type="text" id="searchInput" placeholder="ابحث باسم الموظف..." onkeyup="inbox.applyFilters()">
+            
+            <button class="action primary" onclick="inbox.loadRequests()">🔄 تحديث</button>
+            <button class="action" onclick="inbox.exportToExcel()">📊 تصدير إلى Excel</button>
+        </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>الرقم</th>
+                    <th>النوع</th>
+                    <th>اسم الموظف</th>
+                    <th>القسم</th>
+                    <th>البريد الإلكتروني</th>
+                    <th>تاريخ التقديم</th>
+                    <th>الحالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="requestsTableBody">
+                <tr>
+                    <td colspan="8" class="loading">
+                        جاري التحميل...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- JavaScript Files -->
+<script src="../jS/dependency-guard.js"></script>
+<script src="../jS/error-handler.js"></script>
+<script src="../jS/app-init.js"></script>
+<script src="../jS/api-client.js"></script>
+<script src="../jS/admin-unified-inbox.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

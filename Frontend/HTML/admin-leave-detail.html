@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/professional-design.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>تفاصيل طلب إجازة – أدمن</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../CSS/workflow-styles.css">
+<style>
+:root{ --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb; --danger:#dc2626; --success:#16a34a; --warning:#f59e0b; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+a{color:inherit;text-decoration:none}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt span{font-size:12px;color:var(--muted)}
+.container{max-width:1100px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:16px}
+.hdr{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-pend{background:#fef3c7} .b-done{background:#dcfce7} .b-rej{background:#fee2e2}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.kv div{border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border-color:transparent}
+.btn-danger{background:#fff;color:var(--danger);border-color:#fecaca}
+.btn-ghost{background:#fff;color:var(--text)}
+.note{font-size:12px;color:var(--muted)}
+
+.leave-duration-highlight {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  margin: 16px 0;
+}
+
+.leave-calendar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+.leave-reason-box {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>تفاصيل طلب إجازة – أدمن</span>
+      </div>
+    </div>
+    <button class="btn" id="btnBack">رجوع للوارد</button>
+  </div>
+</header>
+  
+<main class="container">
+  <!-- Basic Information Card -->
+  <div class="card">
+    <div class="hdr">
+      <h2 style="margin:0">طلب #<span id="rid">-</span></h2>
+      <span id="rstatus" class="badge b-pend">قيد الاعتماد</span>
+    </div>
+    <div class="kv">
+      <div>الموظف: <b id="rname">-</b></div>
+      <div>القسم: <b id="rdept">-</b></div>
+      <div>البريد: <b id="remail">-</b></div>
+      <div>المسمى الوظيفي: <b id="rjobtitle">-</b></div>
+      <div>رقم الموظف: <b id="remployeenumber">-</b></div>
+      <div>نوع الإجازة: <b id="rleavetype">-</b></div>
+      <div>تاريخ الطلب: <b id="rcreated">-</b></div>
+      <div>المشرف المباشر: <b id="rsupervisor">-</b></div>
+    </div>
+  </div>
+
+  <!-- Leave Duration and Dates Card -->
+  <div class="card">
+    <div class="hdr">
+      <h3 style="margin:0">📅 تفاصيل فترة الإجازة</h3>
+    </div>
+    
+    <div class="leave-calendar">
+      <div style="flex: 1; text-align: center;">
+        <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">تبدأ من</div>
+        <div style="font-weight: 700; font-size: 16px;" id="rstartdate">-</div>
+      </div>
+      <div style="font-size: 24px; color: var(--primary);">→</div>
+      <div style="flex: 1; text-align: center;">
+        <div style="font-size: 12px; color: var(--muted); margin-bottom: 4px;">تنتهي في</div>
+        <div style="font-weight: 700; font-size: 16px;" id="renddate">-</div>
+      </div>
+    </div>
+    
+    <div class="leave-duration-highlight">
+      <div style="font-size: 14px; opacity: 0.9; margin-bottom: 4px;">إجمالي مدة الإجازة</div>
+      <div style="font-size: 24px; font-weight: 800;" id="rduration">-</div>
+    </div>
+  </div>
+
+  <!-- Leave Reason and Details Card -->
+  <div class="card">
+    <div class="hdr">
+      <h3 style="margin:0">📋 سبب الإجازة والتفاصيل</h3>
+    </div>
+    
+    <div id="reasonContainer">
+      <div class="leave-reason-box" id="rreason">
+        لم يتم تقديم سبب تفصيلي
+      </div>
+    </div>
+    
+    <!-- معلومات إضافية للإجازات المرضية -->
+    <div id="medicalInfoCard" style="display: none;">
+      <div class="hdr" style="margin-top: 16px;">
+        <h4 style="margin:0">🏥 المعلومات الطبية</h4>
+      </div>
+      <div class="kv" id="medicalInfoGrid">
+        <!-- Medical information will be populated here -->
+      </div>
+    </div>
+    
+    <!-- معلومات إضافية للإجازات الطارئة -->
+    <div id="emergencyInfoCard" style="display: none;">
+      <div class="hdr" style="margin-top: 16px;">
+        <h4 style="margin:0">🚨 معلومات الطارئ</h4>
+      </div>
+      <div class="kv" id="emergencyInfoGrid">
+        <!-- Emergency information will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Work Handover Card -->
+  <div class="card" id="handoverCard" style="display: none;">
+    <div class="hdr">
+      <h3 style="margin:0">🔄 ترتيبات العمل أثناء الإجازة</h3>
+    </div>
+    <div id="handoverContent">
+      <!-- Handover information will be populated here -->
+    </div>
+  </div>
+
+  <!-- Decision History Card -->
+  <div class="card" id="decisionHistoryCard" style="display: none;">
+    <div class="hdr">
+      <h3 style="margin:0">📝 تاريخ القرارات</h3>
+    </div>
+    <div id="decisionHistory">
+      <!-- Decision history will be populated here -->
+    </div>
+  </div>
+
+  <!-- Actions Card -->
+  <div class="card">
+    <div class="hdr"><h3 style="margin:0">الإجراءات</h3></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="btnApproveReq">موافقة</button>
+      <button class="btn btn-danger" id="btnRejectReq">رفض</button>
+      <button class="btn btn-ghost" id="printBtn">طباعة</button>
+      <button class="btn btn-ghost" id="exportBtn">تصدير</button>
+    </div>
+    <div class="note" id="actionNote">الموافقة تُقفل الحالة «مكتمل». الرفض يغيّرها إلى «مرفوض».</div>
+  </div>
+</main>
+
+<script>
+// إدارة صفحة تفاصيل الإجازة
+const params = new URLSearchParams(location.search);
+const reqId = Number(params.get('id'));
+
+let currentLeaveRequest = null;
+
+// تحميل تفاصيل طلب الإجازة
+async function loadLeaveDetails() {
+  try {
+    // محاولة تحميل من API أولاً
+    let response = null;
+    
+    // محاولة تحميل كإجازة عادية أولاً
+    try {
+      response = await fetch(`/api/leave/${reqId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          currentLeaveRequest = { ...data.data, leave_category: 'regular' };
+          displayLeaveDetails(currentLeaveRequest);
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn('Not a regular leave request:', error);
+    }
+    
+    // محاولة تحميل كإجازة أمومة
+    try {
+      response = await fetch(`/api/unified-requests/maternity-leave/${reqId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          currentLeaveRequest = { ...data.data, leave_category: 'maternity' };
+          displayLeaveDetails(currentLeaveRequest);
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn('Not a maternity leave request:', error);
+    }
+    
+  } catch (error) {
+    console.warn('Could not load from API, trying localStorage:', error);
+  }
+  
+  // الاحتياطي: تحميل من localStorage
+  try {
+    let stored = JSON.parse(localStorage.getItem('leaveRequests') || '[]');
+    let request = stored.find(r => r.id === reqId);
+    
+    // إذا لم نجد في الإجازات العادية، ابحث في إجازات الأمومة
+    if (!request) {
+      stored = JSON.parse(localStorage.getItem('maternityLeaveRequests') || '[]');
+      request = stored.find(r => r.id === reqId);
+      if (request) request.leave_category = 'maternity';
+    } else {
+      request.leave_category = 'regular';
+    }
+    
+    if (request) {
+      currentLeaveRequest = request;
+      displayLeaveDetails(currentLeaveRequest);
+    } else {
+      showError('الطلب غير موجود');
+      setTimeout(() => location.href = 'admin-leave-inbox.html', 2000);
+    }
+  } catch (error) {
+    console.error('Error loading leave request:', error);
+    showError('حدث خطأ في تحميل بيانات الطلب');
+  }
+}
+
+// عرض تفاصيل طلب الإجازة
+function displayLeaveDetails(request) {
+  if (!request) return;
+  
+  // تحديث المعلومات الأساسية
+  document.getElementById('rid').textContent = request.id || request.reference_number || '-';
+  document.getElementById('rstatus').textContent = request.status || 'قيد الاعتماد';
+  
+  // تحديث لون الحالة
+  const statusBadge = document.getElementById('rstatus');
+  statusBadge.className = 'badge ' + getStatusClass(request.status);
+  
+  // معلومات الموظف
+  document.getElementById('rname').textContent = request.employee_name || '-';
+  document.getElementById('rdept').textContent = request.employee_dept || request.department || '-';
+  document.getElementById('remail').textContent = request.employee_email || '-';
+  document.getElementById('rjobtitle').textContent = request.job_title || '-';
+  document.getElementById('remployeenumber').textContent = request.employee_number || '-';
+  document.getElementById('rcreated').textContent = formatDate(request.created_at || request.request_date);
+  document.getElementById('rsupervisor').textContent = request.supervisor_name || '-';
+  
+  // نوع الإجازة
+  const leaveTypeText = request.leave_category === 'maternity' ? 'إجازة أمومة' :
+                       request.leave_type === 'annual' ? 'إجازة سنوية' :
+                       request.leave_type === 'sick' ? 'إجازة مرضية' :
+                       request.leave_type === 'emergency' ? 'إجازة طارئة' : 
+                       'إجازة';
+  document.getElementById('rleavetype').textContent = leaveTypeText;
+  
+  // تواريخ الإجازة
+  document.getElementById('rstartdate').textContent = formatDate(request.start_date || request.requested_start_date);
+  document.getElementById('renddate').textContent = formatDate(request.end_date || request.requested_end_date);
+  
+  // مدة الإجازة
+  document.getElementById('rduration').textContent = calculateDuration(request);
+  
+  // سبب الإجازة
+  const reasonElement = document.getElementById('rreason');
+  let reasonText = 'لم يتم تقديم سبب تفصيلي';
+  
+  if (request.leave_category === 'maternity') {
+    reasonText = `إجازة أمومة متوقعة. تاريخ الولادة المتوقع: ${formatDate(request.expected_due_date) || 'غير محدد'}`;
+  } else if (request.reason) {
+    reasonText = request.reason;
+  } else if (request.leave_reason) {
+    reasonText = request.leave_reason;
+  }
+  
+  reasonElement.textContent = reasonText;
+  
+  // معلومات إضافية للإجازات المرضية
+  if (request.leave_type === 'sick' || request.medical_certificate_attached) {
+    const medicalCard = document.getElementById('medicalInfoCard');
+    const medicalGrid = document.getElementById('medicalInfoGrid');
+    
+    let medicalHTML = '';
+    if (request.medical_certificate_attached) {
+      medicalHTML += '<div>شهادة طبية: <b>مرفقة</b></div>';
+    }
+    if (request.doctor_name) {
+      medicalHTML += `<div>اسم الطبيب: <b>${request.doctor_name}</b></div>`;
+    }
+    if (request.medical_notes) {
+      medicalHTML += `<div style="grid-column: 1 / -1;">ملاحظات طبية: <b>${request.medical_notes}</b></div>`;
+    }
+    
+    if (medicalHTML) {
+      medicalGrid.innerHTML = medicalHTML;
+      medicalCard.style.display = 'block';
+    }
+  }
+  
+  // معلومات الطوارئ
+  if (request.leave_type === 'emergency') {
+    const emergencyCard = document.getElementById('emergencyInfoCard');
+    const emergencyGrid = document.getElementById('emergencyInfoGrid');
+    
+    let emergencyHTML = '';
+    if (request.emergency_contact) {
+      emergencyHTML += `<div>جهة الاتصال للطوارئ: <b>${request.emergency_contact}</b></div>`;
+    }
+    if (request.emergency_details) {
+      emergencyHTML += `<div style="grid-column: 1 / -1;">تفاصيل الطارئ: <b>${request.emergency_details}</b></div>`;
+    }
+    
+    if (emergencyHTML) {
+      emergencyGrid.innerHTML = emergencyHTML;
+      emergencyCard.style.display = 'block';
+    }
+  }
+  
+  // ترتيبات العمل
+  if (request.work_handover_plan || request.temporary_replacement || request.return_work_plan) {
+    const handoverCard = document.getElementById('handoverCard');
+    const handoverContent = document.getElementById('handoverContent');
+    
+    let handoverHTML = '<div class="kv">';
+    
+    if (request.temporary_replacement) {
+      handoverHTML += `<div>البديل المؤقت: <b>${request.temporary_replacement}</b></div>`;
+    }
+    
+    if (request.work_handover_plan) {
+      handoverHTML += `<div style="grid-column: 1 / -1;">خطة تسليم العمل: <b>${request.work_handover_plan}</b></div>`;
+    }
+    
+    if (request.return_work_plan) {
+      handoverHTML += `<div style="grid-column: 1 / -1;">خطة العودة للعمل: <b>${request.return_work_plan}</b></div>`;
+    }
+    
+    handoverHTML += '</div>';
+    
+    handoverContent.innerHTML = handoverHTML;
+    handoverCard.style.display = 'block';
+  }
+  
+  // تاريخ القرارات
+  if (request.decision_note || request.approved_at || request.rejected_at) {
+    const historyCard = document.getElementById('decisionHistoryCard');
+    const historyContent = document.getElementById('decisionHistory');
+    
+    let historyHTML = '<div style="display: flex; flex-direction: column; gap: 12px;">';
+    
+    if (request.approved_at) {
+      historyHTML += `
+        <div style="background: #dcfce7; border: 1px solid #16a34a; border-radius: 8px; padding: 12px;">
+          <strong style="color: #16a34a;">تم الاعتماد:</strong> ${formatDate(request.approved_at)}
+          ${request.decision_note ? `<br><em>${request.decision_note}</em>` : ''}
+        </div>
+      `;
+    }
+    
+    if (request.rejected_at) {
+      historyHTML += `
+        <div style="background: #fee2e2; border: 1px solid #dc2626; border-radius: 8px; padding: 12px;">
+          <strong style="color: #dc2626;">تم الرفض:</strong> ${formatDate(request.rejected_at)}
+          ${request.decision_note ? `<br><em>${request.decision_note}</em>` : ''}
+        </div>
+      `;
+    }
+    
+    historyHTML += '</div>';
+    
+    historyContent.innerHTML = historyHTML;
+    historyCard.style.display = 'block';
+  }
+  
+  // تحديث حالة الأزرار
+  updateActionButtons(request);
+}
+
+function calculateDuration(request) {
+  const startDate = new Date(request.start_date || request.requested_start_date);
+  const endDate = new Date(request.end_date || request.requested_end_date);
+  
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    if (request.leave_duration_weeks) {
+      return `${request.leave_duration_weeks} أسبوع`;
+    }
+    if (request.duration_days) {
+      return `${request.duration_days} يوم`;
+    }
+    return 'غير محدد';
+  }
+  
+  const diffTime = Math.abs(endDate - startDate);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  
+  if (diffDays === 1) return 'يوم واحد';
+  if (diffDays <= 7) return `${diffDays} أيام`;
+  
+  const weeks = Math.floor(diffDays / 7);
+  const remainingDays = diffDays % 7;
+  
+  let result = `${weeks} أسبوع`;
+  if (remainingDays > 0) result += ` و ${remainingDays} أيام`;
+  
+  return result;
+}
+
+function getStatusClass(status) {
+  if (status && status.includes('مكتمل')) return 'b-done';
+  if (status && status.includes('مرفوض')) return 'b-rej';
+  return 'b-pend';
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '-';
+  try {
+    return new Date(dateStr).toLocaleDateString('ar-SA', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  } catch (error) {
+    return dateStr;
+  }
+}
+
+function updateActionButtons(request) {
+  const canApprove = ['قيد الاعتماد', 'قيد الانتظار', 'قيد المراجعة'].includes(request.status);
+  
+  document.getElementById('btnApproveReq').disabled = !canApprove;
+  document.getElementById('btnRejectReq').disabled = !canApprove;
+}
+
+// وظائف الموافقة والرفض
+async function approveLeave() {
+  if (!currentLeaveRequest) return;
+  
+  const note = prompt('ملاحظة الموافقة (اختياري):');
+  
+  try {
+    if (currentLeaveRequest.leave_category === 'maternity') {
+      await apiClient.approveMaternityLeave(currentLeaveRequest.id, note || '');
+    } else {
+      await apiClient.approveLeaveRequest(currentLeaveRequest.id, note || '');
+    }
+    
+    showSuccess('تم اعتماد طلب الإجازة بنجاح');
+    setTimeout(() => loadLeaveDetails(), 1000);
+    
+  } catch (error) {
+    console.error('Error approving leave:', error);
+    showError('حدث خطأ أثناء اعتماد الطلب');
+  }
+}
+
+async function rejectLeave() {
+  if (!currentLeaveRequest) return;
+  
+  const note = prompt('سبب الرفض (مطلوب):');
+  if (!note || note.trim() === '') {
+    showError('سبب الرفض مطلوب');
+    return;
+  }
+  
+  try {
+    if (currentLeaveRequest.leave_category === 'maternity') {
+      await apiClient.rejectMaternityLeave(currentLeaveRequest.id, note);
+    } else {
+      await apiClient.rejectLeaveRequest(currentLeaveRequest.id, note);
+    }
+    
+    showSuccess('تم رفض طلب الإجازة');
+    setTimeout(() => loadLeaveDetails(), 1000);
+    
+  } catch (error) {
+    console.error('Error rejecting leave:', error);
+    showError('حدث خطأ أثناء رفض الطلب');
+  }
+}
+
+// ربط الأحداث
+function setupEventListeners() {
+  document.getElementById('btnApproveReq').onclick = () => {
+    if (confirm('هل أنت متأكد من اعتماد هذا الطلب؟')) {
+      approveLeave();
+    }
+  };
+  
+  document.getElementById('btnRejectReq').onclick = () => {
+    if (confirm('هل أنت متأكد من رفض هذا الطلب؟')) {
+      rejectLeave();
+    }
+  };
+  
+  document.getElementById('btnBack').onclick = () => {
+    location.href = 'admin-leave-inbox.html';
+  };
+  
+  document.getElementById('printBtn').onclick = () => {
+    window.print();
+  };
+  
+  document.getElementById('exportBtn').onclick = () => {
+    exportCSV();
+  };
+}
+
+// وظائف الأدوات
+function showSuccess(message) {
+  alert(message);
+}
+
+function showError(message) {
+  alert('خطأ: ' + message);
+}
+
+function exportCSV() {
+  if (!currentLeaveRequest) {
+    showError('لا توجد بيانات للتصدير');
+    return;
+  }
+  
+  const exportData = {
+    'رقم الطلب': currentLeaveRequest.id || currentLeaveRequest.reference_number,
+    'اسم الموظف': currentLeaveRequest.employee_name,
+    'نوع الإجازة': currentLeaveRequest.leave_category === 'maternity' ? 'إجازة أمومة' : 
+                    currentLeaveRequest.leave_type === 'annual' ? 'إجازة سنوية' :
+                    currentLeaveRequest.leave_type === 'sick' ? 'إجازة مرضية' : 'إجازة',
+    'تاريخ البداية': formatDate(currentLeaveRequest.start_date || currentLeaveRequest.requested_start_date),
+    'تاريخ النهاية': formatDate(currentLeaveRequest.end_date || currentLeaveRequest.requested_end_date),
+    'المدة': calculateDuration(currentLeaveRequest),
+    'السبب': currentLeaveRequest.reason || currentLeaveRequest.leave_reason || '-',
+    'تاريخ الطلب': formatDate(currentLeaveRequest.created_at),
+    'الحالة': currentLeaveRequest.status
+  };
+
+  const csvContent = Object.entries(exportData)
+    .map(([key, value]) => `"${key}","${value || '-'}"`)
+    .join('\n');
+
+  const finalContent = 'الحقل,القيمة\n' + csvContent;
+  
+  const blob = new Blob([finalContent], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `leave_${currentLeaveRequest.id || currentLeaveRequest.reference_number}.csv`;
+  link.style.display = 'none';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  URL.revokeObjectURL(url);
+  showSuccess('تم تصدير بيانات طلب الإجازة بنجاح');
+}
+
+// تحضير الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+  setupEventListeners();
+  loadLeaveDetails();
+});
+
+// API Client placeholders
+const apiClient = {
+  async approveLeaveRequest(id, note) {
+    try {
+      const response = await fetch(`/api/leave/admin/${id}/approve`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ decision_note: note })
+      });
+      
+      if (!response.ok) throw new Error('Approval failed');
+      return await response.json();
+    } catch (error) {
+      throw new Error('فشل في اعتماد طلب الإجازة');
+    }
+  },
+  
+  async rejectLeaveRequest(id, reason) {
+    try {
+      const response = await fetch(`/api/leave/admin/${id}/reject`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ decision_note: reason })
+      });
+      
+      if (!response.ok) throw new Error('Rejection failed');
+      return await response.json();
+    } catch (error) {
+      throw new Error('فشل في رفض طلب الإجازة');
+    }
+  },
+
+  async approveMaternityLeave(id, note) {
+    try {
+      const response = await fetch(`/api/unified-requests/admin/maternity-leave/${id}/approve`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ decision_note: note })
+      });
+      
+      if (!response.ok) throw new Error('Approval failed');
+      return await response.json();
+    } catch (error) {
+      throw new Error('فشل في اعتماد طلب إجازة الأمومة');
+    }
+  },
+  
+  async rejectMaternityLeave(id, reason) {
+    try {
+      const response = await fetch(`/api/unified-requests/admin/maternity-leave/${id}/reject`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ decision_note: reason })
+      });
+      
+      if (!response.ok) throw new Error('Rejection failed');
+      return await response.json();
+    } catch (error) {
+      throw new Error('فشل في رفض طلب إجازة الأمومة');
+    }
+  }
+};
+</script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

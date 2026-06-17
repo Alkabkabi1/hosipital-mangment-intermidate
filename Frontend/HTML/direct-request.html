@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/unified-form-styles.css">
+    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مستشفى الملك عبدالعزيز – طلب مباشرة عمل</title>
+
+  <!-- خط -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#2B6CB0; --bg:#f5f6f8; --surface:#ffffff; --text:#0f172a; --muted:#6b7280; --border:#e5e7eb;
+      --field-bg:#ffffff; --field-text:#0f172a; --field-border:#000000; --field-placeholder:#6b7280; --field-focus: rgba(0,0,0,.15);
+      --qbox-radius:16px; --qbox-border:#e5e7eb; --qbox-shadow:0 6px 18px rgba(0,0,0,.06);
+      --danger:#dc2626; --success:#16a34a;
+    }
+    *{box-sizing:border-box}
+    body{ margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,Segoe UI,Arial,sans-serif; }
+    a{color:inherit;text-decoration:none}
+
+    .app-header{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border)}
+    .app-header .inner{max-width:1200px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+    .brand{display:flex;align-items:center;gap:12px;flex:1}
+    .brand img{width:44px;height:44px;object-fit:contain}
+    .tt{display:flex;flex-direction:column}
+    .tt h1{margin:0;font-size:18px;font-weight:800}
+    .tt span{font-size:12px;color:var(--muted)}
+    .back{border:1px solid var(--border);border-radius:10px;padding:8px 12px;background:#fff;cursor:pointer}
+
+    .container{max-width:1200px;margin:20px auto;padding:0 16px}
+
+    .form-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--qbox-radius);padding:24px;margin-bottom:20px;box-shadow:var(--qbox-shadow)}
+    .section-title{font-size:18px;font-weight:800;margin-bottom:16px;color:var(--primary)}
+
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-grid.single{grid-template-columns:1fr}
+    .form-grid.triple{grid-template-columns:1fr 1fr 1fr}
+    .form-grid.quad{grid-template-columns:1fr 1fr 1fr 1fr}
+
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field label{font-weight:600;font-size:14px}
+    .field input, .field select, .field textarea{
+      padding:12px;border:2px solid var(--field-border);border-radius:8px;
+      background:var(--field-bg);color:var(--field-text);font-family:inherit;font-size:14px;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus{
+      outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--field-focus);
+    }
+    .field textarea{resize:vertical;min-height:80px}
+    .field input[data-ltr]{direction:ltr;text-align:left}
+
+    .footer-actions{text-align:center;margin-top:30px}
+    .hint{color:var(--muted);font-size:13px;margin-bottom:16px}
+    .actions{display:flex;gap:12px;justify-content:center}
+    .btn{border:none;border-radius:10px;padding:12px 24px;font-family:inherit;font-weight:600;cursor:pointer;font-size:14px}
+    .btn-outline{background:#fff;color:var(--text);border:2px solid var(--border)}
+    .btn-outline:hover{background:#f8fafc}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:#1e40af}
+    .btn-primary:disabled{background:#9ca3af;cursor:not-allowed}
+
+    @media (max-width: 768px) {
+      .form-grid{grid-template-columns:1fr}
+      .form-grid.triple{grid-template-columns:1fr}
+      .form-grid.quad{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="inner">
+      <div class="brand">
+        <img src="public/image.png" alt="شعار المستشفى">
+        <div class="tt">
+          <h1>مستشفى الملك عبدالعزيز</h1>
+          <span>طلب مباشرة عمل</span>
+        </div>
+      </div>
+      <button class="back" onclick="history.back()">رجوع</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Container 1: Basic Info -->
+    <section class="form-section">
+      <h2 class="section-title">البيانات الأساسية</h2>
+      <form id="directRequestForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="firstName">الاسم الأول *</label>
+            <input type="text" id="firstName" name="firstName" required>
+          </div>
+          <div class="field">
+            <label for="secondName">الاسم الثاني *</label>
+            <input type="text" id="secondName" name="secondName" required>
+          </div>
+          <div class="field">
+            <label for="thirdName">الاسم الثالث *</label>
+            <input type="text" id="thirdName" name="thirdName" required>
+          </div>
+          <div class="field">
+            <label for="jobTitle">المسمى الوظيفي *</label>
+            <input type="text" id="jobTitle" name="jobTitle" required>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="workId">الرقم الوظيفي *</label>
+            <input type="text" id="workId" name="workId" data-ltr required>
+            <small style="color: var(--muted); font-size: 12px;">رقم الموظف في النظام</small>
+          </div>
+          <div class="field">
+            <label for="reasonForJob">سبب إعطاء الوظيفة *</label>
+            <select id="reasonForJob" name="reasonForJob" required>
+              <option value="">اختر السبب</option>
+              <option value="transfer">النقل</option>
+              <option value="assignment">التكليف</option>
+              <option value="appointment">التعيين</option>
+              <option value="secondment">الايفاد</option>
+              <option value="scholarship">الابتعاث</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Container 2: Document & Dates -->
+    <section class="form-section">
+      <h2 class="section-title">المستندات والتواريخ</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label for="documentNumber">رقم المستند *</label>
+          <input type="text" id="documentNumber" name="documentNumber" data-ltr required>
+        </div>
+        <div class="field">
+          <label for="applicationDate">تاريخ الطلب *</label>
+          <input type="date" id="applicationDate" name="applicationDate" required>
+        </div>
+        <div class="field">
+          <label for="startDate">تاريخ المباشرة *</label>
+          <input type="date" id="startDate" name="startDate" required>
+        </div>
+      </div>
+    </section>
+
+    <!-- Container 3: Details -->
+    <section class="form-section">
+      <h2 class="section-title">التفاصيل</h2>
+      
+      <!-- 1. Fourth Degree Name -->
+      <div class="form-grid quad">
+        <div class="field">
+          <label for="fourthName">الاسم *</label>
+          <input type="text" id="fourthName" name="fourthName" required>
+        </div>
+        <div class="field">
+          <label for="fatherName">اسم الأب *</label>
+          <input type="text" id="fatherName" name="fatherName" required>
+        </div>
+        <div class="field">
+          <label for="grandpaName">اسم الجد *</label>
+          <input type="text" id="grandpaName" name="grandpaName" required>
+        </div>
+        <div class="field">
+          <label for="familyName">اسم العائلة *</label>
+          <input type="text" id="familyName" name="familyName" required>
+        </div>
+      </div>
+
+      <!-- 2. Transaction Number and Date -->
+      <div class="form-grid">
+        <div class="field">
+          <label for="transactionNumber">رقم المعاملة المبنية عليها *</label>
+          <input type="text" id="transactionNumber" name="transactionNumber" data-ltr required>
+        </div>
+        <div class="field">
+          <label for="transactionDate">تاريخ المعاملة *</label>
+          <input type="date" id="transactionDate" name="transactionDate" required>
+        </div>
+      </div>
+
+      <!-- 3. Employee Status -->
+      <div class="form-grid">
+        <div class="field">
+          <label for="employeeStatus">حالة الموظف *</label>
+          <select id="employeeStatus" name="employeeStatus" required>
+            <option value="">اختر الحالة</option>
+            <option value="full_assignment">مكلف كامل</option>
+            <option value="partial_assignment">مكلف جزئي</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="employeeNumber">رقم الهوية/الإقامة *</label>
+          <input type="text" id="employeeNumber" name="employeeNumber" data-ltr required>
+          <small style="color: var(--muted); font-size: 12px;">رقم الهوية الوطنية أو الإقامة</small>
+        </div>
+      </div>
+
+      <!-- 4-7. Department, Group, Rank -->
+      <div class="form-grid">
+        <div class="field">
+          <label for="department">القسم *</label>
+          <select id="department" name="department" required>
+            <option value="">اختر القسم</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="group">المجموعة</label>
+          <input type="text" id="group" name="group">
+        </div>
+        <div class="field">
+          <label for="rank">المرتبة</label>
+          <input type="text" id="rank" name="rank">
+        </div>
+      </div>
+
+      <!-- 9-10. Date of Birth and Appointment Date -->
+      <div class="form-grid">
+        <div class="field">
+          <label for="birthDate">تاريخ الميلاد *</label>
+          <input type="date" id="birthDate" name="birthDate" required>
+        </div>
+        <div class="field">
+          <label for="appointmentDate">تاريخ التعيين *</label>
+          <input type="date" id="appointmentDate" name="appointmentDate" required>
+        </div>
+      </div>
+
+      <!-- 11. Employment Type -->
+      <div class="form-grid">
+        <div class="field">
+          <label for="employmentType">نوع التوظيف *</label>
+          <select id="employmentType" name="employmentType" required>
+            <option value="">اختر نوع التوظيف</option>
+            <option value="civil_service">خدمة مدنية</option>
+            <option value="self_employment">تشغيل ذاتي</option>
+            <option value="surplus_workforce">قوى زائدة</option>
+            <option value="locum">لوكم</option>
+            <option value="partial_assignment">تكليف جزئي</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="nationality">الجنسية *</label>
+          <input type="text" id="nationality" name="nationality" placeholder="مثال: سعودي" required>
+        </div>
+      </div>
+
+      <!-- 12-13. Gender and Reason for Onboarding -->
+      <div class="form-grid">
+        <div class="field">
+          <label for="gender">الجنس *</label>
+          <select id="gender" name="gender" required>
+            <option value="">اختر الجنس</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="onboardingReason">سبب المباشرة *</label>
+          <select id="onboardingReason" name="onboardingReason" required>
+            <option value="">اختر السبب</option>
+            <option value="transfer">النقل</option>
+            <option value="assignment">التكليف</option>
+            <option value="appointment">التعيين</option>
+            <option value="secondment">الايفاد</option>
+            <option value="scholarship">الابتعاث</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="footer-actions">
+        <div class="hint">عند الإرسال سيتم إشعار فريق الإدارة لمراجعة الطلب.</div>
+        <div class="actions">
+          <button type="button" class="btn btn-outline" onclick="history.back()">إلغاء</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmit" form="directRequestForm">إرسال الطلب</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- JavaScript Files with proper loading order -->
+  <!-- Phase 1: Foundation scripts -->
+  <script src="../jS/dependency-guard.js"></script>
+  <script src="../jS/error-handler.js"></script>
+  <script src="../jS/notification-store.js"></script>
+  <script src="../jS/notification-utils.js"></script>
+
+  <!-- Phase 2: Core application scripts -->
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/role-permissions.js"></script>
+  <script src="../jS/form-validation-utils.js"></script>
+
+  <!-- Phase 3: Page-specific scripts -->
+  <script src="../jS/direct-request.js"></script>
+  <script src="../jS/direct-request-inline.js"></script>
+  <script src="../jS/signature.js"></script>
+</body>
+</html>

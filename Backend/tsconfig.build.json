@@ -1,0 +1,24 @@
+{
+    "extends":  "./tsconfig.json",
+    "compilerOptions":  {
+                            "module":  "CommonJS",
+                            "moduleResolution":  "node",
+                            "noEmit":  false,
+                            "declaration":  true,
+                            "emitDeclarationOnly":  false,
+                            "sourceMap":  false,
+                            "removeComments":  false,
+                            "incremental":  false
+                        },
+    "exclude":  [
+                    "src/**/*.test.ts",
+                    "src/**/*.spec.ts",
+                    "src/**/*.mock.ts",
+                    "vitest.config.ts",
+                    "src/core/unified-requests/**/*",
+                    "src/modules/housing-allowance/**/*",
+                    "src/modules/maternity-leave/**/*",
+                    "src/modules/clearance/*unified*",
+                    "src/modules/onboarding/*unified*"
+                ]
+}

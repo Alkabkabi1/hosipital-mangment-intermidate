@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/professional-design.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>تفاصيل طلب بدل سكن – أدمن</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../CSS/workflow-styles.css">
+<style>
+:root{ --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb; --danger:#dc2626; --success:#16a34a; --warning:#f59e0b; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+a{color:inherit;text-decoration:none}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt span{font-size:12px;color:var(--muted)}
+.container{max-width:1100px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:16px}
+.hdr{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-pend{background:#fef3c7} .b-done{background:#dcfce7} .b-rej{background:#fee2e2}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.kv div{border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.timeline{display:flex;flex-direction:column;gap:8px}
+.step{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.order{font-weight:800;text-align:center}
+.state{font-size:12px;padding:4px 10px;border-radius:999px}
+.s-wait{background:#e5e7eb} .s-now{background:#dbeafe} .s-acc{background:#dcfce7} .s-rej{background:#fee2e2}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border-color:transparent}
+.btn-danger{background:#fff;color:var(--danger);border-color:#fecaca}
+.btn-ghost{background:#fff;color:var(--text)}
+.note{font-size:12px;color:var(--muted)}
+.approver-admin{display:none;margin-top:12px;border:1px dashed var(--border);border-radius:12px;padding:12px;background:#fafafa}
+.approver-admin .row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px}
+.inp{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.iconbtn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:12px}
+
+/* Tab Styles */
+.tabs-container{margin-bottom:16px}
+.tabs-header{display:flex;gap:8px;border-bottom:2px solid var(--border);margin-bottom:16px}
+.tab-button{background:transparent;border:none;padding:12px 20px;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;position:relative}
+.tab-button:hover{color:var(--text);background:#f9fafb}
+.tab-button.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Housing specific styles */
+.amount-highlight {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  margin: 16px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.bank-details {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+}
+
+.eligibility-check {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.supporting-docs {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+  margin-bottom: 8px;
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>تفاصيل طلب بدل سكن – أدمن</span>
+      </div>
+    </div>
+    <button class="btn" id="btnBack">رجوع للوارد</button>
+    <button class="btn commissioner-back" id="btnBackToDashboard" style="display:none;background:linear-gradient(135deg,#8b5cf6,#3b82f6);color:#fff;border:none">رجوع للوحتي</button>
+  </div>
+</header>
+  
+<main class="container">
+  <!-- Basic Information Card -->
+  <div class="card">
+    <div class="hdr">
+      <h2 style="margin:0">طلب #<span id="rid">-</span></h2>
+      <span id="rstatus" class="badge b-pend">قيد الاعتماد</span>
+    </div>
+    <div class="kv">
+      <div>الموظف: <b id="rname">-</b></div>
+      <div>القسم: <b id="rdept">-</b></div>
+      <div>البريد: <b id="remail">-</b></div>
+      <div>المسمى الوظيفي: <b id="rjobtitle">-</b></div>
+      <div>رقم الموظف: <b id="remployeenumber">-</b></div>
+      <div>الجنسية: <b id="rnationality">-</b></div>
+      <div>حالة الإقامة: <b id="rresidencestatus">-</b></div>
+      <div>تاريخ التقديم: <b id="rcreated">-</b></div>
+    </div>
+
+    <!-- Amount Highlight -->
+    <div class="amount-highlight">
+      <div>المبلغ المطلوب: <span id="ramount">-</span> ريال شهرياً</div>
+    </div>
+
+    <div class="note">
+      <strong>سبب الطلب:</strong> <span id="rreason">-</span>
+    </div>
+  </div>
+
+  <!-- Tab System -->
+  <div class="tabs-container">
+    <div class="tabs-header">
+      <button class="tab-button active" data-tab="details">التفاصيل</button>
+      <button class="tab-button" data-tab="approvals">الموافقات</button>
+      <button class="tab-button" data-tab="documents">المرفقات</button>
+      <button class="tab-button" data-tab="history">السجل</button>
+    </div>
+
+    <!-- Details Tab -->
+    <div class="tab-content active" id="details">
+      <div class="card">
+        <h3>تفاصيل طلب بدل السكن</h3>
+        
+        <!-- Bank Details -->
+        <div class="bank-details">
+          <h4 style="margin-top:0">البيانات البنكية</h4>
+          <div class="kv">
+            <div>اسم البنك: <b id="rbankname">-</b></div>
+            <div>رقم الحساب: <b id="raccountnumber">-</b></div>
+            <div>رقم الآيبان: <b id="riban">-</b></div>
+            <div>اسم صاحب الحساب: <b id="raccountholder">-</b></div>
+          </div>
+        </div>
+
+        <!-- Eligibility Information -->
+        <div class="eligibility-check">
+          <h4 style="margin-top:0">معايير الاستحقاق</h4>
+          <div class="kv">
+            <div>سنوات الخدمة: <b id="rserviceyears">-</b></div>
+            <div>حالة السكن الحالية: <b id="rhousingstatusinfo">-</b></div>
+            <div>عدد أفراد الأسرة: <b id="rfamilysize">-</b></div>
+            <div>الراتب الأساسي: <b id="rbasicsalary">-</b> ريال</div>
+          </div>
+        </div>
+
+        <!-- Additional Notes -->
+        <div class="card" style="margin-top:16px">
+          <h4 style="margin-top:0">ملاحظات إضافية</h4>
+          <div id="rnotes" style="padding:12px;background:#f9fafb;border-radius:8px;min-height:50px;">لا توجد ملاحظات إضافية</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approvals Tab -->
+    <div class="tab-content" id="approvals">
+      <div class="card">
+        <h3>حالة الموافقات</h3>
+        <div class="timeline" id="approvalTimeline">
+          <div class="step">
+            <div class="order">1</div>
+            <div>موافقة الموارد البشرية</div>
+            <div class="state s-wait">في الانتظار</div>
+          </div>
+          <div class="step">
+            <div class="order">2</div>
+            <div>موافقة المدير المباشر</div>
+            <div class="state s-wait">في الانتظار</div>
+          </div>
+        </div>
+        
+        <!-- Quick Approval Actions -->
+        <div class="actions" style="margin-top:20px">
+          <button class="btn btn-primary" id="btnApprove">✅ موافقة</button>
+          <button class="btn btn-danger" id="btnReject">❌ رفض</button>
+          <button class="btn btn-ghost" id="btnComment">💬 إضافة تعليق</button>
+        </div>
+
+        <!-- Admin approval form (hidden by default) -->
+        <div class="approver-admin" id="approverAdmin">
+          <div class="row">
+            <select class="inp" id="approverStatus">
+              <option value="approved">موافقة</option>
+              <option value="rejected">رفض</option>
+            </select>
+            <input type="text" class="inp" id="approverNote" placeholder="ملاحظة (اختياري)">
+            <button class="iconbtn" onclick="submitApproval()">✓</button>
+            <button class="iconbtn" onclick="cancelApproval()">✗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documents Tab -->
+    <div class="tab-content" id="documents">
+      <div class="card">
+        <h3>المستندات المرفقة</h3>
+        <div class="supporting-docs">
+          <h4>المستندات المطلوبة:</h4>
+          <div id="documentsList">
+            <div class="doc-item">
+              <span>📄</span>
+              <div style="flex:1">
+                <div style="font-weight:600">صورة من عقد الإيجار الحالي</div>
+                <div style="font-size:12px;color:var(--muted)">مطلوب لتأكيد حالة السكن</div>
+              </div>
+              <span class="badge b-pend">لم يتم الرفع</span>
+            </div>
+            <div class="doc-item">
+              <span>📋</span>
+              <div style="flex:1">
+                <div style="font-weight:600">كشف الراتب</div>
+                <div style="font-size:12px;color:var(--muted)">آخر 3 أشهر</div>
+              </div>
+              <span class="badge b-done">تم الرفع</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Tab -->
+    <div class="tab-content" id="history">
+      <div class="card">
+        <h3>سجل التغييرات</h3>
+        <div id="historyTimeline">
+          <div class="step">
+            <div>📝</div>
+            <div>تم إنشاء الطلب بواسطة الموظف</div>
+            <div style="font-size:12px;color:var(--muted)" id="createDate">-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Loading States -->
+  <div id="loadingSpinner" style="display:none;text-align:center;padding:40px">
+    <div style="display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-radius:50%;border-top-color:var(--primary);animation:spin 1s linear infinite"></div>
+    <div style="margin-top:16px;color:var(--muted)">جاري التحميل...</div>
+  </div>
+
+  <div id="errorState" style="display:none;text-align:center;padding:40px">
+    <div style="font-size:48px;margin-bottom:16px">⚠️</div>
+    <div style="font-weight:600;margin-bottom:8px">حدث خطأ في تحميل البيانات</div>
+    <button class="btn" onclick="location.reload()">إعادة المحاولة</button>
+  </div>
+</main>
+
+<!-- Scripts -->
+<script src="../jS/api-client.js"></script>
+<script>
+class HousingAllowanceDetailPage {
+  constructor() {
+    this.requestId = new URLSearchParams(window.location.search).get('id');
+    this.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    this.requestData = null;
+    
+    this.initializeEventListeners();
+    this.initializeTabs();
+    this.loadRequestDetails();
+  }
+
+  initializeEventListeners() {
+    // Back button
+    document.getElementById('btnBack')?.addEventListener('click', () => {
+      window.location.href = 'admin-housing-allowance-inbox.html';
+    });
+
+    // Commissioner back button
+    document.getElementById('btnBackToDashboard')?.addEventListener('click', () => {
+      window.location.href = 'admin-dashboard.html';
+    });
+
+    // Approval buttons
+    document.getElementById('btnApprove')?.addEventListener('click', () => {
+      this.showApprovalForm('approved');
+    });
+
+    document.getElementById('btnReject')?.addEventListener('click', () => {
+      this.showApprovalForm('rejected');
+    });
+
+    document.getElementById('btnComment')?.addEventListener('click', () => {
+      this.showApprovalForm('comment');
+    });
+  }
+
+  initializeTabs() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const targetTab = button.getAttribute('data-tab');
+        
+        // Update active states
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        button.classList.add('active');
+        document.getElementById(targetTab).classList.add('active');
+      });
+    });
+  }
+
+  async loadRequestDetails() {
+    if (!this.requestId) {
+      this.showErrorState('لم يتم العثور على معرف الطلب');
+      return;
+    }
+
+    try {
+      this.showLoadingState();
+      
+      // Make API call to get housing allowance details
+      const response = await apiClient.makeRequest(`/housing-allowance/${this.requestId}`);
+      this.requestData = response.data || response;
+      
+      this.populateRequestDetails();
+      this.loadApprovals();
+      this.loadHistory();
+      this.hideLoadingState();
+    } catch (error) {
+      console.error('Error loading housing allowance details:', error);
+      this.showErrorState('فشل في تحميل تفاصيل الطلب');
+    }
+  }
+
+  populateRequestDetails() {
+    if (!this.requestData) return;
+
+    // Basic information
+    document.getElementById('rid').textContent = this.requestData.id || this.requestData.reference_number || '-';
+    document.getElementById('rname').textContent = this.requestData.employee_name || '-';
+    document.getElementById('rdept').textContent = this.requestData.department || this.requestData.employee_dept || '-';
+    document.getElementById('remail').textContent = this.requestData.employee_email || '-';
+    document.getElementById('rjobtitle').textContent = this.requestData.job_title || '-';
+    document.getElementById('remployeenumber').textContent = this.requestData.employee_number || '-';
+    document.getElementById('rnationality').textContent = this.requestData.nationality || '-';
+    document.getElementById('rresidencestatus').textContent = this.requestData.residence_status || '-';
+    document.getElementById('rcreated').textContent = this.formatDate(this.requestData.created_at || this.requestData.request_date);
+
+    // Housing specific details
+    document.getElementById('ramount').textContent = this.requestData.requested_amount || '-';
+    document.getElementById('rreason').textContent = this.requestData.reason || '-';
+    document.getElementById('rbankname').textContent = this.requestData.bank_name || '-';
+    document.getElementById('raccountnumber').textContent = this.requestData.account_number || '-';
+    document.getElementById('riban').textContent = this.requestData.iban || '-';
+    document.getElementById('raccountholder').textContent = this.requestData.account_holder || '-';
+    document.getElementById('rserviceyears').textContent = this.requestData.service_years || '-';
+    document.getElementById('rhousingstatusinfo').textContent = this.requestData.housing_status || '-';
+    document.getElementById('rfamilysize').textContent = this.requestData.family_size || '-';
+    document.getElementById('rbasicsalary').textContent = this.requestData.basic_salary || '-';
+    document.getElementById('rnotes').textContent = this.requestData.notes || 'لا توجد ملاحظات إضافية';
+
+    // Status badge
+    this.updateStatusBadge(this.requestData.status);
+  }
+
+  updateStatusBadge(status) {
+    const badge = document.getElementById('rstatus');
+    badge.textContent = status || 'قيد الاعتماد';
+    
+    badge.className = 'badge ';
+    if (status === 'مكتمل' || status === 'approved') {
+      badge.className += 'b-done';
+    } else if (status === 'مرفوض' || status === 'rejected') {
+      badge.className += 'b-rej';
+    } else {
+      badge.className += 'b-pend';
+    }
+  }
+
+  async loadApprovals() {
+    try {
+      const approvals = await apiClient.makeRequest(`/approvals/housing-allowance/${this.requestId}`);
+      this.populateApprovals(approvals.data || []);
+    } catch (error) {
+      console.log('No approval data available');
+    }
+  }
+
+  populateApprovals(approvals) {
+    const timeline = document.getElementById('approvalTimeline');
+    if (!approvals.length) return;
+
+    timeline.innerHTML = approvals.map((approval, index) => `
+      <div class="step">
+        <div class="order">${index + 1}</div>
+        <div>${approval.role_name || approval.approver_name}</div>
+        <div class="state ${this.getApprovalStateClass(approval.status)}">
+          ${this.getApprovalStatusText(approval.status)}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  getApprovalStateClass(status) {
+    switch (status) {
+      case 'approved': return 's-acc';
+      case 'rejected': return 's-rej';
+      case 'pending': return 's-now';
+      default: return 's-wait';
+    }
+  }
+
+  getApprovalStatusText(status) {
+    switch (status) {
+      case 'approved': return 'موافق';
+      case 'rejected': return 'مرفوض';
+      case 'pending': return 'قيد المراجعة';
+      default: return 'في الانتظار';
+    }
+  }
+
+  async loadHistory() {
+    try {
+      const history = await apiClient.makeRequest(`/housing-allowance/${this.requestId}/history`);
+      this.populateHistory(history.data || []);
+    } catch (error) {
+      console.log('No history data available');
+    }
+  }
+
+  populateHistory(history) {
+    const timeline = document.getElementById('historyTimeline');
+    
+    if (!history.length) {
+      timeline.innerHTML = `
+        <div class="step">
+          <div>📝</div>
+          <div>تم إنشاء الطلب بواسطة الموظف</div>
+          <div style="font-size:12px;color:var(--muted)">${this.formatDate(this.requestData?.created_at)}</div>
+        </div>
+      `;
+      return;
+    }
+
+    timeline.innerHTML = history.map(entry => `
+      <div class="step">
+        <div>${this.getHistoryIcon(entry.action)}</div>
+        <div>
+          <div>${entry.description || entry.change_notes}</div>
+          <div style="font-size:12px;color:var(--muted)">بواسطة: ${entry.changed_by_name}</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted)">${this.formatDate(entry.created_at || entry.changed_at)}</div>
+      </div>
+    `).join('');
+  }
+
+  getHistoryIcon(action) {
+    switch (action) {
+      case 'approved': return '✅';
+      case 'rejected': return '❌';
+      case 'created': return '📝';
+      case 'updated': return '📋';
+      default: return '📄';
+    }
+  }
+
+  showApprovalForm(type) {
+    const form = document.getElementById('approverAdmin');
+    const select = document.getElementById('approverStatus');
+    
+    if (type === 'approved') {
+      select.value = 'approved';
+    } else if (type === 'rejected') {
+      select.value = 'rejected';
+    }
+    
+    form.style.display = 'block';
+  }
+
+  formatDate(dateString) {
+    if (!dateString) return '-';
+    
+    try {
+      return new Date(dateString).toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return dateString;
+    }
+  }
+
+  showLoadingState() {
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.querySelector('.container .card').style.display = 'none';
+    document.querySelector('.tabs-container').style.display = 'none';
+  }
+
+  hideLoadingState() {
+    document.getElementById('loadingSpinner').style.display = 'none';
+    document.querySelector('.container .card').style.display = 'block';
+    document.querySelector('.tabs-container').style.display = 'block';
+  }
+
+  showErrorState(message) {
+    document.getElementById('errorState').style.display = 'block';
+    document.querySelector('.container .card').style.display = 'none';
+    document.querySelector('.tabs-container').style.display = 'none';
+    document.getElementById('loadingSpinner').style.display = 'none';
+  }
+}
+
+// Global functions for approval actions
+function submitApproval() {
+  const status = document.getElementById('approverStatus').value;
+  const note = document.getElementById('approverNote').value;
+  
+  // Submit approval via API
+  console.log('Submitting approval:', { status, note });
+  
+  // Hide form
+  document.getElementById('approverAdmin').style.display = 'none';
+}
+
+function cancelApproval() {
+  document.getElementById('approverAdmin').style.display = 'none';
+  document.getElementById('approverNote').value = '';
+}
+
+// Initialize page when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  new HousingAllowanceDetailPage();
+});
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</script>
+
+<script src="../jS/signature.js"></script>
+</body>
+</html>

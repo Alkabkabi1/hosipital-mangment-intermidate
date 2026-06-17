@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلب شهادة تعريف - مستشفى الملك عبدالعزيز</title>
+    
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/base.css">
+    
+    <style>
+        :root {
+            --primary: #2B6CB0;
+            --primary-hover: #255b92;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            --border: #e5e7eb;
+            --bg: #f5f6f8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+        }
+
+        .header p {
+            color: #64748b;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .form-group label .required {
+            color: var(--danger);
+            margin-right: 0.25rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e2e8f0;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            border: 1px solid #86efac;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>📜 طلب شهادة تعريف</h1>
+                <p>يرجى تعبئة جميع الحقول المطلوبة بدقة</p>
+            </div>
+
+            <div id="alertContainer"></div>
+
+            <form id="certificateForm">
+                <!-- Employee Name -->
+                <div class="form-group">
+                    <label>
+                        <span class="required">*</span>
+                        الاسم الكامل
+                    </label>
+                    <input 
+                        type="text" 
+                        id="employeeName" 
+                        name="employeeName" 
+                        required
+                        placeholder="أدخل الاسم الكامل"
+                    >
+                </div>
+
+                <!-- Occupation -->
+                <div class="form-group">
+                    <label>
+                        <span class="required">*</span>
+                        المهنة / المسمى الوظيفي
+                    </label>
+                    <input 
+                        type="text" 
+                        id="occupation" 
+                        name="occupation" 
+                        required
+                        placeholder="أدخل المهنة أو المسمى الوظيفي"
+                    >
+                </div>
+
+                <!-- Iqama and Passport Numbers -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            رقم الإقامة
+                        </label>
+                        <input 
+                            type="text" 
+                            id="iqamaNumber" 
+                            name="iqamaNumber" 
+                            placeholder="1234567890"
+                            maxlength="10"
+                        >
+                        <small>اختياري - إذا كان لديك رقم إقامة</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            رقم الجواز
+                        </label>
+                        <input 
+                            type="text" 
+                            id="passportNumber" 
+                            name="passportNumber" 
+                            placeholder="A12345678"
+                        >
+                        <small>اختياري - إذا كان لديك جواز</small>
+                    </div>
+                </div>
+
+                <!-- Nationality -->
+                <div class="form-group">
+                    <label>
+                        <span class="required">*</span>
+                        الجنسية
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nationality" 
+                        name="nationality" 
+                        required
+                        placeholder="أدخل الجنسية"
+                    >
+                </div>
+
+                <!-- Education Place -->
+                <div class="form-group">
+                    <label>
+                        الجامعة أو مكان الدراسة
+                    </label>
+                    <input 
+                        type="text" 
+                        id="educationPlace" 
+                        name="educationPlace" 
+                        placeholder="مثال: جامعة الملك سعود"
+                    >
+                    <small>اختياري - الجامعة أو المعهد الذي تخرجت منه</small>
+                </div>
+
+                <!-- Request Date (Auto-filled, Read-only) -->
+                <div class="form-group">
+                    <label>
+                        تاريخ تقديم الطلب
+                    </label>
+                    <input 
+                        type="text" 
+                        id="requestDate" 
+                        name="requestDate" 
+                        readonly
+                        style="background: #f1f5f9; cursor: not-allowed;"
+                    >
+                    <small>يتم تعيينه تلقائياً عند إرسال الطلب</small>
+                </div>
+
+                <!-- Request Notes -->
+                <div class="form-group">
+                    <label>
+                        ملاحظات إضافية
+                    </label>
+                    <textarea 
+                        id="requestNotes" 
+                        name="requestNotes" 
+                        placeholder="أي ملاحظات أو تفاصيل إضافية (اختياري)"
+                    ></textarea>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="goBack()">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        إرسال الطلب
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Load API Client -->
+    <script src="../jS/api-client.js"></script>
+
+    <script>
+        // Check authentication
+        const authUser = JSON.parse(localStorage.getItem('authUser') || 'null');
+        if (!authUser) {
+            location.href = 'login.html';
+        }
+
+        // Form submission
+        document.getElementById('certificateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+
+            try {
+                // Disable button and show loading
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'جاري الإرسال... <span class="loading-spinner"></span>';
+
+                // Get form data
+                const formData = {
+                    employeeName: document.getElementById('employeeName').value.trim(),
+                    occupation: document.getElementById('occupation').value.trim(),
+                    iqamaNumber: document.getElementById('iqamaNumber').value.trim() || null,
+                    passportNumber: document.getElementById('passportNumber').value.trim() || null,
+                    nationality: document.getElementById('nationality').value.trim(),
+                    educationPlace: document.getElementById('educationPlace').value.trim() || null,
+                    requestNotes: document.getElementById('requestNotes').value.trim() || null,
+                };
+
+                // Validate required fields
+                if (!formData.employeeName) {
+                    throw new Error('الاسم الكامل مطلوب');
+                }
+                if (!formData.occupation) {
+                    throw new Error('المهنة مطلوبة');
+                }
+                if (!formData.nationality) {
+                    throw new Error('الجنسية مطلوبة');
+                }
+
+                console.log('Submitting certificate request:', formData);
+
+                // Submit to API
+                const response = await window.apiClient.makeRequest('/certificate', {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                });
+
+                console.log('Certificate request response:', response);
+
+                if (response && response.success !== false) {
+                    showAlert('success', response.message || 'تم إرسال طلب شهادة التعريف بنجاح! ✅');
+                    
+                    // Reset form
+                    document.getElementById('certificateForm').reset();
+
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'employee-dashboard.html';
+                    }, 2000);
+                } else {
+                    throw new Error(response.error || response.message || 'فشل إرسال الطلب');
+                }
+
+            } catch (error) {
+                console.error('Error submitting certificate request:', error);
+                showAlert('error', error.message || 'حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        // Show alert message
+        function showAlert(type, message) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                               type === 'error' ? 'alert-error' : 'alert-info';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    ${message}
+                </div>
+            `;
+
+            // Auto-hide after 5 seconds for success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    alertContainer.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        // Go back function
+        function goBack() {
+            if (confirm('هل أنت متأكد من إلغاء الطلب؟ سيتم فقدان جميع البيانات المدخلة.')) {
+                window.location.href = 'employee-dashboard.html';
+            }
+        }
+
+        // Auto-fill from user profile and set request date
+        window.addEventListener('load', async () => {
+            try {
+                // Set current date as request date
+                const today = new Date();
+                const formattedDate = today.toLocaleDateString('ar-SA', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                document.getElementById('requestDate').value = formattedDate;
+
+                // Try to get user profile data
+                const profile = await window.apiClient.makeRequest('/profile/me');
+                if (profile && profile.data) {
+                    // Auto-fill name if available
+                    if (profile.data.name && !document.getElementById('employeeName').value) {
+                        document.getElementById('employeeName').value = profile.data.name;
+                    }
+                }
+            } catch (error) {
+                console.log('Could not auto-fill profile data:', error);
+                // Still set the date even if profile fails
+                const today = new Date();
+                const formattedDate = today.toLocaleDateString('ar-SA', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                document.getElementById('requestDate').value = formattedDate;
+            }
+        });
+    </script>
+</body>
+</html>
+

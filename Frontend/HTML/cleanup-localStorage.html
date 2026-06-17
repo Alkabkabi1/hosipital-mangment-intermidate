@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧹 LocalStorage Cleanup</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .section { background: white; margin: 20px 0; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb; }
+        .success { border-left-color: #10b981; }
+        .error { border-left-color: #ef4444; }
+        button { background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button.danger { background: #ef4444; }
+        button:hover { opacity: 0.9; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 4px; }
+        .result.success { background: #dcfce7; color: #166534; }
+        .result.error { background: #fecaca; color: #dc2626; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; max-height: 200px; }
+    </style>
+</head>
+<body>
+    <h1>🧹 LocalStorage Cleanup Tool</h1>
+    
+    <div class="section">
+        <h3>📊 Current LocalStorage Data</h3>
+        <button onclick="checkLocalStorage()">Check Current Data</button>
+        <div id="check-result" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h3>🗑️ Clear Request Data</h3>
+        <button class="danger" onclick="clearRequestData()">Clear All Request Data</button>
+        <div id="clear-result" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h3>🔄 Clear All LocalStorage</h3>
+        <button class="danger" onclick="clearAllLocalStorage()">Clear Everything</button>
+        <div id="clearall-result" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h3>✅ Verify Cleanup</h3>
+        <button onclick="verifyCleanup()">Verify Clean State</button>
+        <div id="verify-result" class="result"></div>
+    </div>
+
+    <script>
+        function checkLocalStorage() {
+            const result = document.getElementById('check-result');
+            
+            try {
+                const data = {
+                    authUser: localStorage.getItem('authUser'),
+                    authToken: localStorage.getItem('authToken'),
+                    requestsClearance: localStorage.getItem('requestsClearance'),
+                    requestsOnboarding: localStorage.getItem('requestsOnboarding'),
+                    requestsDelegation: localStorage.getItem('requestsDelegation'),
+                    delegations: localStorage.getItem('delegations'),
+                    userProfiles: localStorage.getItem('userProfiles'),
+                    notifications: localStorage.getItem('notifications')
+                };
+
+                const sizes = {};
+                Object.keys(data).forEach(key => {
+                    if (data[key]) {
+                        sizes[key] = data[key].length + ' chars';
+                        try {
+                            const parsed = JSON.parse(data[key]);
+                            if (Array.isArray(parsed)) {
+                                sizes[key] += ` (${parsed.length} items)`;
+                            }
+                        } catch (e) {
+                            // Not JSON
+                        }
+                    } else {
+                        sizes[key] = 'null/empty';
+                    }
+                });
+
+                result.className = 'result success';
+                result.innerHTML = `
+                    ✅ Current LocalStorage Data:<br>
+                    <pre>${JSON.stringify(sizes, null, 2)}</pre>
+                `;
+                
+                console.log('📊 LocalStorage Data:', data);
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Error checking localStorage: ${error.message}`;
+            }
+        }
+
+        function clearRequestData() {
+            const result = document.getElementById('clear-result');
+            
+            try {
+                // Clear all request-related data
+                const keysToRemove = [
+                    'requestsClearance',
+                    'requestsOnboarding', 
+                    'requestsDelegation',
+                    'delegations',
+                    'userProfiles',
+                    'notifications'
+                ];
+
+                let removedCount = 0;
+                keysToRemove.forEach(key => {
+                    if (localStorage.getItem(key)) {
+                        localStorage.removeItem(key);
+                        removedCount++;
+                        console.log(`🗑️ Removed: ${key}`);
+                    }
+                });
+
+                result.className = 'result success';
+                result.innerHTML = `✅ Cleared ${removedCount} request data keys from localStorage`;
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Error clearing request data: ${error.message}`;
+            }
+        }
+
+        function clearAllLocalStorage() {
+            const result = document.getElementById('clearall-result');
+            
+            try {
+                const keyCount = localStorage.length;
+                localStorage.clear();
+                
+                result.className = 'result success';
+                result.innerHTML = `✅ Cleared all localStorage data (${keyCount} keys removed)`;
+                console.log('🧹 All localStorage cleared');
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Error clearing all localStorage: ${error.message}`;
+            }
+        }
+
+        function verifyCleanup() {
+            const result = document.getElementById('verify-result');
+            
+            try {
+                const remainingKeys = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    remainingKeys.push(localStorage.key(i));
+                }
+
+                if (remainingKeys.length === 0) {
+                    result.className = 'result success';
+                    result.innerHTML = '✅ LocalStorage is completely clean!';
+                } else {
+                    result.className = 'result warning';
+                    result.innerHTML = `
+                        ⚠️ ${remainingKeys.length} keys still remain:<br>
+                        <pre>${JSON.stringify(remainingKeys, null, 2)}</pre>
+                    `;
+                }
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = `❌ Error verifying cleanup: ${error.message}`;
+            }
+        }
+
+        // Auto-check and auto-clear on load
+        window.onload = function() {
+            checkLocalStorage();
+            
+            // Auto-clear request data after 2 seconds
+            setTimeout(() => {
+                console.log('🧹 Auto-clearing request data...');
+                clearRequestData();
+                
+                // Verify after clearing
+                setTimeout(() => {
+                    verifyCleanup();
+                }, 1000);
+            }, 2000);
+        };
+    </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{
+  "name": "hospital-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "rimraf dist && tsc --build --force tsconfig.build.json",
+    "start": "node dist/server.js",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "test": "vitest",
+    "test:cover": "vitest run --coverage",
+    "format": "prettier --write \"src/**/*.{ts,js,json,md}\"",
+    "migrate": "echo \"Apply SQL files from migrations/ using your MySQL client.\"",
+    "migrate:maternity-housing": "node scripts/run-maternity-housing-migration.js",
+    "test:quick": "node ../scripts/quick-test.js",
+    "test:full": "node ../scripts/comprehensive-test-suite.js", 
+    "test:issues": "node ../scripts/test-specific-issues.js",
+    "test:help": "node ../scripts/run-tests.js"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.15.0",
+    "pino": "^9.11.0",
+    "pino-pretty": "^13.1.1",
+    "xlsx": "^0.18.5",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^24.5.2",
+    "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "supertest": "^7.1.4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.0",
+    "vitest": "^3.2.4"
+  }
+}

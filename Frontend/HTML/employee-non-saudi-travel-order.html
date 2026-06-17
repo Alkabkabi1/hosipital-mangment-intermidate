@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/unified-form-styles.css">
+    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>🏥</text></svg>">
+  <title>مستشفى الملك عبدالعزيز – أمر إركاب متعاقدين</title>
+
+  <!-- خط -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =================== ألوان وهوية عامة =================== */
+    :root {
+      --primary: #2B6CB0;
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+
+      /* حقول فاتحة + حدود سوداء */
+      --field-bg: #ffffff;
+      --field-text: #0f172a;
+      --field-border: #000000;
+      --field-placeholder: #6b7280;
+      --field-focus: rgba(0, 0, 0, .15);
+
+      /* مربعات الأقسام */
+      --qbox-radius: 16px;
+      --qbox-border: #e5e7eb;
+      --qbox-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    /* =================== هيدر =================== */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0
+    }
+
+    .header .in {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .brand img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800
+    }
+
+    .brand small {
+      color: var(--muted);
+      display: block;
+      margin-top: 2px
+    }
+
+    .back {
+      margin-right: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600
+    }
+
+    .back:hover {
+      background: #f9fafb
+    }
+
+    /* =================== المحتوى =================== */
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 16px
+    }
+
+    /* =================== نموذج =================== */
+    .form-section {
+      background: var(--surface);
+      border: 1px solid var(--qbox-border);
+      border-radius: var(--qbox-radius);
+      box-shadow: var(--qbox-shadow);
+      padding: 24px;
+      margin-bottom: 20px
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0 0 16px 0;
+      color: var(--primary)
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px
+    }
+
+    .form-grid.single {
+      grid-template-columns: 1fr
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text)
+    }
+
+    .input,
+    .select,
+    .textarea {
+      background: var(--field-bg);
+      border: 2px solid var(--field-border);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 16px;
+      color: var(--field-text);
+      font-family: 'Tajawal', system-ui;
+      transition: border-color 0.2s, box-shadow 0.2s
+    }
+
+    .textarea {
+      min-height: 120px;
+      resize: vertical
+    }
+
+    .input::placeholder,
+    .textarea::placeholder {
+      color: var(--field-placeholder)
+    }
+
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      border-color: #000;
+      box-shadow: 0 0 0 3px var(--field-focus);
+      outline: none
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: none
+    }
+
+    /* Table for dependents */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px
+    }
+
+    table th,
+    table td {
+      border: 1px solid var(--border);
+      padding: 10px;
+      text-align: right
+    }
+
+    table th {
+      background: #f3f4f6;
+      font-weight: 700;
+      font-size: 14px
+    }
+
+    table input {
+      width: 100%;
+      border: 1px solid var(--border);
+      padding: 8px;
+      border-radius: 4px
+    }
+
+    .btn-add {
+      background: #10b981;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px
+    }
+
+    .btn-add:hover {
+      background: #059669
+    }
+
+    .btn-remove {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px
+    }
+
+    /* أزرار عامة */
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff
+    }
+
+    .btn-primary:hover {
+      background: #1e40af
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--primary);
+      border: 2px solid var(--primary)
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: #fff
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr
+      }
+      
+      .actions {
+        flex-direction: column
+      }
+
+      .btn {
+        width: 100%
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- هيدر -->
+  <header class="header">
+    <div class="in">
+      <div class="brand">
+        <img src="public/image.png" alt="شعار">
+        <div>
+          <h1>مستشفى الملك عبدالعزيز</h1>
+          <small>أمر إركاب متعاقدين غير سعوديين</small>
+        </div>
+      </div>
+      <button class="back" data-action="go-back">رجوع</button>
+    </div>
+  </header>
+
+  <!-- المحتوى -->
+  <main class="container">
+    <!-- قسم بيانات المتعاقد -->
+    <section class="form-section">
+      <h2 class="section-title">✈️ بيانات المتعاقد</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>اسم المتعاقد *</label>
+          <input class="input" id="contractorName" placeholder="الاسم الكامل" required>
+        </div>
+        <div class="form-group">
+          <label>المسمى الوظيفي *</label>
+          <input class="input" id="jobTitle" placeholder="مثال: طبيب استشاري" required>
+        </div>
+        <div class="form-group">
+          <label>القسم / الجهة *</label>
+          <input class="input" id="department" placeholder="مثال: الموارد البشرية" required>
+        </div>
+        <div class="form-group">
+          <label>الجنسية *</label>
+          <input class="input" id="nationality" placeholder="مثال: أمريكي" required>
+        </div>
+        <div class="form-group">
+          <label>رقم الإقامة *</label>
+          <input class="input" id="iqamaNumber" placeholder="10 أرقام" data-ltr required>
+        </div>
+        <div class="form-group">
+          <label>رقم الجواز *</label>
+          <input class="input" id="passportNumber" placeholder="رقم الجواز" data-ltr required>
+        </div>
+        <div class="form-group">
+          <label>الرقم الوظيفي / رقم العقد</label>
+          <input class="input" id="employeeNumber" placeholder="إن وجد" data-ltr>
+        </div>
+        <div class="form-group">
+          <label>رقم التواصل</label>
+          <input class="input" id="contactNumber" type="tel" placeholder="05XXXXXXXX" data-ltr>
+        </div>
+        <div class="form-group full">
+          <label>الجهة / المقر المراد السفر إليه *</label>
+          <input class="input" id="travelDestination" placeholder="مثال: الرياض" required>
+        </div>
+      </div>
+    </section>
+
+    <!-- قسم فترة العمل -->
+    <section class="form-section">
+      <h2 class="section-title">📅 فترة العمل المطلوبة</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>من تاريخ *</label>
+          <input class="input" id="workStartDate" type="date" required>
+        </div>
+        <div class="form-group">
+          <label>إلى تاريخ *</label>
+          <input class="input" id="workEndDate" type="date" required>
+        </div>
+        <div class="form-group">
+          <label>عدد الأيام *</label>
+          <input class="input" id="workDurationDays" type="number" placeholder="30" min="1" required>
+        </div>
+      </div>
+    </section>
+
+    <!-- قسم فترة المرافقين (اختياري) -->
+    <section class="form-section">
+      <h2 class="section-title">👨‍👩‍👧‍👦 فترة مرافقي المتعاقد (إن وجدوا)</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>من تاريخ</label>
+          <input class="input" id="dependentsStartDate" type="date">
+        </div>
+        <div class="form-group">
+          <label>إلى تاريخ</label>
+          <input class="input" id="dependentsEndDate" type="date">
+        </div>
+        <div class="form-group">
+          <label>عدد الأيام</label>
+          <input class="input" id="dependentsDurationDays" type="number" placeholder="0" min="0">
+        </div>
+      </div>
+
+      <!-- جدول المرافقين -->
+      <div style="margin-top: 16px;">
+        <label style="font-weight: 600; margin-bottom: 8px; display: block;">قائمة المرافقين</label>
+        <table id="dependentsTable">
+          <thead>
+            <tr>
+              <th>اسم المرافق</th>
+              <th>القرابة</th>
+              <th>الجنسية</th>
+              <th>رقم الإقامة</th>
+              <th>رقم الجواز</th>
+              <th>ملاحظات</th>
+              <th style="width: 60px;">إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="dependentsTableBody">
+            <!-- Rows added dynamically -->
+          </tbody>
+        </table>
+        <button type="button" class="btn-add" id="addDependentRow">➕ إضافة مرافق</button>
+      </div>
+    </section>
+
+    <!-- قسم بيانات المتعهد -->
+    <section class="form-section">
+      <h2 class="section-title">📝 بيانات المتعهد / الكفيل</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>اسم الموظف / المسؤول المعتمد *</label>
+          <input class="input" id="sponsorName" placeholder="اسم المتعهد" required>
+        </div>
+        <div class="form-group">
+          <label>رقم الهوية</label>
+          <input class="input" id="sponsorId" placeholder="رقم الهوية" data-ltr>
+        </div>
+        <div class="form-group full">
+          <label>نص التعهد</label>
+          <textarea class="textarea" id="sponsorCommitment" placeholder="أتعهد بأنني المسؤول عن صحة البيانات أعلاه وبسريان إقامة المتعاقد ومرافقيه..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>التوقيع *</label>
+          <input class="input" id="sponsorSignature" placeholder="اسم الموقع" required>
+        </div>
+        <div class="form-group">
+          <label>تاريخ التوقيع *</label>
+          <input class="input" id="sponsorSignatureDate" type="date" required>
+        </div>
+      </div>
+    </section>
+
+    <!-- قسم تصريح الإدارة -->
+    <section class="form-section">
+      <h2 class="section-title">✅ تصريح الإدارة</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>اسم المدير التنفيذي</label>
+          <input class="input" id="directorName" placeholder="إن وجد">
+        </div>
+        <div class="form-group full">
+          <label>ملاحظات إضافية</label>
+          <textarea class="textarea" id="directorNotes" style="min-height: 80px;"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- قسم الموارد البشرية -->
+    <section class="form-section">
+      <h2 class="section-title">🏢 قسم الموارد البشرية</h2>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="font-weight: 600; margin-bottom: 10px; display: block;">قائمة التحقق</label>
+        <div style="display: grid; gap: 10px;">
+          <label style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="checkFormApproved" checked>
+            <span>تم اعتماد النموذج من الجهة التابع لها الموظف</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="checkResidenceValid" checked>
+            <span>تم التأكد من صلاحية إقامة المتعاقد والمرافقين</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="checkPassportCopies" checked>
+            <span>تم إرفاق صورة من جواز السفر والإقامة</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="checkHousingForm" checked>
+            <span>تمت تعبئة نموذج المرافقين (إن وجدوا)</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="checkPdfUpload" checked>
+            <span>في حال كان الطلب إلكترونياً يتم رفع ملف PDF واحد لجميع المرفقات</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>اسم الموظف المختص *</label>
+          <input class="input" id="hrOfficerName" placeholder="اسم موظف الموارد البشرية" required>
+        </div>
+        <div class="form-group">
+          <label>التوقيع</label>
+          <input class="input" id="hrOfficerSignature" placeholder="التوقيع">
+        </div>
+        <div class="form-group">
+          <label>الختم</label>
+          <input class="input" id="hrOfficerStamp" placeholder="الختم">
+        </div>
+      </div>
+
+      <div class="form-grid" style="margin-top: 16px;">
+        <div class="form-group">
+          <label>مدير إدارة الموارد البشرية</label>
+          <input class="input" id="hrManagerName" placeholder="اسم المدير">
+        </div>
+        <div class="form-group">
+          <label>التوقيع</label>
+          <input class="input" id="hrManagerSignature" placeholder="التوقيع">
+        </div>
+        <div class="form-group">
+          <label>الختم</label>
+          <input class="input" id="hrManagerStamp" placeholder="الختم">
+        </div>
+      </div>
+    </section>
+
+    <!-- أزرار الإجراءات -->
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="submitBtn">
+        📤 تقديم الطلب
+      </button>
+      <button type="button" class="btn btn-outline" onclick="window.location.href='employee-dashboard.html'">
+        ❌ إلغاء
+      </button>
+    </div>
+  </main>
+
+<!-- Phase 1: Foundation -->
+<script src="../jS/dependency-guard.js"></script>
+<script src="../jS/error-handler.js"></script>
+<script src="../jS/notification-store.js"></script>
+<script src="../jS/notification-utils.js"></script>
+
+<!-- Phase 2: Core -->
+<script src="../jS/app-init.js"></script>
+<script src="../jS/api-client.js"></script>
+<script src="../jS/role-permissions.js"></script>
+
+<!-- Phase 3: Form Script -->
+<script src="../jS/employee-non-saudi-travel-order.js"></script>
+
+<script>
+// Initialize form when dependencies are ready
+window.waitForDependencies(() => {
+  console.log('✅ Initializing travel order form...');
+  
+  // Auto-populate today's date for signature
+  const today = new Date().toISOString().split('T')[0];
+  const signDateField = document.getElementById('sponsorSignatureDate');
+  if (signDateField && !signDateField.value) {
+    signDateField.value = today;
+  }
+
+  // Initialize the form class
+  if (typeof NonSaudiTravelOrder !== 'undefined') {
+    new NonSaudiTravelOrder();
+  }
+}, ['apiClient', 'NotificationUtils']);
+</script>
+
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

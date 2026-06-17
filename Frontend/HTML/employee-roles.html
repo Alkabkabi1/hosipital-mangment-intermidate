@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>مستشفى الملك عبدالعزيز – أدواري وصلاحياتي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb;
+  --ok:#dcfce7; --late:#fee2e2; --chip:#eef2ff; --warn:#fef3c7;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui,Segoe UI,Arial,sans-serif}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:40px;height:40px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt small{color:var(--muted)}
+
+.container{max-width:1100px;margin:18px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.card h3{margin:0 0 10px 0}
+
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px}
+.kpi .t{display:flex;justify-content:space-between;align-items:center}
+.kpi .chip{background:var(--chip);border-radius:999px;padding:4px 10px;font-size:12px;color:#334155}
+.kpi .n{font-size:28px;font-weight:800;margin-top:4px}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.input,.select{height:44px;border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:#fff}
+.input{min-width:220px}
+.btn{border:1px solid var(--border);border-radius:10px;padding:10px 14px;background:#fff;cursor:pointer;font-weight:800}
+.btn.primary{background:var(--primary);border-color:transparent;color:#fff}
+.btn.success{background:#10b981;border-color:transparent;color:#fff}
+
+.table{width:100%;border-collapse:separate;border-spacing:0}
+th,td{padding:10px;border-bottom:1px solid var(--border);text-align:right;vertical-align:top}
+th{font-size:13px;color:#64748b}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-act{background:var(--ok)} .b-exp{background:var(--late)} .b-pend{background:var(--warn)}
+
+.role-card{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border-radius:16px;padding:20px;margin-bottom:12px}
+.role-card h4{margin:0 0 8px 0;font-size:20px}
+.role-card .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:14px;opacity:0.9}
+.role-card .meta span{display:flex;align-items:center;gap:6px}
+.scopes-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.scope-badge{background:rgba(255,255,255,0.2);padding:6px 12px;border-radius:999px;font-size:13px;border:1px solid rgba(255,255,255,0.3)}
+
+@media(max-width:700px){ 
+  .input{min-width:0;width:100%} 
+  .kpis{grid-template-columns:1fr 1fr} 
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt"><h1>مستشفى الملك عبدالعزيز</h1><small>أدواري وصلاحياتي</small></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="location.href='employee-dashboard.html'">رجوع</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <!-- KPIs -->
+  <section class="kpis">
+    <div class="kpi"><div class="t"><b>إجمالي الأدوار</b><span class="chip">Total</span></div><div class="n" id="kTotal">0</div></div>
+    <div class="kpi"><div class="t"><b>أدوار نشطة</b><span class="chip">Active</span></div><div class="n" id="kActive">0</div></div>
+    <div class="kpi"><div class="t"><b>صلاحيات مؤقتة</b><span class="chip">Temporary</span></div><div class="n" id="kTemp">0</div></div>
+    <div class="kpi"><div class="t"><b>صلاحيات دائمة</b><span class="chip">Permanent</span></div><div class="n" id="kPerm">0</div></div>
+  </section>
+
+  <!-- Role Cards -->
+  <section id="roleCards"></section>
+
+  <!-- Detailed Table -->
+  <section class="card">
+    <h3>تفاصيل الأدوار والصلاحيات</h3>
+    <div class="filters">
+      <select id="fStatus" class="select" title="الحالة">
+        <option value="">كل الحالات</option>
+        <option value="active">نشط</option>
+        <option value="inactive">غير نشط</option>
+      </select>
+      <select id="fType" class="select" title="النوع">
+        <option value="">كل الأنواع</option>
+        <option value="permanent">دائم</option>
+        <option value="temporary">مؤقت</option>
+      </select>
+      <input id="fSearch" class="input" placeholder="بحث: دور / صلاحية / ملاحظة">
+      <button class="btn" onclick="draw()">تطبيق</button>
+      <button class="btn" onclick="resetFilters()">مسح</button>
+      <button class="btn primary" onclick="exportCSV()">تصدير CSV</button>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>الدور</th>
+          <th>الوصف</th>
+          <th>الصلاحيات</th>
+          <th>النوع</th>
+          <th>تاريخ البداية</th>
+          <th>تاريخ الانتهاء</th>
+          <th>الحالة</th>
+          <th>مُنح بواسطة</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+/* حماية */
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser){ location.href='login.html'; }
+const myEmail = (authUser.email||'').toLowerCase();
+function logout(){ localStorage.removeItem('authUser'); location.href='login.html'; }
+
+/* بيانات الأدوار من API */
+let allRoles = [];
+
+/* تحميل الأدوار من API */
+async function loadRoles() {
+  try {
+    // Primary source: authUser object (already has user's roles from JWT)
+    const userRoles = authUser.roles || [authUser.role?.toUpperCase()] || ['EMPLOYEE'];
+    
+    allRoles = [];
+    
+    // Try to get detailed role information from API
+    if (window.apiClient) {
+      try {
+        const rolesResponse = await window.apiClient.makeRequest('/roles');
+        const allSystemRoles = rolesResponse?.data || rolesResponse?.roles || [];
+        
+        // Map user's roles to detailed information
+        userRoles.forEach(roleName => {
+          const roleInfo = allSystemRoles.find(r => r.role_name === roleName);
+          
+          allRoles.push({
+            id: `role-${roleName}`,
+            roleName: roleName,
+            roleNameAr: roleInfo?.role_name_ar || getRoleNameAr(roleName),
+            description: roleInfo?.description || getRoleDescription(roleName),
+            scopes: getRoleScopes(roleName),
+            type: 'permanent', // Roles are permanent unless expires_at is set
+            isActive: roleInfo?.is_active !== false,
+            startDate: roleInfo?.created_at || Date.now(),
+            endDate: null, // Can be enhanced to show expires_at from user_roles table
+            assignedBy: 'الإدارة',
+            assignedAt: roleInfo?.created_at || Date.now()
+          });
+        });
+        
+        console.log(`✅ Loaded ${allRoles.length} roles with API details`);
+      } catch (apiError) {
+        console.warn('API fetch failed, using basic role info:', apiError);
+        // Fallback to basic role info without API details
+        loadRolesFromLocalStorage();
+      }
+    } else {
+      loadRolesFromLocalStorage();
+    }
+  } catch (error) {
+    console.error('Error loading roles:', error);
+    loadRolesFromLocalStorage();
+  }
+}
+
+/* Fallback: Load from localStorage/authUser */
+function loadRolesFromLocalStorage() {
+  allRoles = [];
+  
+  // Get roles from authUser object
+  const userRoles = authUser.roles || [authUser.role?.toUpperCase()] || ['EMPLOYEE'];
+  
+  userRoles.forEach(roleName => {
+    allRoles.push({
+      id: `role-${roleName}`,
+      roleName: roleName,
+      roleNameAr: getRoleNameAr(roleName),
+      description: getRoleDescription(roleName),
+      scopes: getRoleScopes(roleName),
+      type: 'permanent',
+      isActive: true,
+      startDate: authUser.createdAt || Date.now(),
+      endDate: null,
+      assignedBy: 'النظام',
+      assignedAt: authUser.createdAt || Date.now()
+    });
+  });
+  
+  console.log(`⚠️ Loaded ${allRoles.length} roles from localStorage`);
+}
+
+/* Get Arabic role name */
+function getRoleNameAr(roleName) {
+  const names = {
+    'ADMIN': 'مدير النظام',
+    'MANAGER': 'مدير القسم',
+    'HR': 'الموارد البشرية',
+    'FINANCE': 'المالية',
+    'IT': 'تقنية المعلومات',
+    'EMPLOYEE': 'موظف'
+  };
+  return names[roleName] || roleName;
+}
+
+/* Get role description */
+function getRoleDescription(roleName) {
+  const descriptions = {
+    'ADMIN': 'صلاحيات كاملة لإدارة النظام',
+    'MANAGER': 'إدارة القسم واعتماد الطلبات',
+    'HR': 'إدارة الموارد البشرية والتوظيف',
+    'FINANCE': 'الشؤون المالية واعتماد المخالصات',
+    'IT': 'إدارة تقنية المعلومات',
+    'EMPLOYEE': 'صلاحيات الموظف الأساسية'
+  };
+  return descriptions[roleName] || 'دور في النظام';
+}
+
+/* Get role scopes/permissions */
+function getRoleScopes(roleName) {
+  const scopes = {
+    'ADMIN': ['إدارة كاملة', 'عرض الكل', 'اعتماد الكل', 'إدارة المستخدمين', 'إدارة الأدوار'],
+    'MANAGER': ['اعتماد الطلبات', 'عرض القسم', 'إدارة الفريق', 'التقارير'],
+    'HR': ['اعتماد التوظيف', 'إدارة الموظفين', 'اعتماد المخالصات', 'التقارير'],
+    'FINANCE': ['اعتماد المخالصات', 'عرض المالية', 'التقارير المالية'],
+    'IT': ['إدارة النظام', 'إعدادات النظام', 'إدارة المستخدمين'],
+    'EMPLOYEE': ['عرض بياناتي', 'تقديم الطلبات', 'تحديث الملف الشخصي']
+  };
+  return scopes[roleName] || ['صلاحيات أساسية'];
+}
+
+/* ترجمة الصلاحيات */
+function translateScope(scope) {
+  const translations = {
+    'approve_clearance': 'اعتماد إخلاء طرف',
+    'approve_direct': 'اعتماد مباشرة عمل',
+    'manage_delegations': 'إدارة التفويضات',
+    'view_reports': 'عرض التقارير',
+    'manage_all': 'إدارة كاملة',
+    'view_all': 'عرض الكل',
+    'approve_all': 'اعتماد الكل',
+    'delete_all': 'حذف الكل',
+    'view_own_data': 'عرض بياناتي',
+    'submit_requests': 'تقديم الطلبات',
+    'update_profile': 'تحديث الملف الشخصي'
+  };
+  return translations[scope] || scope;
+}
+
+/* حساب KPIs */
+function updateKPIs() {
+  const now = Date.now();
+  const total = allRoles.length;
+  const active = allRoles.filter(r => r.isActive).length;
+  const temp = allRoles.filter(r => r.type === 'temporary').length;
+  const perm = allRoles.filter(r => r.type === 'permanent').length;
+  
+  document.getElementById('kTotal').textContent = total;
+  document.getElementById('kActive').textContent = active;
+  document.getElementById('kTemp').textContent = temp;
+  document.getElementById('kPerm').textContent = perm;
+}
+
+/* رسم بطاقات الأدوار */
+function drawRoleCards() {
+  const container = document.getElementById('roleCards');
+  container.innerHTML = '';
+  
+  // تجميع الأدوار حسب النوع
+  const activeRoles = allRoles.filter(r => r.isActive);
+  
+  if (activeRoles.length === 0) {
+    container.innerHTML = '<div class="card"><p style="text-align:center;color:#64748b">لا توجد أدوار نشطة حالياً</p></div>';
+    return;
+  }
+  
+  activeRoles.forEach(role => {
+    const card = document.createElement('div');
+    card.className = 'role-card';
+    
+    const scopesList = (role.scopes || []).map(s => 
+      `<span class="scope-badge">${translateScope(s)}</span>`
+    ).join('');
+    
+    card.innerHTML = `
+      <h4>${role.roleNameAr || role.roleName}</h4>
+      <p style="margin:4px 0;opacity:0.9">${role.description || 'لا يوجد وصف'}</p>
+      <div class="scopes-list">${scopesList || '<span class="scope-badge">لا توجد صلاحيات</span>'}</div>
+      <div class="meta">
+        <span>📅 ${role.type === 'permanent' ? 'دائم' : 'مؤقت'}</span>
+        ${role.endDate ? `<span>⏰ ينتهي في: ${fmt(role.endDate)}</span>` : ''}
+        <span>👤 بواسطة: ${role.assignedBy}</span>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+/* تنسيق التاريخ */
+function fmt(ts){
+  return ts ? new Date(ts).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'}) : '—';
+}
+
+/* رسم الجدول */
+function draw(){
+  const status = fStatus.value;
+  const type = fType.value;
+  const q = (fSearch.value||'').toLowerCase().trim();
+
+  let list = allRoles.filter(r=>{
+    if(status==='active' && !r.isActive) return false;
+    if(status==='inactive' && r.isActive) return false;
+    if(type && r.type !== type) return false;
+    
+    if(q){
+      const hay = `${r.roleName||''} ${r.roleNameAr||''} ${r.description||''} ${(r.scopes||[]).join(' ')}`.toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  }).sort((a,b)=> (b.assignedAt||0)-(a.assignedAt||0));
+
+  const tb = document.getElementById('rows'); 
+  tb.innerHTML='';
+  
+  if(list.length===0){
+    tb.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#64748b">لا توجد أدوار</td></tr>`;
+    return;
+  }
+  
+  list.forEach(r=>{
+    const badge = r.isActive ? 'b-act' : 'b-exp';
+    const statusText = r.isActive ? 'نشط' : 'غير نشط';
+    const scopes = (r.scopes||[]).map(s=>translateScope(s)).join('، ') || '—';
+    const typeText = r.type === 'permanent' ? 'دائم' : 'مؤقت';
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><b>${r.roleNameAr || r.roleName}</b></td>
+      <td>${r.description || '—'}</td>
+      <td>${scopes}</td>
+      <td>${typeText}</td>
+      <td>${fmt(r.startDate)}</td>
+      <td>${fmt(r.endDate)}</td>
+      <td><span class="badge ${badge}">${statusText}</span></td>
+      <td>${r.assignedBy || '—'}</td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+/* إعادة تعيين الفلاتر */
+function resetFilters(){ 
+  fStatus.value=''; 
+  fType.value=''; 
+  fSearch.value=''; 
+  draw(); 
+}
+
+/* تصدير CSV */
+function exportCSV(){
+  const rows = [['Role','Description','Scopes','Type','StartDate','EndDate','Status','AssignedBy']];
+  allRoles.forEach(r=>{
+    rows.push([
+      r.roleNameAr || r.roleName||'',
+      r.description||'',
+      (r.scopes||[]).join('|'),
+      r.type||'',
+      r.startDate||'',
+      r.endDate||'',
+      r.isActive?'نشط':'غير نشط',
+      r.assignedBy||''
+    ]);
+  });
+  const csv = rows.map(r=>r.map(v=>String(v).includes(',')?`"${v}"`:v).join(',')).join('\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'}), url = URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='my_roles.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+/* مراقبة التغييرات */
+window.addEventListener('storage', function(e) {
+  if (e.key === 'authUser' || e.key === 'authToken') {
+    setTimeout(async () => {
+      await loadRoles();
+      updateKPIs();
+      drawRoleCards();
+      draw();
+    }, 100);
+  }
+});
+
+/* تشغيل */
+(async function init() {
+  await loadRoles();
+  updateKPIs();
+  drawRoleCards();
+  draw();
+})();
+</script>
+  <!-- JavaScript Files -->
+  <script src="../jS/notification-store.js"></script>
+  <script src="../jS/form-validation-utils.js"></script>
+  <script src="../jS/api-client.js"></script>
+  <script src="../jS/app-init.js"></script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

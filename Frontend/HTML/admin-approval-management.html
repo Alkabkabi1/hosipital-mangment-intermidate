@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الاعتمادات - الأدمن</title>
+    
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2B6CB0;
+            --bg: #f5f6f8;
+            --surface: #fff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Tajawal', system-ui, Segoe UI, Arial, sans-serif;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .header .in {
+            max-width: 1400px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 16px;
+            background: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+            border-color: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: #fff;
+            border-color: var(--warning);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+            border-color: var(--danger);
+        }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 16px auto;
+            padding: 0 16px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .health-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-card.healthy {
+            border-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .stat-card.warning {
+            border-color: var(--warning);
+            background: #fffbeb;
+        }
+
+        .stat-card.critical {
+            border-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 8px 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .input, .select {
+            height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 12px;
+            background: #fff;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 900px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            text-align: right;
+        }
+
+        th {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 600;
+            background: #f9fafb;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:hover td {
+            background: #f9fafb;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-healthy {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-critical {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--muted);
+        }
+
+        .modal-body {
+            margin-bottom: 16px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-label {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-weight: 600;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #111827;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 6px;
+        }
+
+        .status-indicator.healthy {
+            background: var(--success);
+        }
+
+        .status-indicator.warning {
+            background: var(--warning);
+        }
+
+        .status-indicator.critical {
+            background: var(--danger);
+        }
+
+        .refresh-info {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="in">
+        <div>
+            <b>مستشفى الملك عبدالعزيز</b> – <small>إدارة الاعتمادات</small>
+        </div>
+        <div style="display:flex;gap:10px">
+            <button class="btn" onclick="location.href='admin-dashboard.html'">رجوع للوحة التحكم</button>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <!-- Health Stats -->
+    <section class="health-stats" id="healthStats">
+        <div class="stat-card" id="statusCard">
+            <div class="stat-label">حالة النظام</div>
+            <div class="stat-value" id="systemStatus">--</div>
+            <span class="status-indicator" id="statusIndicator"></span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">إجمالي الطلبات المعلقة</div>
+            <div class="stat-value" id="totalPending">--</div>
+        </div>
+        <div class="stat-card critical">
+            <div class="stat-label">الطلبات المتعثرة</div>
+            <div class="stat-value" id="totalStuck">--</div>
+        </div>
+    </section>
+
+    <!-- Actions -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="margin: 0;">الطلبات المتعثرة</h2>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-warning" onclick="notifyAllAdmins()" title="إرسال تنبيه لجميع المسؤولين">
+                <span>🔔</span> تنبيه المسؤولين
+            </button>
+            <button class="btn" onclick="viewNotificationHistory()" title="عرض سجل التنبيهات">
+                <span>📜</span> سجل التنبيهات
+            </button>
+            <button class="btn btn-primary" onclick="loadHealthCheck()">
+                <span>🔄</span> تحديث
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card">
+        <div class="filters">
+            <select id="typeFilter" class="select" onchange="applyFilters()">
+                <option value="">جميع الأنواع</option>
+                <option value="clearance">إخلاء طرف</option>
+                <option value="onboarding">تعيين موظف</option>
+                <option value="delegation">تفويض</option>
+                <option value="certificate">شهادة تعريف</option>
+                <option value="experience">شهادة خبرة</option>
+            </select>
+            <button class="btn" onclick="resetFilters()">مسح الفلاتر</button>
+        </div>
+    </div>
+
+    <!-- Stuck Requests Table -->
+    <section class="card">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>نوع الطلب</th>
+                        <th>رقم الطلب</th>
+                        <th>الحالة</th>
+                        <th>إجمالي المعتمدين</th>
+                        <th>المعتمدين الفعليين</th>
+                        <th>المعتمدون</th>
+                        <th>المعلقون</th>
+                        <th>المشكلة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="stuckRequestsTable">
+                    <tr>
+                        <td colspan="9" class="loading">جاري التحميل...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="refresh-info">
+            آخر تحديث: <span id="lastUpdate">--</span>
+        </div>
+    </section>
+</main>
+
+<!-- Request Detail Modal -->
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">تفاصيل الطلب</div>
+            <span class="modal-close" onclick="closeDetailModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Details will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Notification History Modal -->
+<div id="notificationHistoryModal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-header">
+            <div class="modal-title">📜 سجل التنبيهات</div>
+            <span class="modal-close" onclick="closeNotificationHistory()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <table class="table" style="margin: 0;">
+                <thead>
+                    <tr>
+                        <th>المستلم</th>
+                        <th>العنوان</th>
+                        <th>الرسالة</th>
+                        <th>التاريخ</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody id="notificationHistoryTable">
+                    <tr><td colspan="5" class="loading">جاري التحميل...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast"></div>
+
+<!-- JavaScript Files -->
+<script src="../jS/dependency-guard.js"></script>
+<script src="../jS/error-handler.js"></script>
+<script src="../jS/notification-store.js"></script>
+<script src="../jS/notification-utils.js"></script>
+<script src="../jS/app-init.js"></script>
+<script src="../jS/api-client.js"></script>
+
+<script>
+// Auth check
+const authUser = JSON.parse(localStorage.getItem('authUser') || 'null');
+if (!authUser) {
+    window.location.href = 'login.html';
+}
+
+let stuckRequests = [];
+let filteredRequests = [];
+let healthData = null;
+
+// Toast notification
+function toast(msg, isSuccess = true) {
+    const toastEl = document.getElementById('toast');
+    toastEl.textContent = msg;
+    toastEl.style.background = isSuccess ? '#10b981' : '#ef4444';
+    toastEl.style.display = 'block';
+    setTimeout(() => {
+        toastEl.style.display = 'none';
+    }, 3000);
+}
+
+// Load health check and stuck requests
+async function loadHealthCheck() {
+    try {
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        console.log('🔵 [Frontend] Requesting health check...');
+
+        // Fetch health check
+        const healthResponse = await fetch('http://localhost:3037/api/admin/approvals/health-check', {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('🔵 [Frontend] Health check response status:', healthResponse.status);
+
+        if (!healthResponse.ok) {
+            const errorData = await healthResponse.json().catch(() => ({}));
+            console.error('❌ [Frontend] Health check failed with status:', healthResponse.status);
+            console.error('❌ [Frontend] Error response:', errorData);
+            console.error('❌ [Frontend] Error message:', errorData.message);
+            console.error('❌ [Frontend] Error details:', errorData.details);
+            
+            throw new Error(errorData.message || 'فشل تحميل حالة النظام');
+        }
+
+        const healthResult = await healthResponse.json();
+        console.log('✅ [Frontend] Health check successful:', healthResult);
+        
+        healthData = healthResult.data;
+
+        // Update health stats
+        updateHealthStats(healthData);
+
+        // Load stuck requests
+        await loadStuckRequests();
+
+        // Update last refresh time
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ar-SA');
+
+    } catch (error) {
+        console.error('❌ [Frontend] Error loading health check:', error);
+        console.error('❌ [Frontend] Error type:', error.constructor.name);
+        console.error('❌ [Frontend] Error message:', error.message);
+        console.error('❌ [Frontend] Full error:', error);
+        toast('حدث خطأ في تحميل البيانات: ' + error.message, false);
+    }
+}
+
+function updateHealthStats(data) {
+    const statusCard = document.getElementById('statusCard');
+    const systemStatus = document.getElementById('systemStatus');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const totalPending = document.getElementById('totalPending');
+    const totalStuck = document.getElementById('totalStuck');
+
+    // Update status
+    const statusText = {
+        'healthy': 'سليم',
+        'warning': 'تحذير',
+        'critical': 'حرج'
+    };
+
+    systemStatus.textContent = statusText[data.status] || data.status;
+    
+    // Update status card class
+    statusCard.className = 'stat-card ' + data.status;
+    statusIndicator.className = 'status-indicator ' + data.status;
+
+    // Update counts
+    totalPending.textContent = data.total_pending || 0;
+    totalStuck.textContent = data.total_stuck || 0;
+}
+
+async function loadStuckRequests() {
+    try {
+        const authToken = localStorage.getItem('authToken');
+        
+        console.log('🔵 [Frontend] Requesting stuck requests...');
+        
+        const response = await fetch('http://localhost:3037/api/admin/approvals/stuck-requests', {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('🔵 [Frontend] Stuck requests response status:', response.status);
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('❌ [Frontend] Stuck requests failed:', errorData);
+            throw new Error(errorData.message || 'فشل تحميل الطلبات المتعثرة');
+        }
+
+        const result = await response.json();
+        console.log('✅ [Frontend] Stuck requests loaded:', result);
+        
+        stuckRequests = result.data || [];
+        filteredRequests = [...stuckRequests];
+        
+        renderStuckRequests();
+
+    } catch (error) {
+        console.error('❌ [Frontend] Error loading stuck requests:', error);
+        console.error('❌ [Frontend] Error details:', error.message);
+        document.getElementById('stuckRequestsTable').innerHTML = 
+            '<tr><td colspan="9" class="empty">حدث خطأ في تحميل البيانات: ' + error.message + '</td></tr>';
+    }
+}
+
+function renderStuckRequests() {
+    const tbody = document.getElementById('stuckRequestsTable');
+    
+    if (filteredRequests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty">✅ لا توجد طلبات متعثرة</td></tr>';
+        return;
+    }
+
+    const typeNames = {
+        'clearance': 'إخلاء طرف',
+        'onboarding': 'تعيين موظف',
+        'delegation': 'تفويض',
+        'certificate': 'شهادة تعريف',
+        'experience': 'شهادة خبرة'
+    };
+
+    tbody.innerHTML = filteredRequests.map(req => `
+        <tr>
+            <td>${typeNames[req.request_type] || req.request_type}</td>
+            <td>${req.request_id}</td>
+            <td><span class="badge badge-warning">${req.status}</span></td>
+            <td>${req.total_approvers || 0}</td>
+            <td>${req.actual_total || 0}</td>
+            <td>${req.actual_approved || 0}</td>
+            <td>${req.actual_pending || 0}</td>
+            <td style="font-size: 12px; color: var(--danger);">${req.issue}</td>
+            <td>
+                <div class="actions">
+                    <button class="btn btn-sm btn-primary" onclick="fixRequest('${req.request_type}', ${req.request_id}, 'recalculate')" title="إعادة الحساب">
+                        ⚖️ حساب
+                    </button>
+                    <button class="btn btn-sm btn-success" onclick="fixRequest('${req.request_type}', ${req.request_id}, 'approve')" title="اعتماد يدوي">
+                        ✅ اعتماد
+                    </button>
+                    <button class="btn btn-sm btn-warning" onclick="fixRequest('${req.request_type}', ${req.request_id}, 'reset')" title="إعادة تهيئة">
+                        🔄 تهيئة
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function fixRequest(requestType, requestId, action) {
+    const actionNames = {
+        'recalculate': 'إعادة حساب',
+        'approve': 'اعتماد',
+        'reset': 'إعادة تهيئة'
+    };
+
+    if (!confirm(`هل أنت متأكد من ${actionNames[action]} الطلب ${requestType}:${requestId}؟`)) {
+        return;
+    }
+
+    try {
+        const authToken = localStorage.getItem('authToken');
+        
+        const response = await fetch('http://localhost:3037/api/admin/approvals/fix-request', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                requestType,
+                requestId,
+                action
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('فشل تنفيذ العملية');
+        }
+
+        const result = await response.json();
+        toast(result.message || 'تم التنفيذ بنجاح');
+        
+        // Reload data
+        setTimeout(() => loadHealthCheck(), 1000);
+
+    } catch (error) {
+        console.error('Error fixing request:', error);
+        toast('حدث خطأ: ' + error.message, false);
+    }
+}
+
+function applyFilters() {
+    const typeFilter = document.getElementById('typeFilter').value;
+    
+    filteredRequests = stuckRequests.filter(req => {
+        if (typeFilter && req.request_type !== typeFilter) return false;
+        return true;
+    });
+    
+    renderStuckRequests();
+}
+
+function resetFilters() {
+    document.getElementById('typeFilter').value = '';
+    filteredRequests = [...stuckRequests];
+    renderStuckRequests();
+}
+
+function closeDetailModal() {
+    document.getElementById('detailModal').classList.remove('show');
+}
+
+// Notify all admins about stuck requests
+async function notifyAllAdmins() {
+    try {
+        if (!confirm('هل تريد إرسال تنبيه لجميع المسؤولين حول الطلبات المتعثرة؟')) {
+            return;
+        }
+
+        const authToken = localStorage.getItem('authToken');
+        const stuckCount = healthData?.total_stuck || 0;
+
+        const response = await fetch('http://localhost:3037/api/admin/approvals/notify-admins', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ stuckCount })
+        });
+
+        if (!response.ok) {
+            throw new Error('فشل إرسال التنبيهات');
+        }
+
+        const result = await response.json();
+        toast(result.message || 'تم إرسال التنبيهات بنجاح');
+        console.log('✅ Admins notified:', result);
+
+    } catch (error) {
+        console.error('❌ Error notifying admins:', error);
+        toast('حدث خطأ: ' + error.message, false);
+    }
+}
+
+// View notification history
+async function viewNotificationHistory() {
+    try {
+        const modal = document.getElementById('notificationHistoryModal');
+        const tbody = document.getElementById('notificationHistoryTable');
+        modal.classList.add('show');
+        tbody.innerHTML = '<tr><td colspan="5" class="loading">جاري التحميل...</td></tr>';
+
+        const authToken = localStorage.getItem('authToken');
+        const response = await fetch('http://localhost:3037/api/admin/approvals/notification-history', {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('فشل تحميل سجل التنبيهات');
+        }
+
+        const result = await response.json();
+        const history = result.data || [];
+
+        if (history.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="empty">لا يوجد سجل تنبيهات</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = history.map(notif => {
+            const date = new Date(notif.created_at).toLocaleString('ar-SA');
+            const readStatus = notif.is_read ? '✅ مقروء' : '⏳ جديد';
+            
+            return `
+                <tr>
+                    <td>${notif.recipient_name}</td>
+                    <td>${notif.title_ar}</td>
+                    <td style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        ${notif.message_ar}
+                    </td>
+                    <td>${date}</td>
+                    <td><span class="badge ${notif.is_read ? 'badge-healthy' : 'badge-warning'}">${readStatus}</span></td>
+                </tr>
+            `;
+        }).join('');
+
+    } catch (error) {
+        console.error('❌ Error loading notification history:', error);
+        document.getElementById('notificationHistoryTable').innerHTML = 
+            '<tr><td colspan="5" class="empty">حدث خطأ في تحميل السجل</td></tr>';
+    }
+}
+
+function closeNotificationHistory() {
+    document.getElementById('notificationHistoryModal').classList.remove('show');
+}
+
+// Auto-notify admins when stuck requests detected
+async function autoNotifyIfNeeded() {
+    if (healthData && healthData.total_stuck > 0 && healthData.status !== 'healthy') {
+        // Only auto-notify once per session to avoid spam
+        const lastNotified = sessionStorage.getItem('lastAutoNotifyTime');
+        const now = Date.now();
+        
+        // Don't auto-notify more than once every 30 minutes
+        if (lastNotified && (now - parseInt(lastNotified)) < 30 * 60 * 1000) {
+            console.log('⏳ Skipping auto-notify (too recent)');
+            return;
+        }
+
+        console.log(`⚠️ System status ${healthData.status} with ${healthData.total_stuck} stuck requests - considering auto-notify`);
+        
+        // For now, just log - uncomment below to enable auto-notify
+        // await notifyAllAdmins();
+        // sessionStorage.setItem('lastAutoNotifyTime', now.toString());
+    }
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    loadHealthCheck();
+    
+    // Auto-refresh every 30 seconds
+    setInterval(loadHealthCheck, 30000);
+    
+    // Check if auto-notify is needed every 5 minutes
+    setInterval(autoNotifyIfNeeded, 5 * 60 * 1000);
+});
+
+// Close modal when clicking outside
+document.getElementById('detailModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDetailModal();
+    }
+});
+
+document.getElementById('notificationHistoryModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeNotificationHistory();
+    }
+});
+</script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

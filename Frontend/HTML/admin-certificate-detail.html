@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    <link rel="stylesheet" href="../CSS/professional-design.css">
+    
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>تفاصيل طلب شهادة – أدمن</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../CSS/workflow-styles.css">
+<style>
+:root{ --primary:#2B6CB0; --bg:#f5f6f8; --surface:#fff; --text:#0f172a; --muted:#64748b; --border:#e5e7eb; --danger:#dc2626; --success:#16a34a; --warning:#f59e0b; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Tajawal',system-ui}
+a{color:inherit;text-decoration:none}
+.header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border)}
+.header .in{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.brand{display:flex;align-items:center;gap:12px;flex:1}
+.brand img{width:44px;height:44px;object-fit:contain}
+.brand .tt h1{margin:0;font-size:18px;font-weight:800}
+.brand .tt span{font-size:12px;color:var(--muted)}
+.container{max-width:1100px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.06);margin-bottom:16px}
+.hdr{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.badge{padding:4px 10px;border-radius:999px;font-size:12px}
+.b-pend{background:#fef3c7} .b-done{background:#dcfce7} .b-rej{background:#fee2e2}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.kv div{border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.timeline{display:flex;flex-direction:column;gap:8px}
+.step{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+.order{font-weight:800;text-align:center}
+.state{font-size:12px;padding:4px 10px;border-radius:999px}
+.s-wait{background:#e5e7eb} .s-now{background:#dbeafe} .s-acc{background:#dcfce7} .s-rej{background:#fee2e2}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;font-weight:700;border:1px solid var(--border);background:#fff;cursor:pointer}
+.btn-primary{background:var(--primary);color:#fff;border-color:transparent}
+.btn-danger{background:#fff;color:var(--danger);border-color:#fecaca}
+.btn-ghost{background:#fff;color:var(--text)}
+.note{font-size:12px;color:var(--muted)}
+.approver-admin{display:none;margin-top:12px;border:1px dashed var(--border);border-radius:12px;padding:12px;background:#fafafa}
+.approver-admin .row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px}
+.inp{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.iconbtn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:12px}
+
+/* Role-based access control styles */
+.dept-status.clickable{cursor:pointer;border:1px solid transparent;padding:4px 8px;border-radius:4px;transition:all 0.2s}
+.dept-status.clickable:hover{border-color:var(--primary);background-color:#f0f9ff}
+.dept-status.readonly{color:var(--muted);cursor:default}
+.dept-readonly-notice{font-size:12px;color:var(--muted);font-style:italic}
+.department-item.unauthorized{opacity:0.7}
+.department-item.unauthorized .dept-actions{opacity:0.5}
+
+/* Tab Styles */
+.tabs-container{margin-bottom:16px}
+.tabs-header{display:flex;gap:8px;border-bottom:2px solid var(--border);margin-bottom:16px}
+.tab-button{background:transparent;border:none;padding:12px 20px;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;position:relative}
+.tab-button:hover{color:var(--text);background:#f9fafb}
+.tab-button.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="in">
+    <div class="brand">
+      <img src="public/image.png" alt="logo">
+      <div class="tt">
+        <h1>مستشفى الملك عبدالعزيز</h1>
+        <span>تفاصيل طلب شهادة – أدمن</span>
+      </div>
+    </div>
+    <button class="btn" id="btnBack">رجوع للوارد</button>
+    <button class="btn commissioner-back" id="btnBackToDashboard" style="display:none;background:linear-gradient(135deg,#8b5cf6,#3b82f6);color:#fff;border:none">رجوع للوحتي</button>
+  </div>
+</header>
+  
+<main class="container">
+  <!-- Basic Information Card -->
+  <div class="card">
+    <div class="hdr">
+      <h2 style="margin:0">طلب #<span id="rid">-</span></h2>
+      <span id="rstatus" class="badge b-pend">قيد الاعتماد</span>
+    </div>
+    <div class="kv">
+      <div>الموظف: <b id="rname">-</b></div>
+      <div>البريد: <b id="remail">-</b></div>
+      <div>المهنة: <b id="roccupation">-</b></div>
+      <div>الجنسية: <b id="rnationality">-</b></div>
+      <div>رقم الإقامة: <b id="riqama">-</b></div>
+      <div>رقم الجواز: <b id="rpassport">-</b></div>
+      <div>مكان التعليم: <b id="reducation">-</b></div>
+      <div>تاريخ الإنشاء: <b id="rcreated">-</b></div>
+    </div>
+    <div style="margin-top:12px" id="rnotes-container">
+      <div style="border:1px solid var(--border);border-radius:12px;padding:10px;background:#f9fafb">
+        <strong>ملاحظات:</strong> <span id="rnotes">لا توجد ملاحظات</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Department Status & Approver Chain (Tabbed) -->
+  <div class="card">
+    <div class="tabs-container">
+      <div class="tabs-header">
+        <button class="tab-button active" data-tab="departments" id="tabDepartments">
+          حالة الأقسام المطلوبة
+        </button>
+        <button class="tab-button" data-tab="approvers" id="tabApprovers">
+          سلسلة المعتمدين
+        </button>
+      </div>
+
+      <!-- Department Status Tab -->
+      <div class="tab-content active" id="tabContentDepartments">
+        <div class="hdr" style="margin-bottom:16px">
+          <h3 style="margin:0">حالة الأقسام المطلوبة</h3>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost" id="btnRefreshDepts">تحديث</button>
+          </div>
+        </div>
+        <div id="departmentStatusGrid" class="department-grid">
+          <!-- Department status items will be rendered here -->
+        </div>
+        <div class="department-summary" id="departmentSummary">
+          <!-- Summary will be rendered here -->
+        </div>
+      </div>
+
+      <!-- Approver Chain Tab -->
+      <div class="tab-content" id="tabContentApprovers">
+        <div class="hdr" style="margin-bottom:16px">
+          <h3 style="margin:0">سلسلة المعتمدين</h3>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost" id="btnToggleAdmin">إدارة السلسلة</button>
+          </div>
+        </div>
+
+        <!-- لوحة إدارة السلسلة (للأدمن) -->
+        <div class="approver-admin" id="approverAdmin">
+          <div class="row" style="margin-bottom:8px">
+            <input class="inp" id="apName" placeholder="اسم المعتمد (اختياري)">
+            <input class="inp" id="apRole" placeholder="المسمى الوظيفي (اختياري)">
+            <input class="inp" id="apEmail" placeholder="البريد الإلكتروني (اختياري)">
+            <button class="btn" id="btnAddApprover">إضافة</button>
+          </div>
+          <div class="note">العرض في القائمة يكون بالمسمّى فقط (إن وُجد). تقدر تضيف أو تحذف أي خطوة.</div>
+        </div>
+
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hdr"><h3 style="margin:0">الإجراءات</h3></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="btnApproveReq">موافقة</button>
+      <button class="btn btn-danger" id="btnRejectReq">رفض</button>
+      <button class="btn" id="printBtn">طباعة</button>
+      <button class="btn" id="exportBtn">تصدير CSV</button>
+      <button class="btn" onclick="exportExcel()">تصدير Excel</button>
+    </div>
+    <div class="note" id="actionNote">الموافقة تُقفل الحالة «مكتمل». الرفض يغيّرها إلى «مرفوض». الأزرار متاحة للحالات: قيد الاعتماد، قيد الانتظار، قيد المراجعة.</div>
+  </div>
+</main>
+
+<script>
+/* فحص الدخول */
+const authUser = JSON.parse(localStorage.getItem('authUser')||'null');
+if(!authUser) window.location.href='login.html';
+
+/* فحص الصلاحيات */
+function canAccessAdminPage(user) {
+  if (!user) return false;
+  if (user.role === 'admin') return true;
+  if (user.roles && (user.roles.includes('ADMIN') || user.roles.includes('HR') || user.roles.includes('MANAGER'))) return true;
+  return false;
+}
+
+if(!canAccessAdminPage(authUser)) window.location.href='employee-dashboard.html';
+
+/* مفاتيح التخزين والمعرّف */
+const params = new URLSearchParams(location.search);
+const reqId = Number(params.get('id'));
+const storeKey='requestsCertificate';
+
+/* أدوات تخزين */
+function loadReq(){ const list = JSON.parse(localStorage.getItem(storeKey)||'[]'); return { list, idx: list.findIndex(r=>r.id===reqId) }; }
+function saveList(list){ localStorage.setItem(storeKey, JSON.stringify(list)); }
+function fmt(ts){ return ts ? new Date(ts).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'}) : '-'; }
+
+/* Tab Switching Functionality */
+function initTabs() {
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetTab = button.getAttribute('data-tab');
+      
+      // Remove active class from all buttons and contents
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      // Add active class to clicked button and corresponding content
+      button.classList.add('active');
+      
+      // Map data-tab values to actual content IDs
+      const tabMap = {
+        'departments': 'tabContentDepartments',
+        'approvers': 'tabContentApprovers'
+      };
+      
+      const targetContentId = tabMap[targetTab];
+      if (targetContentId) {
+        const targetContent = document.getElementById(targetContentId);
+        if (targetContent) {
+          targetContent.classList.add('active');
+        }
+      }
+    });
+  });
+}
+
+// Initialize tabs when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTabs);
+} else {
+  initTabs();
+}
+
+/* إدارة السلسلة */
+const adminBox = document.getElementById('approverAdmin');
+const btnToggleAdmin = document.getElementById('btnToggleAdmin');
+if (adminBox && btnToggleAdmin) {
+  btnToggleAdmin.addEventListener('click', ()=>{
+    adminBox.style.display = (adminBox.style.display==='none' || adminBox.style.display==='') ? 'block' : 'none';
+  });
+}
+
+const btnAddApprover = document.getElementById('btnAddApprover');
+const apName = document.getElementById('apName');
+const apRole = document.getElementById('apRole');
+const apEmail = document.getElementById('apEmail');
+if (btnAddApprover && apName && apRole && apEmail) {
+  btnAddApprover.addEventListener('click', ()=>{
+    const name=(apName.value||'').trim(), role=(apRole.value||'').trim(), email=(apEmail.value||'').trim();
+    // This will be handled by admin-certificate-detail.js
+    console.log('Add approver:', {name, role, email});
+  });
+}
+
+/* Department Dashboard Functions */
+function initializeDepartmentDashboard() {
+  renderDepartmentStatus();
+  
+  // Set up refresh button
+  const refreshBtn = document.getElementById('btnRefreshDepts');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', renderDepartmentStatus);
+  }
+}
+
+function renderDepartmentStatus() {
+  let request = null;
+  let departments = null;
+  
+  // Try to get data from API first (window.currentCertificate)
+  if (window.currentCertificate) {
+    request = window.currentCertificate;
+    departments = request.departments || request.department_approvals || null;
+  }
+  
+  // Fallback to localStorage
+  if (!request || !departments) {
+    const {list, idx} = loadReq();
+    if (idx < 0) {
+      // No data found, initialize empty departments
+      departments = [
+        { id: 'hr', name: 'الموارد البشرية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+        { id: 'finance', name: 'المالية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+        { id: 'admin', name: 'الإدارة', status: 'منتظر', approver_id: null, approved_at: null, notes: null }
+      ];
+    } else {
+      request = list[idx];
+      if (!request.departments) {
+        request.departments = [
+          { id: 'hr', name: 'الموارد البشرية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+          { id: 'finance', name: 'المالية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+          { id: 'admin', name: 'الإدارة', status: 'منتظر', approver_id: null, approved_at: null, notes: null }
+        ];
+        saveList(list);
+      }
+      departments = request.departments;
+    }
+  }
+  
+  if (!departments || departments.length === 0) {
+    departments = [
+      { id: 'hr', name: 'الموارد البشرية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+      { id: 'finance', name: 'المالية', status: 'منتظر', approver_id: null, approved_at: null, notes: null },
+      { id: 'admin', name: 'الإدارة', status: 'منتظر', approver_id: null, approved_at: null, notes: null }
+    ];
+  }
+  
+  const grid = document.getElementById('departmentStatusGrid');
+  const summary = document.getElementById('departmentSummary');
+  
+  if (!grid || !summary) return;
+  
+  // Render department status grid
+  grid.innerHTML = departments.map(dept => {
+    const statusClass = getStatusClass(dept.status);
+    const statusText = dept.status;
+    const approverText = dept.approver_name || 'غير محدد';
+    const dateText = dept.approved_at ? new Date(dept.approved_at).toLocaleDateString('ar-SA') : '-';
+    
+    return `
+      <div class="department-item ${statusClass}" data-dept-id="${dept.id}">
+        <div class="dept-header">
+          <h4 class="dept-name">${dept.name}</h4>
+          <span class="dept-status" data-status="${dept.status}">${statusText}</span>
+        </div>
+        <div class="dept-details">
+          <div class="dept-approver">المعتمد: ${approverText}</div>
+          <div class="dept-date">التاريخ: ${dateText}</div>
+          ${dept.notes ? `<div class="dept-notes">ملاحظات: ${dept.notes}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Render summary
+  const approved = departments.filter(d => d.status === 'موافق').length;
+  const rejected = departments.filter(d => d.status === 'مرفوض').length;
+  const pending = departments.filter(d => d.status === 'منتظر').length;
+  const total = departments.length;
+  const completionPercentage = total > 0 ? Math.round((approved / total) * 100) : 0;
+  
+  summary.innerHTML = `
+    <div class="summary-stats">
+      <div class="stat-item approved">
+        <span class="stat-number">${approved}</span>
+        <span class="stat-label">موافق</span>
+      </div>
+      <div class="stat-item rejected">
+        <span class="stat-number">${rejected}</span>
+        <span class="stat-label">مرفوض</span>
+      </div>
+      <div class="stat-item pending">
+        <span class="stat-number">${pending}</span>
+        <span class="stat-label">منتظر</span>
+      </div>
+      <div class="stat-item total">
+        <span class="stat-number">${completionPercentage}%</span>
+        <span class="stat-label">مكتمل</span>
+      </div>
+    </div>
+    ${completionPercentage === 100 ? '<div class="completion-notice">✅ جميع الأقسام اعتمدت الطلب</div>' : ''}
+  `;
+}
+
+// Make renderDepartmentStatus globally accessible
+window.renderDepartmentStatus = renderDepartmentStatus;
+
+function getStatusClass(status) {
+  switch (status) {
+    case 'موافق': return 'status-approved';
+    case 'مرفوض': return 'status-rejected';
+    case 'منتظر': return 'status-pending';
+    default: return 'status-pending';
+  }
+}
+
+// Initialize department status dashboard
+initializeDepartmentDashboard();
+
+// Watch for API data loading
+function watchForApiData() {
+  let attempts = 0;
+  const maxAttempts = 20;
+  
+  const checkInterval = setInterval(() => {
+    attempts++;
+    
+    if (window.currentCertificate || attempts >= maxAttempts) {
+      clearInterval(checkInterval);
+      
+      if (window.currentCertificate) {
+        console.log('✅ API data loaded, re-rendering department status...');
+        setTimeout(() => {
+          renderDepartmentStatus();
+        }, 100);
+      }
+    }
+  }, 500);
+}
+
+watchForApiData();
+
+// Set up buttons
+document.getElementById('btnBack').onclick = ()=>{ location.href='admin-certificate-inbox.html'; };
+document.getElementById('printBtn').addEventListener('click', function() {
+  window.print();
+});
+</script>
+
+  <!-- JavaScript Files -->
+  <script src="../jS/dependency-guard.js"></script>
+  <script src="../jS/error-handler.js"></script>
+  <script src="../jS/notification-store.js"></script>
+  <script src="../jS/notification-utils.js"></script>
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/api-client.js?v=10"></script>
+  <script src="../jS/role-permissions.js"></script>
+  <script src="../jS/form-validation-utils.js"></script>
+  <script src="../jS/workflow-manager.js"></script>
+  <script src="../jS/detail-view-utils.js?v=5"></script>
+  <script src="../jS/admin-certificate-detail.js?v=1"></script>
+
+  <script>
+  window.waitForDependencies(() => {
+    console.log('✅ Admin certificate detail: All dependencies loaded');
+  }, ['apiClient', 'NotificationStore', 'resolveFrontendPath']);
+  </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
+

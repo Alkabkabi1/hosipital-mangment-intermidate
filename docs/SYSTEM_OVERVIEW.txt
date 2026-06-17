@@ -1,0 +1,1129 @@
+SYSTEM OVERVIEW - Functions and Flow (High-Level)
+================================================
+
+Scope
+-----
+This document summarizes how the system is structured and how a request flows through the backend, including the major functions and responsibilities of key parts. It also notes how the static frontend is served.
+
+Top-Level Layout
+----------------
+- Backend/: TypeScript Express API with modular feature routers, middleware, and database access
+- Frontend/: Static HTML, CSS, and JS served by the backend under /Frontend/*
+- docs/, documentation/: Reference and process documents
+- sql/: SQL setup, migrations, and maintenance scripts
+
+Backend Boot Sequence
+---------------------
+Entry point: Backend/src/server.ts
+1) Configuration: `loadEnv()` validates and loads env vars (Backend/src/config).
+2) Tracing: `initTracing()` initializes OpenTelemetry tracing if enabled.
+3) Database: `assertDatabaseConnection()` ensures DB connectivity; process exits on failure.
+4) Bootstrap: `seedDefaultAdmin()` ensures a default admin exists (idempotent).
+5) App creation: `createApp()` (Backend/src/app.ts) constructs the Express app and registers middleware/routes.
+6) Server start: app.listen on HOST/PORT from env; logs "API server listening".
+7) Graceful shutdown: `registerGracefulShutdown()` attaches signal handlers to close HTTP server and DB pool.
+
+Runner Script
+-------------
+File: Backend/server.js
+- Intended start command from Backend/: `node server.js`
+- Ensures build exists (dist/server.js). If not (or FORCE_BUILD=true), runs `npm run build`.
+- Delegates to compiled dist/server.js.
+
+Express App Composition
+-----------------------
+Defined in: Backend/src/app.ts
+- Security & Ops
+  - Disable `x-powered-by`
+  - Enforce HTTPS (if behind proxy and in production)
+  - CORS (least-privilege) via `createCorsMiddleware()`
+  - Security headers & CSP via `securityHeaders()`
+  - Optional metrics via `metricsMiddleware` and /metrics endpoint (prometheus-style scrape)
+  - Optional profiler (non-production) via `profilerRouter`
+  - Request logging via `requestLogger`
+- Body Parsers
+  - `express.json({ limit: '1mb' })`
+  - `express.urlencoded({ extended: true })`
+- Health Endpoints (no auth, no rate limit)
+  - GET /api/health → { status: 'ok' }
+  - GET /api/ready → checks DB; returns ready/unready
+- Static Frontend
+  - Serves `/Frontend/HTML`, `/Frontend/CSS`, `/Frontend/jS` if present
+- Rate Limiting
+  - If not in "DEV_EASY", applies limiter under `/api`
+- API Routes
+  - Mounts `apiRouter` under `/api`
+- Terminal Middleware
+  - `notFoundHandler` for unmatched routes
+  - `errorHandler` to format and log errors
+
+Routing Structure
+-----------------
+Defined in: Backend/src/routes/index.ts (exported as `apiRouter`)
+- Health: GET /api/health
+- Auth & Admin: `/api/auth`, `/api/admin`
+- Request-Type Modules (registered before general catch-all)
+  - `/api/assignment`
+  - `/api/assignment-termination`
+  - `/api/certificate`
+  - `/api/experience-certificate`
+  - `/api/internal-transfer`
+  - `/api/exit`
+  - `/api/leave-request`
+  - `/api/multi-approval` and alias `/api/approvals`
+  - `/api/commissioner/tickets`
+  - `/api/maternity-leave`
+  - `/api/housing-allowance`
+- Other Modules
+  - `/api/clearance`
+  - `/api/delegation`
+  - `/api/onboarding`
+  - `/api/roles`
+  - `/api/users`
+  - `/api/profile`
+  - `/api/upload`
+  - `/api/employee` (credentials)
+- Catch-all Employee Requests
+  - `employeeRequestsRouter` mounted at `/api/` last to avoid shadowing specific modules
+
+Core and Middleware Responsibilities
+------------------------------------
+- Backend/src/core/*
+  - database: DB pool and helpers; `assertDatabaseConnection()`
+  - logger: structured logging
+  - bootstrap: initial data seeding (e.g., admin user)
+  - graceful: signal handling and orderly shutdown
+  - middleware (under core or middleware dir): error handling, not-found, request logging
+- Backend/src/middleware/*
+  - CORS, security headers, HTTPS enforcement, metrics, profiler
+
+Typical Request Flow
+--------------------
+1) Client sends an HTTP request to `/api/...`.
+2) Global middleware runs:
+   - HTTPS enforcement (if applicable)
+   - CORS checks and headers
+   - Security headers (incl. CSP)
+   - Optional metrics collection
+   - Optional profiler (non-prod)
+   - Body parsing (JSON/urlencoded)
+   - Request logging
+3) Rate limiting (if not in DEV_EASY) is applied for `/api`.
+4) Router dispatch: `apiRouter` routes the request to feature-specific routers based on the path.
+5) Module handler/controller executes business logic:
+   - Validates request payloads
+   - Checks authentication and authorization where required
+   - Interacts with the database (via core/database and module services)
+   - Returns a structured JSON response or an error
+6) If no route matched, `notFoundHandler` returns a 404 JSON.
+7) Errors thrown by handlers are processed by `errorHandler`, which logs and returns standardized error payloads.
+
+Frontend Flow
+-------------
+- The server statically serves assets:
+  - `/Frontend/HTML` (no index auto-selection)
+  - `/Frontend/CSS`
+  - `/Frontend/jS`
+- The HTML/JS pages consume the `/api/...` endpoints defined above.
+
+Operations & Observability
+--------------------------
+- Health: `/api/health` (liveness), `/api/ready` (readiness with DB check)
+- Metrics: `/metrics` (if enabled)
+- Logs: Structured logs via core logger
+- Graceful Shutdown: Ensures HTTP and DB close cleanly on process signals
+
+Where to Extend
+---------------
+- Add new API surface:
+  1) Create a new module under `Backend/src/modules/<feature>/`
+  2) Expose a `*.routes.ts` with an Express router
+  3) Register it in `Backend/src/routes/index.ts` BEFORE the catch-all `employeeRequestsRouter`
+- Add middleware:
+  - Place in `Backend/src/middleware/` (or `core/middleware` if cross-cutting)
+  - Mount inside `createApp()` in the correct order (security/CORS before routes, error handlers last)
+
+Notes
+-----
+- Order of middleware and routes is intentional for security and correctness.
+- Readiness depends on DB connectivity; failures will set `/api/ready` to `503`.
+
+Frontend Pages and Purposes
+---------------------------
+- admin-approval-management.html: Admin interface to configure and manage approval workflows.
+- admin-approval-status.html: Overview of approvals status across requests for admins.
+- admin-assignment-detail.html: Admin detail view for an individual assignment request.
+- admin-assignment-inbox.html: Admin inbox listing assignment requests to review.
+- admin-assignment-termination-detail.html: Admin detail view for assignment termination requests.
+- admin-assignment-termination-inbox.html: Admin inbox listing assignment termination requests.
+- admin-certificate-detail.html: Admin detail view for certificate-related requests.
+- admin-certificate-inbox.html: Admin inbox listing certificate requests.
+- admin-clearance-detail.html: Admin detail view for clearance requests.
+- admin-clearance-inbox.html: Admin inbox listing clearance requests.
+- admin-commissioner.html: Admin portal for commissioner ticket operations and oversight.
+- admin-credentials-approval.html: Admin review and approval of employee credential submissions.
+- admin-dashboard.html: Main admin dashboard with KPIs and quick links.
+- admin-delegation-detail.html: Admin detail view for delegation requests.
+- admin-delegations-inbox.html: Admin inbox listing delegation requests.
+- admin-delegations.html: Admin management hub for delegations and related settings.
+- admin-direct-detail.html: Admin detail view for direct request type.
+- admin-direct-inbox.html: Admin inbox listing direct requests.
+- admin-employees-cards.html: Visual card/grid view of employees for admins.
+- admin-employees.html: Admin employees directory and management page.
+- admin-exit-inbox.html: Admin inbox listing exit requests.
+- admin-experience-detail.html: Admin detail view for experience certificate requests.
+- admin-housing-allowance-detail-enhanced.html: Enhanced admin detail view for housing allowance requests.
+- admin-housing-allowance-detail.html: Admin detail view for housing allowance requests.
+- admin-housing-allowance-inbox.html: Admin inbox listing housing allowance requests.
+- admin-internal-transfer-detail.html: Admin detail view for internal transfer requests.
+- admin-internal-transfer-inbox.html: Admin inbox listing internal transfer requests.
+- admin-leave-detail.html: Admin detail view for leave requests.
+- admin-leave-inbox.html: Admin inbox listing leave requests.
+- admin-login-activity.html: Admin view into login audit and activity logs.
+- admin-permission-config.html: Admin configuration of permissions and role capabilities.
+- admin-privileges-overview.html: Overview of privilege assignments and summaries.
+- admin-profile.html: Admin user profile settings.
+- admin-role-management.html: Admin role creation, assignment, and management interface.
+- admin-unified-inbox.html: Consolidated admin inbox across multiple request types.
+- assignment-request.html: Employee form to submit a new assignment request.
+- assignment-termination-request.html: Employee form to submit an assignment termination request.
+- certificate-request.html: Employee form to request a certificate.
+- check-token.html: Utility page to validate/display the current auth token.
+- cleanup-localStorage.html: Utility to clean structured items from localStorage.
+- clear-storage.html: Utility to clear browser storage quickly.
+- clearance-request.html: Employee form to submit a clearance request.
+- debug-admin-dashboard.html: Debug/testing view of admin dashboard data and layout.
+- debug-dashboard.html: General debug/testing dashboard for data and UI.
+- delegation-request.html: Employee form to submit a delegation request.
+- direct-request.html: Employee form to submit a direct request.
+- employee-approvals.html: Employee view of approvals pending their action.
+- employee-certificate-detail.html: Employee detail view for a specific certificate request.
+- employee-certificate-request.html: Employee form to submit a certificate request.
+- employee-clearance-detail.html: Employee detail view for a specific clearance request.
+- employee-commissioner-inbox.html: Employee view for commissioner-related tickets assigned or relevant to them.
+- employee-dashboard.html: Main employee dashboard with tasks and summaries.
+- employee-delegations.html: Employee view and management of their delegations.
+- employee-exit-request.html: Employee form to submit an exit request.
+- employee-experience-detail.html: Employee detail view for an experience certificate.
+- employee-leave-request.html: Employee form to submit a leave request.
+- employee-maternity-leave-request.html: Employee form to submit a maternity leave request.
+- employee-onboarding-detail.html: Employee detail view for onboarding data/process.
+- employee-profile.html: Employee profile settings and personal info.
+- employee-request-history.html: Employee history of submitted requests and statuses.
+- employee-role-inbox.html: Employee inbox for role-related actions.
+- employee-roles.html: Employee view of their assigned roles and privileges.
+- employee-saudi-doctors-housing.html: Specialized housing flow/info for Saudi doctors.
+- experience-certificate-request.html: Employee form to request an experience certificate.
+- housing-allowance-request.html: Employee form to request housing allowance.
+- internal-transfer-request.html: Employee form to request internal transfer.
+- login.html: Authentication page for users to sign in.
+- manager-pending-approvals.html: Manager view of approvals awaiting their decision.
+- my-exit-requests.html: Employee list of their exit requests and statuses.
+- quick-clear-localStorage.html: Quick utility to clear localStorage for troubleshooting.
+- reset-password.html: Password reset flow for users.
+- signature-demo.html: Demo page for signature capture and rendering.
+- signup.html: User registration page.
+- system-diagnostics.html: System diagnostics and environment checks.
+- test-approve-reject.html: Test page to simulate approve/reject flows.
+- test-dependencies.html: Test page to verify required frontend dependencies are loaded.
+- test-inbox-data.html: Test page to inspect/mock inbox data.
+
+Hidden/Utility Pages (hidden/)
+- hidden/admin-experience-detail.html: Hidden variant for experience detail testing.
+- hidden/certificate-request.html: Hidden variant for certificate request testing.
+- hidden/employee-certificate-request.html: Hidden variant for employee certificate request testing.
+- hidden/employee-exit-request.html: Hidden variant for employee exit request testing.
+- hidden/employee-leave-request.html: Hidden variant for employee leave request testing.
+
+Public Assets (public/)
+- public/image.png, public/image copy.png, public/WhatsApp Image ...: Static images used across pages.
+
+Vendors and Assets
+- vendor/email.min.js: Client-side email helper library.
+- vendor/xlsx.full.min.js: SheetJS library for reading/writing Excel files.
+- assets/data/employees.xlsx: Sample/reference employees data used by admin pages.
+
+Reference Guides (in Frontend/HTML for convenience)
+- REQUEST_FORMS_GUIDE.md: End-user guide for request forms.
+- REQUEST_FORMS_TECHNICAL_GUIDE.md: Technical notes for request form implementation.
+- REQUEST_FORMS_VISUAL_GUIDE.md: Visual reference for request forms.
+- SYSTEM_GUIDE.md: System-level user guide.
+- URL_STRUCTURE.md: URL conventions and structure reference.
+
+API Endpoints Appendix (High-Level)
+-----------------------------------
+Mounted under `/api` (see `Backend/src/routes/index.ts`). Each module defines its own sub-routes and handlers. This appendix lists the route groups and their intent:
+- /auth: Authentication (login, refresh, logout, session checks)
+- /admin: Administrative operations and dashboards
+- /assignment: Assignment request creation, retrieval, approval workflow
+- /assignment-termination: Assignment termination request lifecycle
+- /certificate: Employee certificate request lifecycle
+- /experience-certificate: Experience certificate request lifecycle
+- /internal-transfer: Internal transfer request lifecycle
+- /exit: Exit requests lifecycle
+- /leave-request: Leave requests lifecycle
+- /multi-approval and /approvals: Multi-approver workflows (pending, approve/reject)
+- /commissioner/tickets: Commissioner tickets APIs (create, list, update)
+- /maternity-leave: Maternity leave request lifecycle
+- /housing-allowance: Housing allowance workflows
+- /clearance: Clearance request lifecycle
+- /delegation: Delegation request lifecycle
+- /onboarding: Onboarding related APIs
+- /roles: Role definitions and assignments
+- /users: User directory and management
+- /profile: Profile retrieval and updates
+- /upload: File uploads (subject to size/type limits)
+- /employee: Credentials and employee admin endpoints
+- / (catch-all employee requests): Generic employee request listings and operations
+
+Environment Variables (from Backend/src/config/env.ts)
+------------------------------------------------------
+Core runtime
+- NODE_ENV (development|staging|production|test, default: development)
+- PORT (number, default: 3037)
+- HOST (string, optional)
+- DEV_EASY (boolean, relaxed local dev mode; default: false)
+
+Database
+- DB_HOST (required)
+- DB_PORT (number, default: 3306)
+- DB_NAME (required)
+- DB_USER (required)
+- DB_PASSWORD (optional, default: empty)
+- DB_CONNECTION_LIMIT (number, default: 10)
+
+Auth & tokens
+- JWT_SECRET (min 32 chars, required)
+- ACCESS_TTL (e.g., 15m, default: 15m)
+- REFRESH_TTL (e.g., 7d, default: 7d)
+
+CORS
+- CORS_ALLOWED_ORIGINS (CSV of origins; may merge from legacy CORS_ORIGINS)
+- CORS_ORIGINS (legacy; merged into CORS_ALLOWED_ORIGINS if set)
+
+Feature flags
+- COMMISSIONER_SERVER_ENABLED (boolean)
+- UPLOAD_SCAN_ENABLED (boolean)
+- TRUST_PROXY (boolean)
+
+Logging & rate limiting
+- LOG_LEVEL (fatal|error|warn|info|debug|trace, default: info)
+- RATE_LIMIT_WINDOW_MS (number, default: 900000)
+- RATE_LIMIT_MAX (number, default: 100)
+- ENABLE_REQUEST_LOGGING (boolean, default: false)
+
+Bootstrap defaults (optional)
+- DEFAULT_ADMIN_EMAIL
+- DEFAULT_ADMIN_PASSWORD (min 8 chars)
+- DEFAULT_ADMIN_NAME
+- DEFAULT_ADMIN_EMPLOYEE_NUMBER
+- DEFAULT_ADMIN_DEPARTMENT_CODE
+- DEFAULT_ADMIN_PHONE
+- DEFAULT_ADMIN_FULL_NAME_AR
+- DEFAULT_ADMIN_POSITION
+
+Uploads
+- UPLOAD_MAX_SIZE (bytes, default: 10485760)
+- UPLOAD_ALLOWED_TYPES (CSV of MIME types)
+- UPLOAD_STORAGE_PATH (filesystem path)
+
+Frontend Page Titles (from <title> tags)
+----------------------------------------
+admin-dashboard.html: لوحة الإدارة – مستشفى الملك عبدالعزيز
+admin-commissioner.html: إدارة المفوضين - مستشفى الملك عبدالعزيز
+admin-approval-status.html: حالة الموافقات - لوحة الإدارة
+admin-housing-allowance-detail-enhanced.html: تفاصيل طلب بدل سكن – أدمن
+employee-maternity-leave-request.html: نموذج طلب إجازة رعاية مولود (أمومة)
+assignment-termination-request.html: مستشفى الملك عبدالعزيز – إنهاء تكليف
+employee-saudi-doctors-housing.html: استمارة صرف بدل سكن أطباء سعوديين
+internal-transfer-request.html: مستشفى الملك عبدالعزيز – قرار نقل داخلي
+assignment-request.html: مستشفى الملك عبدالعزيز – قرار تكليف
+admin-experience-detail.html: تفاصيل طلب شهادة خبرة – أدمن
+hidden/admin-experience-detail.html: تفاصيل طلب شهادة خبرة – أدمن
+admin-leave-detail.html: تفاصيل طلب إجازة – أدمن
+admin-leave-inbox.html: وارد طلبات الإجازات - أدمن
+admin-housing-allowance-inbox.html: وارد طلبات بدل السكن - أدمن
+admin-housing-allowance-detail.html: تفاصيل طلب بدل سكن – أدمن
+experience-certificate-request.html: مستشفى الملك عبدالعزيز – طلب شهادة خبرة
+housing-allowance-request.html: مستشفى الملك عبدالعزيز – طلب بدل سكن
+employee-dashboard.html: مستشفى الملك عبدالعزيز – لوحة الموظف
+employee-exit-request.html: طلب إنهاء العمل – مستشفى الملك عبدالعزيز
+admin-credentials-approval.html: إدارة الشهادات والتراخيص - مستشفى الملك عبدالعزيز
+admin-role-management.html: مستشفى الملك عبدالعزيز – إدارة الأدوار (أدمن)
+admin-privileges-overview.html: مستشفى الملك عبدالعزيز – نظام الصلاحيات والاعتمادات
+admin-assignment-detail.html: تفاصيل قرار تكليف
+admin-assignment-termination-inbox.html: قرارات إنهاء التكليف – الأدمن
+admin-assignment-termination-detail.html: تفاصيل إنهاء تكليف
+admin-assignment-inbox.html: قرارات التكليف – الأدمن
+admin-internal-transfer-inbox.html: قرارات النقل الداخلي – الأدمن
+admin-internal-transfer-detail.html: تفاصيل قرار نقل داخلي
+admin-approval-management.html: إدارة الاعتمادات - الأدمن
+clearance-request.html: مستشفى الملك عبدالعزيز – طلب إخلاء طرف
+employee-certificate-request.html: طلب شهادة خبرة – مستشفى الملك عبدالعزيز
+delegation-request.html: مستشفى الملك عبدالعزيز – طلب تفويض
+direct-request.html: مستشفى الملك عبدالعزيز – طلب مباشرة عمل
+employee-leave-request.html: طلب إجازة – مستشفى الملك عبدالعزيز
+certificate-request.html: طلب شهادة تعريف - مستشفى الملك عبدالعزيز
+employee-delegations.html: مستشفى الملك عبدالعزيز – تفويضاتي
+employee-commissioner-inbox.html: وارد التفويضات - نظام إدارة المستشفى
+admin-login-activity.html: نشاط تسجيل الدخول – Admin Login Activity
+check-token.html: فحص التوكن
+employee-profile.html: مستشفى الملك عبدالعزيز – الملف الشخصي
+admin-employees.html: الموظفون – الأدمن
+admin-unified-inbox.html: صندوق الوارد الموحد – مستشفى الملك عبدالعزيز
+employee-certificate-detail.html: تفاصيل طلب شهادة التعريف
+admin-certificate-detail.html: تفاصيل طلب شهادة – أدمن
+admin-direct-detail.html: تفاصيل طلب مباشرة – أدمن
+admin-clearance-detail.html: تفاصيل طلب إخلاء طرف – أدمن
+admin-profile.html: مستشفى الملك عبدالعزيز – الملف الشخصي (أدمن)
+employee-clearance-detail.html: تفاصيل طلب إخلاء طرف
+employee-onboarding-detail.html: تفاصيل طلب مباشرة العمل
+employee-experience-detail.html: تفاصيل طلب مباشرة العمل
+employee-approvals.html: مستشفى الملك عبدالعزيز – موافقاتي
+hidden/employee-leave-request.html: طلب إجازة – مستشفى الملك عبدالعزيز
+employee-request-history.html: سجل الطلبات – مستشفى الملك عبدالعزيز
+admin-certificate-inbox.html: وارد الشهادات والإجازات – مستشفى الملك عبدالعزيز
+my-exit-requests.html: طلبات إنهاء العمل – مستشفى الملك عبدالعزيز
+admin-exit-inbox.html: وارد طلبات إنهاء العمل – مستشفى الملك عبدالعزيز
+hidden/employee-exit-request.html: طلب إنهاء العمل – مستشفى الملك عبدالعزيز
+hidden/employee-certificate-request.html: طلب شهادة خبرة – مستشفى الملك عبدالعزيز
+hidden/certificate-request.html: طلب شهادة تعريف - مستشفى الملك عبدالعزيز
+admin-delegations.html: مستشفى الملك عبدالعزيز – إدارة التفويضات (أدمن)
+employee-role-inbox.html: وارد الأدوار - نظام إدارة المستشفى
+employee-roles.html: مستشفى الملك عبدالعزيز – أدواري وصلاحياتي
+admin-permission-config.html: إدارة الصلاحيات - نظام إدارة المستشفى
+manager-pending-approvals.html: مستشفى الملك عبدالعزيز – الطلبات المعلقة
+admin-delegation-detail.html: تفاصيل التفويض – أدمن
+system-diagnostics.html: تشخيص النظام الشامل - مستشفى الملك عبدالعزيز
+signup.html: مستشفى الملك عبدالعزيز – إنشاء حساب جديد
+reset-password.html: إعادة تعيين كلمة المرور
+admin-employees-cards.html: إدارة الموظفين - الأدمن
+admin-direct-inbox.html: مستشفى الملك عبدالعزيز – وارد طلبات مباشرة (أدمن)
+admin-delegations-inbox.html: مستشفى الملك عبدالعزيز – وارد التفويضات (أدمن)
+login.html: مستشفى الملك عبدالعزيز – تسجيل الدخول
+test-inbox-data.html: 🔍 Test Inbox Data
+test-dependencies.html: اختبار التبعيات - مستشفى الملك عبدالعزيز
+test-approve-reject.html: 🔍 Test Approve/Reject Functions
+admin-clearance-inbox.html: مستشفى الملك عبدالعزيز – وارد طلبات الإخلاء (أدمن)
+signature-demo.html: توقيع المطور - معاينة
+debug-dashboard.html: 🔍 Dashboard Debug Test
+debug-admin-dashboard.html: 🔍 Admin Dashboard Debug Test
+clear-storage.html: تنظيف التخزين المحلي - مستشفى الملك عبدالعزيز
+cleanup-localStorage.html: 🧹 LocalStorage Cleanup
+quick-clear-localStorage.html: Quick LocalStorage Clear
+
+Detailed API Endpoints (Methods & Paths by Module)
+--------------------------------------------------
+Note: Base prefix is `/api/<module>`, except where noted. Authentication is required unless stated as public, and some routes require specific roles.
+
+auth (prefix: /api/auth)
+- POST /register
+- POST /signup
+- POST /login           (rate-limited)
+- POST /refresh         (rate-limited)
+- POST /revoke          (rate-limited)
+- GET  /me              (authenticate)
+
+admin (prefix: /api/admin)
+- GET  /approvals/health-check
+- GET  /approvals/stuck-requests
+- POST /approvals/fix-request
+- POST /approvals/recalculate
+- GET  /approvals/overdue
+- GET  /approvals/notification-history
+- POST /approvals/notify-admins
+- GET  /users
+- GET  /users/:id
+- POST /users                             (rate-limited)
+- PUT  /users/:id                         (rate-limited)
+- DELETE /users/:id                       (rate-limited)
+- GET  /employees                         (alias to /users)
+- GET  /privileges-overview
+- POST /requests/direct/:id/approve       (simulated)
+- POST /requests/direct/:id/reject        (simulated)
+- POST /requests/clearance/:id/approve    (simulated)
+- POST /requests/clearance/:id/reject     (simulated)
+- GET  /stats
+
+multi-approval (prefix: /api/multi-approval and alias /api/approvals)
+- GET  /requests/:type/:id/approvals
+- POST /requests/:type/:id/approve
+- POST /requests/:type/:id/reject
+- GET  /pending
+- GET  /types
+- GET  /users/me/roles
+- POST /requests/:type/:id/initialize-approvals
+- GET  /admin/stuck-requests
+- GET  /admin/health-check
+- POST /admin/fix-request
+- POST /admin/recalculate
+- GET  /admin/overdue
+- GET  /admin/notification-history
+- POST /admin/notify-admins
+- POST /requests/:type/:id/notify-approvers
+- GET  /requests/:type/:id/timeline
+
+employee-requests (prefix: /api)
+- POST /employee/requests/clearance
+- POST /employee/requests/onboarding
+- POST /employee/requests/delegation
+- GET  /employee/requests
+- GET  /employee/requests/summary         (authenticate)
+- GET  /employee/clearances
+- GET  /employee/onboardings
+- GET  /employee/onboardings/:id
+- GET  /employee/clearances/:id
+- GET  /employee/certificates
+- GET  /employee/experiences
+- GET  /employee/exits
+- GET  /admin/requests/recent             (roles: ADMIN)
+- GET  /admin/requests/summary            (roles: ADMIN)
+- POST /admin/requests/:type/:id/approve  (roles: ADMIN, rate-limited)
+- POST /admin/requests/:type/:id/reject   (roles: ADMIN, rate-limited)
+
+leave (prefix: /api/leave-request)
+- POST   /               (authenticate)
+- GET    /mine           (authenticate)
+- GET    /:id            (authenticate)
+- DELETE /:id            (authenticate)
+- GET    /               (roles: ADMIN|HR|MANAGER)
+- PUT    /:id/approve    (roles: ADMIN|HR|MANAGER)
+- PUT    /:id/reject     (roles: ADMIN|HR|MANAGER)
+- PUT    /:id/status     (roles: ADMIN|HR|MANAGER)
+- POST   /:id/comments   (authenticate)
+- GET    /:id/comments   (authenticate)
+- GET    /:id/history    (authenticate)
+
+assignment (prefix: /api/assignment)
+- POST /                 (authenticate)
+- GET  /:id              (authenticate)
+- PUT  /:id/status       (roles: ADMIN|HR|MANAGER)
+
+assignment-termination (prefix: /api/assignment-termination)
+- POST /                 (authenticate)
+- GET  /:id              (authenticate)
+- PUT  /:id/status       (roles: ADMIN|HR|MANAGER)
+
+internal-transfer (prefix: /api/internal-transfer)
+- POST /                 (authenticate)
+- GET  /:id              (authenticate)
+- PUT  /:id/status       (roles: ADMIN|HR|MANAGER)
+
+certificate (prefix: /api/certificate)
+- POST /                 (authenticate)
+- GET  /:id              (authenticate)
+- PUT  /:id/status       (roles: ADMIN|HR|MANAGER)
+
+experience-certificate (prefix: /api/experience-certificate)
+- POST /                 (authenticate)
+- GET  /:id              (authenticate)
+- PUT  /:id/status       (roles: ADMIN|HR|MANAGER)
+
+exit (prefix: /api/exit)
+- POST /                 (authenticate)
+- GET  /:id              (authenticate)
+- PUT  /:id/status       (roles: ADMIN|HR|MANAGER)
+
+maternity-leave (prefix: /api/maternity-leave)
+- POST /                 (authenticate)
+- GET  /my-requests      (authenticate)
+- GET  /mine             (alias)
+- GET  /                 (roles: ADMIN|HR|MANAGER)
+- GET  /:id              (roles: ADMIN|HR|MANAGER)
+- PATCH /:id/status      (roles: ADMIN|HR|MANAGER)
+
+housing-allowance (prefix: /api/housing-allowance)
+- POST /                 (authenticate)
+- GET  /my-requests      (authenticate)
+- GET  /mine             (alias)
+- GET  /                 (roles: ADMIN|HR|MANAGER)
+- GET  /:id              (roles: ADMIN|HR|MANAGER)
+- PATCH /:id/status      (roles: ADMIN|HR|MANAGER)
+
+clearance (prefix: /api/clearance)
+- POST   /                       (authenticate)
+- GET    /my-clearances          (authenticate)
+- GET    /:id                    (authenticate)
+- PATCH  /:id/status             (roles: ADMIN|HR|MANAGER)
+- GET    /admin/all              (roles: ADMIN|HR|MANAGER)
+- POST   /admin/:id/approve      (roles: ADMIN|HR|MANAGER)
+- POST   /admin/:id/reject       (roles: ADMIN|HR|MANAGER)
+- POST   /employee/requests/clearance     (legacy)
+- GET    /employee/requests/clearance     (legacy)
+- POST   /create                 (legacy)
+- GET    /list                   (legacy)
+- GET    /admin/list             (legacy)
+- GET    /admin/pending          (legacy)
+- POST   /:id/approve            (legacy)
+- POST   /:id/reject             (legacy)
+- PUT    /:id/status             (legacy)
+- POST   /admin/migrate-data     (roles: ADMIN|HR)
+- GET    /health                 (public)
+
+credentials (prefix: /api/employee)
+- POST   /certificates                 (authenticate)
+- GET    /certificates                 (authenticate)
+- DELETE /certificates/:id             (authenticate)
+- GET    /licenses/expiring            (roles: ADMIN|HR)
+- POST   /licenses                     (authenticate)
+- GET    /licenses                     (authenticate)
+- DELETE /licenses/:id                 (authenticate)
+- GET    /admin/pending-credentials    (roles: ADMIN|HR)
+- GET    /admin/pending-certificates   (roles: ADMIN|HR)
+- GET    /admin/pending-licenses       (roles: ADMIN|HR)
+- POST   /admin/certificates/:id/approve (roles: ADMIN|HR)
+- POST   /admin/certificates/:id/reject  (roles: ADMIN|HR)
+- POST   /admin/licenses/:id/approve     (roles: ADMIN|HR)
+- POST   /admin/licenses/:id/reject      (roles: ADMIN|HR)
+
+users (prefix: /api/users) — standard CRUD & listing (see routes)
+roles (prefix: /api/roles) — roles, templates, permissions (see routes)
+profile (prefix: /api/profile) — profile get/update
+upload (prefix: /api/upload) — file upload endpoints
+onboarding, delegation, commissioner/tickets — see respective modules
+
+Typical Requests/Responses and Error Codes
+------------------------------------------
+Conventions:
+- Success: 200/201 with JSON payload { data, meta? }
+- Validation errors: 400 { error: 'VALIDATION_ERROR', details: [...] }
+- Auth: 401 { error: 'UNAUTHORIZED' } when token missing/invalid
+- RBAC: 403 { error: 'FORBIDDEN' } when role insufficient
+- Not found: 404 { error: 'NOT_FOUND' }
+- Rate limit: 429 { error: 'TOO_MANY_REQUESTS', Retry-After: seconds }
+- Server: 500 { error: 'INTERNAL_ERROR' }
+
+Examples (abbreviated):
+- POST /api/auth/login
+  Request: { email, password }
+  Response (200): { accessToken, refreshToken, user: { id, name, roles } }
+  Errors: 400 (invalid), 401 (bad credentials), 429 (rate-limited)
+
+- POST /api/leave-request
+  Request: { type, startDate, endDate, reason }
+  Response (201): { id, status: 'PENDING', ... }
+  Errors: 400 (schema), 401 (auth), 403 (role), 500
+
+- PUT /api/leave-request/:id/approve
+  Response (200): { id, status: 'APPROVED' }
+  Errors: 401, 403, 404, 409 (invalid state)
+
+Authentication and RBAC
+-----------------------
+Auth flow:
+- Login: POST /api/auth/login → returns access (short TTL) and refresh (long TTL) tokens
+- Me: GET /api/auth/me with Authorization: Bearer <access>
+- Refresh: POST /api/auth/refresh to rotate tokens (rate-limited)
+- Revoke: POST /api/auth/revoke to invalidate refresh token (rate-limited)
+- Backend expects Authorization: Bearer <access> on protected routes
+
+RBAC:
+- `authenticate` middleware validates access tokens and sets `req.auth`
+- `requireRoles([...])` checks roles from token or DB (with legacy admin email fallback)
+- Common roles: ADMIN, HR, MANAGER, EMPLOYEE
+- Examples:
+  - Admin-only: /api/admin/**, multi-approval admin endpoints, various status updates
+  - Employee-only: personal request creation and “mine” listings
+
+Role → Access Matrix (high-level)
+- ADMIN: All admin endpoints, approvals, listings across modules
+- HR: Most approval/status endpoints for HR workflows (leave, credentials, etc.)
+- MANAGER: Approvals for team-related requests (leave, assignment)
+- EMPLOYEE: Create/view own requests, profile, credentials
+
+Data Model and Workflows
+------------------------
+Key entities (indicative):
+- users, roles, user_roles
+- requests per type (assignment, assignment_termination, internal_transfer, leave, clearance, certificate, experience, exit, maternity_leave, housing_allowance, onboarding, delegation)
+- approvals and approval timelines (multi-approval)
+- credentials (certificates, licenses)
+
+Relationships (ER-style summary):
+- user 1..* user_roles ..* roles
+- user 1..* requests (by type)
+- request 1..* approvals (multi-approval)
+- user 1..* credentials (certificates/licenses)
+
+State machines (typical):
+- Request types: PENDING → APPROVED | REJECTED
+- Some allow: PENDING → IN_REVIEW → APPROVED/REJECTED
+- Status updates gated by roles (ADMIN/HR/MANAGER) and validated per module
+
+Security and Limits
+-------------------
+CORS policy:
+- Allowed origins from env `CORS_ALLOWED_ORIGINS` (CSV). In DEV_EASY, all origins allowed.
+- Credentials disabled by default.
+
+CSP/security headers:
+- Helmet CSP with defaults; allows inline scripts/styles for legacy pages.
+- Connect-src: 'self' plus allowed origins (and local dev hosts).
+- Other headers: X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy.
+- Report-only CSP mirrored to `/api/csp/report`.
+
+Rate limits:
+- Global `/api` limiter unless DEV_EASY is true.
+- Sensitive endpoints have per-route limits (auth/login/refresh/revoke, admin user ops, approvals).
+
+Upload limits:
+- UPLOAD_MAX_SIZE default 10 MB; allowed MIME types from `UPLOAD_ALLOWED_TYPES`.
+- Upload scanning optional flag `UPLOAD_SCAN_ENABLED`.
+
+Operations and Observability
+----------------------------
+Run
+- Dev: From `Backend/`, `node server.js` (auto-builds if needed) or `npm run dev` if available.
+- Env: `.env` at repo root controls configuration; see variable list above.
+
+Build/Deploy
+- `npm run build` from `Backend/` to produce `dist/`
+- Start with `node server.js` which runs `dist/server.js`
+- Configure HOST/PORT, DB_*, JWT_SECRET, CORS origins, and flags
+
+Health/Readiness
+- GET /api/health → { status: 'ok' }
+- GET /api/ready → checks DB (`assertDatabaseConnection()`); 200 ready, 503 unready
+
+Metrics and Tracing
+- /metrics (if enabled) for Prometheus scraping
+- OpenTelemetry tracing initialized on startup (initTracing)
+
+Backup/Restore and Migrations
+- SQL migration scripts under `Backend/migrations` and `sql/migrations`
+- Maintenance and setup scripts under `sql/maintenance` and `sql/setup`
+- Use provided scripts in `scripts/` and `Backend/scripts/` for specific ops
+
+Frontend Specifics
+------------------
+Page → primary JS files (examples; see each HTML for full list)
+- admin-dashboard.html → admin-dashboard.js, api-client.js, app-init.js, role-permissions.js
+- employee-dashboard.html → employee-dashboard.js, api-client.js, app-init.js
+- assignment-request.html → assignment-request-inline.js, api-client.js, form-validation-utils.js
+- assignment-termination-request.html → assignment-termination-request-inline.js, api-client.js
+- internal-transfer-request.html → internal-transfer-request-inline.js, api-client.js
+- clearance-request.html → clearance-request-inline.js, api-client.js
+- direct-request.html → direct-request.js, direct-request-inline.js, api-client.js
+- delegation-request.html → delegation-request.js, api-client.js
+- employee-maternity-leave-request.html → employee-maternity-leave-request.js
+- employee-saudi-doctors-housing.html → employee-saudi-doctors-housing.js
+- admin-credentials-approval.html → admin-credentials-approval.js
+- admin-approval-status.html → admin-approval-status.js
+- commissioner/admin pages → commissioner-manager.js (where applicable)
+
+Browser support and token storage
+- Access tokens sent in `Authorization: Bearer <token>` headers via `api-client.js`
+- LocalStorage used for certain debug/util flows; production pages use headers (avoid query params)
+
+Pagination/sorting/filtering
+- Many listings accept query params (e.g., page, limit, sort, filter) — align UI with API expectations
+- Frontend utilities: `detail-view-utils.js`, `request-status-checker.js` support common display patterns
+
+Module Parameter Schemas and Example Payloads
+---------------------------------------------
+Note: Schemas use Zod; below are key fields and minimal valid examples.
+
+- assignment (create, status update)
+  Schema: `createAssignmentSchema`
+  Required: employeeName, assignmentType (temporary|permanent|project_based|acting), newRole, assignmentReason, startDate
+  Example (create):
+    { "employeeName":"أحمد", "assignmentType":"temporary", "newRole":"مشرف", "assignmentReason":"حاجة العمل", "startDate":"2025-01-01" }
+  Status update: { "status":"APPROVED", "adminNotes":"..." }
+
+- internal-transfer (create, status update)
+  Schema: `createInternalTransferSchema`
+  Required: employeeName, currentDepartment, targetDepartment, transferReason, effectiveDate
+  Example:
+    { "employeeName":"سارة", "currentDepartment":"الطوارئ", "targetDepartment":"الجراحة", "transferReason":"إعادة توزيع", "effectiveDate":"2025-01-10" }
+  Status update: { "status":"APPROVED" }
+
+- assignment-termination (status update model similar to above)
+  Example:
+    { "status":"APPROVED", "adminNotes":"..." }
+
+- certificate (create, status update)
+  Schema: `createCertificateSchema`
+  Required: employeeName, nationality
+  Optional: occupation|jobTitle, department, iqamaNumber, passportNumber, educationPlace, requestNotes
+  Example:
+    { "employeeName":"محمد", "nationality":"سعودي", "jobTitle":"طبيب", "department":"القلب" }
+  Status update: { "status":"approved", "adminNotes":"..." }
+
+- experience-certificate (create, status update)
+  Schema: `createExperienceSchema`
+  Required: employeeName, position, department, nationality, serviceType, startDate, endDate
+  Example:
+    { "employeeName":"ليلى", "position":"ممرضة", "department":"العناية", "nationality":"سعودي", "serviceType":"دوام كامل", "startDate":"2023-01-01", "endDate":"2024-12-31" }
+  Status update: { "status":"approved" }
+
+- exit (create, status update)
+  Schema: `createExitSchema`
+  Required: employeeName, jobTitle, department
+  Example:
+    { "employeeName":"نورة", "jobTitle":"أخصائي", "department":"المعامل", "exitReasons":"ظروف خاصة" }
+  Status update: { "status":"approved" }
+
+- delegation (create, status update, add signature)
+  Schema: `createDelegationSchema`
+  Required: delegationType
+  Example (create):
+    { "delegationType":"تصريح", "reason":"ندب مؤقت", "startDate":"2025-02-01", "endDate":"2025-02-28" }
+  Status update: { "status":"APPROVED" }
+  Add signature: { "departmentId":5, "signerName":"مدير القسم", "signerTitle":"مدير", "signatureDate":"2025-02-01" }
+
+- clearance (create, status update, add signature)
+  Schema: `createClearanceSchema`
+  Required: referenceNumber, requestDate, effectiveDate
+  Example (create):
+    { "referenceNumber":"CLR-2025-001", "requestDate":"2025-01-15", "effectiveDate":"2025-01-31", "reason":"إنهاء خدمة" }
+  Status update: { "status":"APPROVED" }
+  Add signature: { "departmentId":3, "signerName":"رئيس القسم", "signerTitle":"رئيس", "signatureDate":"2025-01-20" }
+
+- maternity-leave (create, status update)
+  Schema: `createMaternityLeaveSchema`
+  Required: employeeName, jobTitle, employeeId(10 digits), serviceType(خدمة مدنية|تشغيل ذاتي), department, leaveFromDate, leaveToDate, leaveDuration
+  Example:
+    { "employeeName":"ريم", "jobTitle":"طبيبة", "employeeId":"1234567890", "serviceType":"تشغيل ذاتي", "department":"نساء وولادة", "leaveFromDate":"2025-03-01", "leaveToDate":"2025-05-30", "leaveDuration":90 }
+  Status update: { "status":"APPROVED" }
+
+- housing-allowance (create, status update)
+  Schema: `createHousingAllowanceSchema`
+  Required: employeeName, employeeNumber(digits), jobTitle, department, nationality, letterDate
+  Example:
+    { "employeeName":"د. سامي", "employeeNumber":"12345", "jobTitle":"طبيب", "department":"العيادات", "nationality":"سعودي", "letterDate":"2025-01-01" }
+  Status update: { "status":"APPROVED" }
+
+Per-Route Rate Limits (Overrides)
+---------------------------------
+- /api/auth/login|refresh|revoke: 60 req/min
+- /api/admin/users (POST|PUT): 120 req/min
+- /api/admin/users (DELETE): 60 req/min
+- /api/admin/requests/:type/:id/(approve|reject): 120 req/min
+- /api/admin/approvals/* (mix of GET/POST): typically 60 req/min (per defaults in routes)
+- /api/employee/requests/* (create): 120 req/min
+- /api/users/(me/permissions|departments|job-titles): 100 req/min
+- /api/roles/refresh-token: 60 req/min
+- /api/roles/(assign|remove): 120 req/min
+- /api/permissions/*: 100/60/30 req/min depending on sensitivity
+- /api/role-templates/*: 100/60/30 req/min depending on endpoint
+- Global: `/api` rate limiter active unless `DEV_EASY` is true (window and max from env)
+
+Upload Constraints and Limits
+-----------------------------
+- Endpoints:
+  - POST /api/upload/profile-picture → field: profilePicture (single)
+  - POST /api/upload/documents → field: documents (array, up to 10)
+  - POST /api/upload/:type-documents → field: documents (array, up to 10), type resolves category (clearance|delegation|onboarding|documents|profile)
+  - GET  /api/upload/info/:filename
+  - DELETE /api/upload/:filename
+  - GET  /api/upload/allowed-types → returns { data: { mimetypes: [...] } }
+- Size limit: `UPLOAD_MAX_SIZE` (default 10 MB)
+- Type validation: `validateMimeType(mimetype)` against `getAllowedMimeTypes()`
+- Optional AV scan: `UPLOAD_SCAN_ENABLED=true` enables scanning; unsafe → 400 { error: 'UPLOAD_SCANNED_UNSAFE' }
+
+Full Page → API Calls Map (via api-client.js and inline fetches)
+----------------------------------------------------------------
+- Common utilities
+  - All pages using `api-client.js` call `/api` with Authorization header if logged in
+  - Token refresh handled automatically via `/api/auth/refresh`
+- Admin pages
+  - admin-dashboard.html: `/api/admin/stats`, `/api/admin/requests/*`, roles endpoints
+  - admin-approval-status.html: `/api/approvals/*` (pending, notify-approvers), `/api/admin/approvals/*`
+  - admin-role-management.html: `/api/roles/*`, `/api/users/*` lookups (departments/job-titles)
+  - admin-credentials-approval.html: `/api/employee/admin/pending-*`, approval endpoints
+  - admin-commissioner.html: commissioner manager uses its own module endpoints
+  - admin-unified-inbox.html: `/api/admin/requests/recent`, `/api/admin/requests/summary`
+- Employee pages
+  - employee-dashboard.html: `/api/employee/requests`, `/api/employee/*` summaries
+  - employee-profile.html: `/api/profile/me` (GET/PUT)
+  - employee-request-history.html: `/api/employee/requests`
+  - manager-pending-approvals.html: `/api/approvals/pending`
+- Request forms
+  - assignment-request.html: POST `/api/assignment`
+  - assignment-termination-request.html: POST `/api/assignment-termination`
+  - internal-transfer-request.html: POST `/api/internal-transfer`
+  - clearance-request.html: POST `/api/employee/requests/clearance` (unified), plus `/api/clearance/*` for detail/status
+  - delegation-request.html: POST `/api/delegation`
+  - employee-certificate-request.html: POST `/api/certificate`
+  - experience-certificate-request.html: POST `/api/experience-certificate`
+  - employee-exit-request.html: POST `/api/exit`
+  - employee-maternity-leave-request.html: POST `/api/maternity-leave`
+  - housing-allowance-request.html, employee-saudi-doctors-housing.html: `/api/housing-allowance/*`
+- Upload interactions
+  - Many forms: `/api/upload/profile-picture` or `/api/upload/(documents|<type>-documents)` then reference filenames in payloads
+- Approval actions
+  - manager/admin pages: `/api/approvals/requests/:type/:id/(approve|reject)`, admin aliases under `/api/admin/requests/...`
+
+Complete Endpoint Index (Auto-Enumerated)
+-----------------------------------------
+Format: METHOD  PATH  [notes]
+auth (/api/auth)
+- POST /register
+- POST /signup
+- POST /login [rate-limited]
+- POST /refresh [rate-limited]
+- POST /revoke [rate-limited]
+- GET  /me [auth]
+
+admin (/api/admin)
+- GET  /approvals/health-check
+- GET  /approvals/stuck-requests
+- POST /approvals/fix-request
+- POST /approvals/recalculate
+- GET  /approvals/overdue
+- GET  /approvals/notification-history
+- POST /approvals/notify-admins
+- GET  /users
+- GET  /users/:id
+- POST /users [rate-limited]
+- PUT  /users/:id [rate-limited]
+- DELETE /users/:id [rate-limited]
+- GET  /employees
+- GET  /privileges-overview
+- GET  /stats
+- POST /requests/direct/:id/approve [rate-limited]
+- POST /requests/direct/:id/reject [rate-limited]
+- POST /requests/clearance/:id/approve [rate-limited]
+- POST /requests/clearance/:id/reject [rate-limited]
+
+users (/api/users)
+- GET /me [auth]
+- GET /me/permissions [auth, rate-limited]
+- GET / [auth, roles: ADMIN]
+- GET /by-email/:email [auth, roles: ADMIN|MANAGER|HR]
+- GET /departments [auth, rate-limited]
+- GET /job-titles [auth, rate-limited]
+
+roles (/api/roles)
+- POST /refresh-token [auth, rate-limited]
+- POST /assign [rate-limited]
+- POST /remove [rate-limited]
+(- additional auditing/list routes present in frontend client usage)
+
+permissions (/api/permissions)
+- Multiple list/modify routes with rate limits 100/60/30 per minute depending on sensitivity
+
+multi-approval (/api/multi-approval and alias /api/approvals)
+- GET  /requests/:type/:id/approvals
+- POST /requests/:type/:id/approve
+- POST /requests/:type/:id/reject
+- GET  /pending
+- GET  /types
+- GET  /users/me/roles
+- POST /requests/:type/:id/initialize-approvals
+- GET  /admin/stuck-requests
+- GET  /admin/health-check
+- POST /admin/fix-request
+- POST /admin/recalculate
+- GET  /admin/overdue
+- GET  /admin/notification-history
+- POST /admin/notify-admins
+- POST /requests/:type/:id/notify-approvers
+- GET  /requests/:type/:id/timeline
+
+employee-requests (/api)
+- POST /employee/requests/clearance [rate-limited]
+- POST /employee/requests/onboarding [rate-limited]
+- POST /employee/requests/delegation [rate-limited]
+- GET  /employee/requests
+- GET  /employee/requests/summary [auth]
+- GET  /employee/clearances
+- GET  /employee/onboardings
+- GET  /employee/onboardings/:id
+- GET  /employee/clearances/:id
+- GET  /employee/certificates
+- GET  /employee/experiences
+- GET  /employee/exits
+- GET  /admin/requests/recent [roles: ADMIN]
+- GET  /admin/requests/summary [roles: ADMIN]
+- POST /admin/requests/:type/:id/approve [roles: ADMIN, rate-limited]
+- POST /admin/requests/:type/:id/reject  [roles: ADMIN, rate-limited]
+
+assignment (/api/assignment)
+- POST / [auth]
+- GET  /:id [auth]
+- PUT  /:id/status [roles: ADMIN|HR|MANAGER]
+- GET  /employee [auth] (via employeeAssignmentRouter '/')
+- GET  /admin [roles: ADMIN|HR|MANAGER] (via adminAssignmentRouter '/')
+
+assignment-termination (/api/assignment-termination)
+- POST / [auth]
+- GET  /:id [auth]
+- PUT  /:id/status [roles: ADMIN|HR|MANAGER]
+- GET  /employee [auth]
+- GET  /admin [roles: ADMIN|HR|MANAGER]
+
+internal-transfer (/api/internal-transfer)
+- POST / [auth]
+- GET  /:id [auth]
+- PUT  /:id/status [roles: ADMIN|HR|MANAGER]
+- GET  /employee [auth]
+- GET  /admin [roles: ADMIN|HR|MANAGER]
+
+certificate (/api/certificate)
+- POST / [auth]
+- GET  /:id [auth]
+- PUT  /:id/status [roles: ADMIN|HR|MANAGER]
+
+experience-certificate (/api/experience-certificate)
+- POST / [auth]
+- GET  /:id [auth]
+- PUT  /:id/status [roles: ADMIN|HR|MANAGER]
+
+leave (/api/leave-request)
+- POST   / [auth]
+- GET    /mine [auth]
+- GET    /:id [auth]
+- DELETE /:id [auth]
+- GET    / [roles: ADMIN|HR|MANAGER]
+- PUT    /:id/approve [roles: ADMIN|HR|MANAGER]
+- PUT    /:id/reject  [roles: ADMIN|HR|MANAGER]
+- PUT    /:id/status  [roles: ADMIN|HR|MANAGER]
+- POST   /:id/comments [auth]
+- GET    /:id/comments [auth]
+- GET    /:id/history  [auth]
+
+exit (/api/exit or legacy '/exit-request' per frontend)
+- POST / (create)
+- GET  / (mine)
+
+clearance (/api/clearance)
+- POST   / [auth]
+- GET    /my-clearances [auth]
+- GET    /:id [auth]
+- PATCH  /:id/status [roles: ADMIN|HR|MANAGER]
+- GET    /admin/all [roles: ADMIN|HR|MANAGER]
+- POST   /admin/:id/approve [roles: ADMIN|HR|MANAGER]
+- POST   /admin/:id/reject  [roles: ADMIN|HR|MANAGER]
+- POST   /employee/requests/clearance (legacy)
+- GET    /employee/requests/clearance (legacy)
+- POST   /create (legacy)
+- GET    /list (legacy)
+- GET    /admin/list (legacy)
+- GET    /admin/pending (legacy)
+- POST   /:id/approve (legacy)
+- POST   /:id/reject (legacy)
+- PUT    /:id/status (legacy)
+- POST   /admin/migrate-data [roles: ADMIN|HR]
+- GET    /health (public)
+
+credentials (/api/employee)
+- POST   /certificates [auth]
+- GET    /certificates [auth]
+- DELETE /certificates/:id [auth]
+- GET    /licenses/expiring [roles: ADMIN|HR]
+- POST   /licenses [auth]
+- GET    /licenses [auth]
+- DELETE /licenses/:id [auth]
+- GET    /admin/pending-credentials [roles: ADMIN|HR]
+- GET    /admin/pending-certificates [roles: ADMIN|HR]
+- GET    /admin/pending-licenses [roles: ADMIN|HR]
+- POST   /admin/certificates/:id/approve [roles: ADMIN|HR]
+- POST   /admin/certificates/:id/reject  [roles: ADMIN|HR]
+- POST   /admin/licenses/:id/approve     [roles: ADMIN|HR]
+- POST   /admin/licenses/:id/reject      [roles: ADMIN|HR]
+
+commissioner (/api/commissioner/tickets)
+- POST / [adminish]
+- POST /:id/revoke [adminish]
+- GET  /all [adminish]
+- GET  /mine [auth]
+- GET  /:id [roles: ADMIN]
+
+login-activity (/api/admin/login-activity)
+- GET /, /sessions, /active, /statistics, /user/:userId
+
+upload (/api/upload)
+- POST /profile-picture [auth]
+- POST /documents [auth]
+- POST /:type-documents [auth]
+- GET  /info/:filename
+- DELETE /:filename
+- GET  /allowed-types
+
+Per-Route Request/Response Examples (from Schemas/Controllers)
+--------------------------------------------------------------
+auth
+- POST /api/auth/login
+  Request: { "identifier":"user@domain.com", "email":"user@domain.com", "password":"secret" }
+  Response: { "success":true, "data":{ "accessToken":"...", "refreshToken":"...", "user":{ "id":1, "name":"...", "roles":["EMPLOYEE"] } } }
+  Errors: 400 (validation), 401 (bad creds), 429 (rate)
+
+leave
+- POST /api/leave-request
+  Request: { "type":"annual", "startDate":"2025-01-01", "endDate":"2025-01-05", "reason":"..." }
+  Response: { "id":123, "status":"PENDING", "type":"annual", ... }
+- PUT /api/leave-request/:id/approve
+  Response: { "id":123, "status":"APPROVED" }
+
+clearance
+- POST /api/clearance
+  Request: { "referenceNumber":"CLR-2025-001", "requestDate":"2025-01-15", "effectiveDate":"2025-01-31", "reason":"..." }
+  Response: { "id":501, "status":"PENDING", ... }
+- PATCH /api/clearance/:id/status
+  Request: { "status":"APPROVED" }
+  Response: { "id":501, "status":"APPROVED" }
+
+assignment
+- POST /api/assignment
+  Request: { "employeeName":"أحمد", "assignmentType":"temporary", "newRole":"مشرف", "assignmentReason":"...", "startDate":"2025-01-01" }
+  Response: { "id":201, "status":"PENDING", ... }
+- PUT /api/assignment/:id/status
+  Request: { "status":"APPROVED" }
+  Response: { "id":201, "status":"APPROVED" }
+
+experience-certificate
+- POST /api/experience-certificate
+  Request: { "employeeName":"ليلى", "position":"ممرضة", "department":"العناية", "nationality":"سعودي", "serviceType":"دوام كامل", "startDate":"2023-01-01", "endDate":"2024-12-31" }
+  Response: { "id":701, "status":"PENDING", ... }
+
+credentials (certificates/licenses)
+- POST /api/employee/certificates
+  Request: { "name":"BLS Certificate", "issuedBy":"...", "issuedAt":"2024-01-01" }
+  Response: { "id":900, "status":"PENDING" }
+- GET /api/employee/licenses/expiring [roles: ADMIN|HR]
+  Response: { "data":[{ "id":1, "name":"...", "expiresAt":"..." }] }
+
+upload
+- POST /api/upload/documents (FormData, field 'documents'[])
+  Response: { "success":true, "data":{ "files":[{ "filename":"<uuid>.pdf", "size":12345, "mimetype":"application/pdf" }] } }
+  Errors: 400 (UPLOAD_SCANNED_UNSAFE), 413 (too large), 415 (unsupported type)
+
+Page → Endpoints Table (End-to-End Scan)
+----------------------------------------
+- admin-dashboard.html
+  - /api/admin/stats, /api/approvals/pending, /api/admin/users, /api/admin/requests/recent, /api/admin/requests/summary
+- admin-approval-status.html
+  - /api/approvals/pending, /api/requests/:type/:id/approvals, /api/admin/approvals/fix-request
+- admin-role-management.html
+  - /api/roles, /api/roles/users, /api/roles/assign, /api/roles/remove, /api/users/departments, /api/users/job-titles
+- admin-credentials-approval.html
+  - /api/employee/admin/pending-credentials
+- admin-commissioner.html
+  - /api/commissioner/tickets, /api/commissioner/tickets/:id/revoke
+- employee-dashboard.html
+  - /api/employee/requests, /api/approvals/pending
+- employee-profile.html
+  - /api/profile/me (GET/PUT), /api/profile/change-password
+- assignment-request.html
+  - /api/assignment
+- assignment-termination-request.html
+  - /api/assignment-termination
+- internal-transfer-request.html
+  - /api/internal-transfer
+- clearance-request.html
+  - /api/employee/requests/clearance, /api/clearance/:id/status, /api/clearance/admin/pending
+- delegation-request.html
+  - /api/delegation, /api/delegation/mine
+- employee-certificate-request.html
+  - /api/experience-certificate (create)
+- employee-exit-request.html
+  - /api/exit-request (legacy path used by page)
+- leave pages
+  - /api/leave-request, /api/leave-request/mine, /api/leave-request/:id/(approve|reject|status|comments|history)
+- uploads (various pages)
+  - /api/upload/profile-picture, /api/upload/documents, /api/upload/:type-documents, /api/upload/info/:filename, /api/upload/:filename
+
+Note: Some endpoints are referenced only in JS client utilities (e.g., admin bulk ops, exports). For an exhaustive, machine-readable index, generate from controllers during CI.
+
+

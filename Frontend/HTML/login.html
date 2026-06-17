@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="../CSS/design-system.css">
+    <link rel="stylesheet" href="../CSS/base-updated.css">
+    <link rel="stylesheet" href="../CSS/components.css">
+    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2214%22>🏥</text></svg>">
+  <title>مستشفى الملك عبدالعزيز – تسجيل الدخول</title>
+
+  <!-- الخط + ملف التنسيق العام إن كان موجود -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../CSS/base.css">
+  <link rel="stylesheet" href="../CSS/styles.css">
+
+  <!-- تنسيقات الصفحة + المودال -->
+  <style>
+    :root{
+      --primary:#2B6CB0;
+      --bg:#f5f6f8;
+      --surface:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+    }
+
+    .login-wrapper{
+      min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      background:var(--bg);
+      padding:24px;
+      font-family:'Tajawal', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      color:var(--text);
+    }
+
+    .login-card{
+      width:100%;
+      max-width:520px;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:50px;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);
+      text-align:center;
+    }
+
+    .logo{ display:flex; align-items:center; justify-content:center; margin-bottom:10px; }
+    .logo img{
+      width:72px; height:72px; object-fit:contain;
+      background:#f3f4f6; border-radius:12px; padding:10px;
+      box-shadow:0 4px 18px rgba(0,0,0,.06);
+    }
+
+    .login-title{ margin:12px 0 20px 0; font-size:26px; font-weight:800; }
+
+    .login-form{ text-align:right; margin-top:6px; }
+    .form-group{ margin-bottom:14px; }
+    .form-group label{ display:block; font-size:14px; color:var(--muted); margin-bottom:6px; }
+
+    .input{
+      width:93%; background:#fff; border:1px solid var(--border); border-radius:10px;
+      height:48px; padding:12px 14px; font-size:16px; outline:none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .input::placeholder{ color:#9ca3af; }
+    .input:focus{ border-color:var(--primary); box-shadow:0 0 0 3px rgba(43,108,176,.15); }
+
+    .btn{ width:100%; border:0; border-radius:10px; padding:12px 14px; font-weight:700; cursor:pointer; }
+    .btn-primary{ background:var(--primary); color:#fff; }
+
+    .links{
+      margin-top:14px; font-size:14px; color:var(--muted);
+      display:flex; gap:8px; justify-content:center;
+    }
+    .links a{ color:inherit; text-decoration:underline; }
+
+    /* ===== Forgot Password Modal ===== */
+    .modal[hidden]{ display:none !important; }
+    .modal__backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.35); }
+    .modal__card{
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center; padding:16px;
+    }
+    .modal__card > *{
+      background:#fff; padding:20px; border-radius:12px;
+      max-width:420px; width:100%;
+      border:1px solid #e5e7eb;
+      box-shadow:0 10px 30px rgba(0,0,0,.15);
+      text-align:right;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="logo">
+        <img src="public/image.png" alt="شعار مستشفى الملك عبدالعزيز">
+      </div>
+
+      <h2 class="login-title">تسجيل الدخول</h2>
+
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="email">البريد الإلكتروني أو اسم المستخدم</label>
+          <input id="email" class="input" type="text" placeholder="name@kauh.sa أو sadmin" autocomplete="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">كلمة المرور</label>
+          <input id="password" class="input" type="password" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+
+        <button type="submit" id="loginBtn" class="btn btn-primary">تسجيل الدخول</button>
+      </form>
+
+      <div class="links">
+        <a href="signup.html" id="signupLink">إنشاء حساب جديد</a>
+        <span>•</span>
+        <!-- تم استبدال الرابط ليشغّل المودال -->
+        <a href="#" id="forgotPasswordLink">نسيت كلمة المرور؟</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Forgot Password -->
+  <div class="modal" id="resetModal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card">
+      <div>
+        <h3 style="margin:0 0 10px; font: weight 800px;">إعادة تعيين كلمة المرور</h3>
+        <p style="margin: 0 0 12px; color:#6b7280;">أدخل بريدك وسنرسل رمز تحقق ورابط إعادة التعيين.</p>
+        <form id="resetForm">
+          <input type="email" id="resetEmail" class="input" placeholder="name@example.com" required>
+          <button type="submit" class="btn btn-primary" style="margin-top:10px;">إرسال</button>
+        </form>
+        <button class="btn" data-close style="margin-top:10px;">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Legacy login system has been replaced with API-based authentication
+    // The actual login logic is now handled in login.js with proper backend integration
+    // This ensures users get the complete role data including the new roles array
+    
+    console.log('🔄 Login page loaded - using API-based authentication with role-based permissions');
+  </script>
+
+  <!-- EmailJS محلي لإرسال البريد فعليًا (متوافق مع CSP) -->
+  <script src="vendor/email.min.js"></script>
+  <script>
+    // ضع مفاتيح EmailJS إن رغبت بإرسال فعلي (اختياري)
+    const EMAILJS_PUBLIC_KEY  = "";   // مثال: "PUBL1C_KEY..."
+    const EMAILJS_SERVICE_ID  = "";   // مثال: "service_xxx"
+    const EMAILJS_TEMPLATE_ID = "";   // مثال: "template_xxx"
+  </script>
+
+  <!-- فتح/إغلاق المودال + إرسال الرمز والرابط -->
+  <script>
+    const resetModal = document.getElementById('resetModal');
+    const forgotLink = document.getElementById('forgotPasswordLink');
+
+    forgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetModal.hidden = false;
+    });
+    document.querySelectorAll('[data-close]').forEach(btn =>
+      btn.addEventListener('click', () => resetModal.hidden = true)
+    );
+
+    document.getElementById('resetForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const email = document.getElementById('resetEmail').value.trim();
+      if(!email){ alert('أدخل البريد'); return; }
+
+      // إنشاء رمز 6 خانات + حفظه محليًا لمدة 15 دقيقة
+      const code = String(Math.floor(100000 + Math.random()*900000));
+      localStorage.setItem('pwdReset', JSON.stringify({
+        email, code, expiresAt: Date.now() + 15*60*1000
+      }));
+
+      const resetLink = `reset-password.html?email=${encodeURIComponent(email)}`;
+
+      // إرسال فعلي عبر EmailJS إن وُضعت المفاتيح
+      if(window.emailjs && EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID){
+        try{
+          emailjs.init(EMAILJS_PUBLIC_KEY);
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_email: email,
+            code: code,
+            link: resetLink
+          });
+          alert('تم إرسال التعليمات إلى بريدك.');
+        }catch(err){
+          console.warn('EmailJS Error:', err);
+          alert('فشل الإرسال، لكن تم إنشاء الرمز محليًا.');
+        }
+      }else{
+        // وضع تجريبي بدون إرسال
+        if (!window.emailjs) {
+          console.warn('EmailJS library not loaded - using local mode');
+        }
+        alert('تم إنشاء الرمز محليًا. (لتفعيل الإرسال، أضف مفاتيح EmailJS)');
+      }
+
+      resetModal.hidden = true;
+      // توجيه لصفحة إعادة التعيين
+      location.href = resetLink;
+    });
+    // Login logic is now handled by login.js with proper API integration
+    // This comment block is kept for reference but the actual login is done via API
+
+  </script>
+
+  <!-- API Client and Login Logic -->
+  <!-- Phase 1: Foundation scripts -->
+  <script src="../jS/dependency-guard.js"></script>
+  <script src="../jS/error-handler.js"></script>
+  <script src="../jS/notification-store.js"></script>
+  <script src="../jS/notification-utils.js"></script>
+
+  <!-- Phase 2: Core application scripts -->
+  <script src="../jS/app-init.js"></script>
+  <script src="../jS/api-client.js"></script>
+
+  <!-- Phase 3: Page-specific scripts -->
+  <script src="../jS/login.js"></script>
+
+  <script>
+  // Wait for dependencies before login functionality
+  window.waitForDependencies(() => {
+    console.log('✅ Login page: All dependencies loaded');
+    // Login.js will handle the rest
+  }, ['apiClient', 'resolveFrontendPath']);
+  </script>
+<script src="../jS/signature.js"></script>
+</body>
+</html>
