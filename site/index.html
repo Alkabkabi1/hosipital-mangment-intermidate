@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نظام إدارة المستشفى | King Abdulaziz Hospital</title>
+  <meta name="description" content="Hospital management and administrative workflow system — co-op training project at King Abdulaziz Hospital, Makkah." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🏥</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Tajawal:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">🏥</div>
+        <div>
+          <div data-i18n="brand.title">نظام إدارة المستشفى</div>
+          <small data-i18n="brand.sub">مستشفى الملك عبد العزيز · مكة</small>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" id="locale-toggle" type="button">English</button>
+        <a class="btn btn-primary" href="https://github.com/Alkabkabi1/hosipital-mangment-intermidate" target="_blank" rel="noopener" data-i18n="nav.repo">مستودع GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="badges">
+          <span class="badge" data-i18n="hero.badge1">تدريب تعاوني</span>
+          <span class="badge" data-i18n="hero.badge2">جامعة أم القرى</span>
+          <span class="badge" data-i18n="hero.badge3">منشور على خادم المستشفى</span>
+        </div>
+        <h1 data-i18n="hero.title">نظام إدارة المستشفى والسير الإداري</h1>
+        <p data-i18n="hero.lead">
+          منصة داخلية لإدارة طلبات الموارد البشرية، الموافقات متعددة المراحل، ولوحات التحكم حسب الدور —
+          بُنيت خلال التدريب التعاوني في قسم تقنية المعلومات بمستشفى الملك عبد العزيز.
+        </p>
+        <div class="links">
+          <a class="btn btn-primary" href="https://github.com/Alkabkabi1/hosipital-mangment-intermidate/blob/main/Training_Report_Colored.pdf" target="_blank" rel="noopener" data-i18n="hero.report">تقرير التدريب (PDF)</a>
+          <a class="btn" href="https://github.com/Alkabkabi1/hosipital-mangment-intermidate#-getting-started" target="_blank" rel="noopener" data-i18n="hero.setup">طريقة التشغيل محلياً</a>
+          <a class="btn" href="https://alkabkabi1.github.io/portfolio/#training" target="_blank" rel="noopener" data-i18n="hero.portfolio">الملف الشخصي</a>
+        </div>
+      </div>
+      <figure class="hero-card">
+        <img src="assets/cover.png" alt="" data-i18n-alt="alt.cover" />
+      </figure>
+    </section>
+
+    <section class="metrics" aria-label="metrics">
+      <div class="metric">
+        <strong>17+</strong>
+        <span data-i18n="metric.forms">نموذج HR وإداري</span>
+      </div>
+      <div class="metric">
+        <strong>67</strong>
+        <span data-i18n="metric.tests">اختبار آلي</span>
+      </div>
+      <div class="metric">
+        <strong>2</strong>
+        <span data-i18n="metric.systems">أنظمة مُسلّمة</span>
+      </div>
+      <div class="metric">
+        <strong>AR/EN</strong>
+        <span data-i18n="metric.lang">واجهة ثنائية اللغة</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 data-i18n="systems.title">الأنظمة المُنجزة</h2>
+      <p data-i18n="systems.lead">نظامان كاملان — أحدهما للسير الإداري والموارد البشرية، والآخر للصيانة ومركز البيانات.</p>
+      <div class="grid-2">
+        <article class="card">
+          <h3 data-i18n="systems.one.title">إدارة المستشفى والسير الإداري</h3>
+          <p data-i18n="systems.one.desc">لوحات تحكم حسب الدور، 17+ نموذج طلب، موافقات متعددة، تفويض، وإدارة الأدوار.</p>
+        </article>
+        <article class="card">
+          <h3 data-i18n="systems.two.title">إدارة الصيانة ومركز البيانات</h3>
+          <p data-i18n="systems.two.desc">تذاكر، مراقبة خوادم، نسخ احتياطي، RBAC، ونماذج طلبات خارجية.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 data-i18n="shots.title">لقطات من النظام</h2>
+      <p data-i18n="shots.lead">معاينة بصرية من تقرير التدريب — النظام الكامل يعمل على خادم المستشفى مع قاعدة بيانات MySQL.</p>
+      <div class="shots">
+        <figure class="shot">
+          <img src="assets/ui-enhancements.png" alt="" data-i18n-alt="alt.ui" />
+          <figcaption data-i18n="shots.one">تحسينات الواجهة وسير الموافقات</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="assets/workflow-forms.png" alt="" data-i18n-alt="alt.forms" />
+          <figcaption data-i18n="shots.two">فئات النماذج — إخلاء طرف، إجازات، سفر، كفالات، وغيرها</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="assets/training-role.png" alt="" data-i18n-alt="alt.role" />
+          <figcaption data-i18n="shots.three">سياق التدريب في قسم تقنية المعلومات</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 data-i18n="stack.title">التقنيات</h2>
+      <div class="stack">
+        <span class="chip">Node.js</span>
+        <span class="chip">Express 5</span>
+        <span class="chip">TypeScript</span>
+        <span class="chip">MySQL 8</span>
+        <span class="chip">HTML / CSS / JS</span>
+        <span class="chip">JWT + RBAC</span>
+        <span class="chip">Vitest</span>
+        <span class="chip">CSP</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="notice">
+        <strong data-i18n="notice.title">ملاحظة عن هذا الموقع</strong>
+        <p data-i18n="notice.body">
+          هذه الصفحة على GitHub Pages تعرض نظرة عامة على المشروع. التطبيق الكامل (واجهة + API + قاعدة بيانات)
+          يُشغَّل محلياً أو على خادم المستشفى — وليس كتطبيق تفاعلي على Pages.
+          للكود المصدري والتشغيل، استخدمي مستودع GitHub.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      <span data-i18n="footer.by">© 2026 نورة محمد الكبكبي</span> ·
+      <a href="https://alkabkabi1.github.io/portfolio/" target="_blank" rel="noopener" data-i18n="footer.portfolio">الملف الشخصي</a> ·
+      <a href="https://github.com/Alkabkabi1/hosipital-mangment-intermidate" target="_blank" rel="noopener">GitHub</a>
+    </p>
+  </footer>
+
+  <script>
+    const copy = {
+      ar: {
+        'brand.title': 'نظام إدارة المستشفى',
+        'brand.sub': 'مستشفى الملك عبد العزيز · مكة',
+        'nav.repo': 'مستودع GitHub',
+        'hero.badge1': 'تدريب تعاوني',
+        'hero.badge2': 'جامعة أم القرى',
+        'hero.badge3': 'منشور على خادم المستشفى',
+        'hero.title': 'نظام إدارة المستشفى والسير الإداري',
+        'hero.lead': 'منصة داخلية لإدارة طلبات الموارد البشرية، الموافقات متعددة المراحل، ولوحات التحكم حسب الدور — بُنيت خلال التدريب التعاوني في قسم تقنية المعلومات بمستشفى الملك عبد العزيز.',
+        'hero.report': 'تقرير التدريب (PDF)',
+        'hero.setup': 'طريقة التشغيل محلياً',
+        'hero.portfolio': 'الملف الشخصي',
+        'metric.forms': 'نموذج HR وإداري',
+        'metric.tests': 'اختبار آلي',
+        'metric.systems': 'أنظمة مُسلّمة',
+        'metric.lang': 'واجهة ثنائية اللغة',
+        'systems.title': 'الأنظمة المُنجزة',
+        'systems.lead': 'نظامان كاملان — أحدهما للسير الإداري والموارد البشرية، والآخر للصيانة ومركز البيانات.',
+        'systems.one.title': 'إدارة المستشفى والسير الإداري',
+        'systems.one.desc': 'لوحات تحكم حسب الدور، 17+ نموذج طلب، موافقات متعددة، تفويض، وإدارة الأدوار.',
+        'systems.two.title': 'إدارة الصيانة ومركز البيانات',
+        'systems.two.desc': 'تذاكر، مراقبة خوادم، نسخ احتياطي، RBAC، ونماذج طلبات خارجية.',
+        'shots.title': 'لقطات من النظام',
+        'shots.lead': 'معاينة بصرية من تقرير التدريب — النظام الكامل يعمل على خادم المستشفى مع قاعدة بيانات MySQL.',
+        'shots.one': 'تحسينات الواجهة وسير الموافقات',
+        'shots.two': 'فئات النماذج — إخلاء طرف، إجازات، سفر، كفالات، وغيرها',
+        'shots.three': 'سياق التدريب في قسم تقنية المعلومات',
+        'stack.title': 'التقنيات',
+        'notice.title': 'ملاحظة عن هذا الموقع',
+        'notice.body': 'هذه الصفحة على GitHub Pages تعرض نظرة عامة على المشروع. التطبيق الكامل (واجهة + API + قاعدة بيانات) يُشغَّل محلياً أو على خادم المستشفى — وليس كتطبيق تفاعلي على Pages. للكود المصدري والتشغيل، استخدمي مستودع GitHub.',
+        'footer.by': '© 2026 نورة محمد الكبكبي',
+        'footer.portfolio': 'الملف الشخصي',
+        'alt.cover': 'غلاف تقرير التدريب التعاوني',
+        'alt.ui': 'لقطة من تحسينات الواجهة',
+        'alt.forms': 'لقطة من فئات النماذج',
+        'alt.role': 'لقطة من سياق التدريب'
+      },
+      en: {
+        'brand.title': 'Hospital Management System',
+        'brand.sub': 'King Abdulaziz Hospital · Makkah',
+        'nav.repo': 'GitHub repository',
+        'hero.badge1': 'Co-op training',
+        'hero.badge2': 'Umm Al-Qura University',
+        'hero.badge3': 'Deployed on hospital server',
+        'hero.title': 'Hospital Management & Administrative Workflow',
+        'hero.lead': 'An internal platform for HR requests, multi-step approvals, and role-based dashboards — built during co-op training in the IT Department at King Abdulaziz Hospital.',
+        'hero.report': 'Training report (PDF)',
+        'hero.setup': 'Run locally',
+        'hero.portfolio': 'Portfolio',
+        'metric.forms': 'HR / admin forms',
+        'metric.tests': 'automated tests',
+        'metric.systems': 'systems delivered',
+        'metric.lang': 'bilingual UI',
+        'systems.title': 'Systems delivered',
+        'systems.lead': 'Two complete systems — administrative/HR workflows and maintenance/data center management.',
+        'systems.one.title': 'Hospital management & admin workflow',
+        'systems.one.desc': 'Role dashboards, 17+ request forms, multi-approval chains, delegation, and role management.',
+        'systems.two.title': 'Maintenance & data center management',
+        'systems.two.desc': 'Tickets, server monitoring, backups, RBAC, and external request forms.',
+        'shots.title': 'Screenshots',
+        'shots.lead': 'Visual preview from the training report — the full app runs on the hospital server with MySQL.',
+        'shots.one': 'UI enhancements and approval workflows',
+        'shots.two': 'Form categories — clearance, leave, travel, guarantees, and more',
+        'shots.three': 'Training context in the IT department',
+        'stack.title': 'Tech stack',
+        'notice.title': 'About this site',
+        'notice.body': 'This GitHub Pages site is a project overview. The full application (UI + API + database) runs locally or on the hospital server — not as an interactive app on Pages. Use the GitHub repository for source code and setup.',
+        'footer.by': '© 2026 Norah Mohammed Alkabkabi',
+        'footer.portfolio': 'Portfolio',
+        'alt.cover': 'Co-op training report cover',
+        'alt.ui': 'UI enhancements screenshot',
+        'alt.forms': 'Form categories screenshot',
+        'alt.role': 'Training role screenshot'
+      }
+    };
+
+    const localeToggle = document.getElementById('locale-toggle');
+    let locale = localStorage.getItem('hospital-site-locale') || 'ar';
+
+    function applyLocale(next) {
+      locale = next;
+      localStorage.setItem('hospital-site-locale', locale);
+      document.documentElement.lang = locale === 'ar' ? 'ar' : 'en';
+      document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
+      document.body.classList.toggle('en', locale === 'en');
+      document.querySelectorAll('[data-i18n]').forEach((node) => {
+        const key = node.getAttribute('data-i18n');
+        if (copy[locale][key]) node.textContent = copy[locale][key];
+      });
+      document.querySelectorAll('[data-i18n-alt]').forEach((node) => {
+        const key = node.getAttribute('data-i18n-alt');
+        if (copy[locale][key]) node.setAttribute('alt', copy[locale][key]);
+      });
+      localeToggle.textContent = locale === 'ar' ? 'English' : 'العربية';
+    }
+
+    localeToggle.addEventListener('click', () => applyLocale(locale === 'ar' ? 'en' : 'ar'));
+    applyLocale(locale);
+  </script>
+</body>
+</html>

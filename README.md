@@ -2,6 +2,7 @@
 
 **Co-operative Training Project** — King Abdulaziz Hospital (Makkah) · Umm Al-Qura University · Software Engineering
 
+[![Live site](https://img.shields.io/badge/Live-alkabkabi1.github.io%2Fhosipital--mangment--intermidate-2B6CB0?style=for-the-badge&logo=github&logoColor=white)](https://alkabkabi1.github.io/hosipital-mangment-intermidate/)
 [![CI](https://github.com/Alkabkabi1/hosipital-mangment-intermidate/actions/workflows/ci.yml/badge.svg)](https://github.com/Alkabkabi1/hosipital-mangment-intermidate/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -11,7 +12,8 @@ A full-stack hospital administrative workflow system built during my co-op inter
   <img src="docs/images/readme/cover.png" alt="Co-op training report cover" width="420" />
 </p>
 
-> Full training report: [Training_Report_Colored.pdf](Training_Report_Colored.pdf)
+> Full training report: [Training_Report_Colored.pdf](Training_Report_Colored.pdf)  
+> Live project page: [alkabkabi1.github.io/hosipital-mangment-intermidate](https://alkabkabi1.github.io/hosipital-mangment-intermidate/)
 
 ---
 
